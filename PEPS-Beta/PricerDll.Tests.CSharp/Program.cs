@@ -42,12 +42,12 @@ namespace PricerDll.Tests.CSharp
             }
 
             double d = Price(
-                1, //optionType 1=Basket
+                0, //optionType 1=Basket
                 3.0, //maturity in years
                 40, //optionSize
                 100, //strike when applicable
                 payoffCoefficients, //payoffCoefficients
-                50000, //nbSamples
+                1000, //nbSamples
                 spots, //spots
                 volatilities, //volatilities
                 0.04879, //interest rate

@@ -7,7 +7,7 @@ class Multimonde2021 :
 	PnlVect* payoffVectMemSpaceInit_;
 	PnlVect* payoffVectMemSpaceCurrent_;
 public:
-	Multimonde2021();
+	Multimonde2021(double* customDates);
 	~Multimonde2021();
 
 	double payoff(const PnlMat *path);

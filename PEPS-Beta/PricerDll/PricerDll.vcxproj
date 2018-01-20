@@ -153,6 +153,7 @@
     <ClInclude Include="BasketOption.h" />
     <ClInclude Include="BlackScholesModel.h" />
     <ClInclude Include="MonteCarlo.h" />
+    <ClInclude Include="Multimonde2021.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="PricerDll.h" />
     <ClInclude Include="stdafx.h" />
@@ -163,6 +164,7 @@
     <ClCompile Include="BlackScholesModel.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="MonteCarlo.cpp" />
+    <ClCompile Include="Multimonde2021.cpp" />
     <ClCompile Include="PricerDll.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

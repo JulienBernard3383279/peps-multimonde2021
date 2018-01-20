@@ -1,16 +1,23 @@
 #include "stdafx.h"
 #include "Multimonde2021.h"
+#include <iostream>
+#include <cstring>
 
-
-Multimonde2021::Multimonde2021() {
+Multimonde2021::Multimonde2021(double* customDates) {
 	payoffVectMemSpaceInit_ = pnl_vect_create(6);
 	payoffVectMemSpaceCurrent_ = pnl_vect_create(6);
+	this->customDates = customDates;
+	this->size = 6;
+	this->nbTimeSteps = 6;
+	this->T = customDates[6];
 }
 
 
 Multimonde2021::~Multimonde2021() {
 
 }
+
+//TODO les valeurs doivent-elles être corrigés de l'actualisation ? A voir dans les specs
 
 double Multimonde2021::payoff(const PnlMat* path) { //path est obligatoirement une matrice de 6 de largeur et 7 de hauteur, représentant la liste suivante :
 	/*
@@ -43,13 +50,14 @@ double Multimonde2021::payoff(const PnlMat* path) { //path est obligatoirement u
 			}
 		}
 		if (max >= 0.85 && max <= 1.15) {
-			globalPerf += max - 1;
+			globalPerf += max - 1.0;
 		}
 		else {
-			globalPerf += (max < 1 ? 0.85 : 1.15);
+			globalPerf += (max < 1 ? -0.15 : 0.15);
 		}
 		stillHere[maxIndex] = false;
 	}
 
+	std::cout << 100 * globalPerf << std::endl;
 	return 100 * globalPerf;
 }

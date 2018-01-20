@@ -58,6 +58,16 @@ public:
 	*/
 	void postInitAsset(PnlMat *path, double T, int nbTimeSteps, PnlRng *rng);
 
+	/**
+	* Génère une trajectoire du modèle et la stocke dans path. Les appels doivent être fait après un initAsset.
+	* Cette fonction utilise, au lieu d'une maturité fixe, les dates de constations auxquelles nous devons générer les prix des indices.
+	* L'array doit être de taille nbTimeSteps+1.
+	*
+	* @param[out] path contient une trajectoire du modèle.
+	* C'est une matrice de taille (nbTimeSteps+1) x d
+	* @param[in] T  maturité
+	* @param[in] nbTimeSteps nombre de dates de constatation
+	* @param[in] rng générateur de nombres aléatoires
+	*/
 	void postInitAssetCustomDates(PnlMat *path, double dates[], int nbTimeSteps, PnlRng *rng);
-
 };
