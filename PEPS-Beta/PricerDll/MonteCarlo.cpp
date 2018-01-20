@@ -32,7 +32,8 @@ void MonteCarlo::price(double &prix, double &ic) {
 
 	mod_->initAsset(opt_->nbTimeSteps);
 	for (int i = 0; i < nbSamples_; ++i) {
-		mod_->postInitAsset(path, opt_->T, opt_->nbTimeSteps, rng_);
+		if (! opt_->custom) { mod_->postInitAsset(path, opt_->T, opt_->nbTimeSteps, rng_); }
+		else { mod_->postInitAssetCustomDates(path, opt_->customDates, opt_->nbTimeSteps, rng_); }
 
 		mySum += opt_->payoff(path);
 		mySquaredSum += pow(opt_->payoff(path), 2);

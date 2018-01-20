@@ -58,30 +58,6 @@ public:
 	*/
 	void postInitAsset(PnlMat *path, double T, int nbTimeSteps, PnlRng *rng);
 
-	/**
-	* @brief Shift d'une trajectoire du sous-jacent
-	*
-	* @param[in]  path contient en input la trajectoire
-	* du sous-jacent
-	* @param[out] shift_path contient la trajectoire path
-	* dont la composante d a été shiftée par (1+h)
-	* à partir de la date t.
-	* @param[in] t date à partir de laquelle on shift
-	* @param[in] h pas de différences finies
-	* @param[in] d indice du sous-jacent à shifter
-	* @param[in] timestep pas de constatation du sous-jacent
-	*/
-	void shiftAsset(PnlMat *shift_path, const PnlMat *path, int d,
-		double h, double t, double timestep);
+	void postInitAssetCustomDates(PnlMat *path, double dates[], int nbTimeSteps, PnlRng *rng);
 
-	/**
-	* Génère une simulation du marché
-	*
-	* @param[out] market contient une trajectoire du modèle.
-	* C'est une matrice de taille (H+1) x d
-	* @param[in] T maturité
-	* @param[in] H nombre de dates de constatation
-	* @param[in] rng générateur de nombres aléatoires
-	*/
-	void simul_market(PnlMat *market, double T, int H, PnlRng *rng);
 };

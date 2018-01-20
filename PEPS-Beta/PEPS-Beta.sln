@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEPS-Beta", "PEPS-Beta\PEPS-Beta.csproj", "{0964F391-F99C-420F-9A51-D46920C902E5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EB6DF5A8-C86D-4DF2-A984-0EB413F3B06B} = {EB6DF5A8-C86D-4DF2-A984-0EB413F3B06B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PEPS-Beta.Tests", "PEPS-Beta.Tests\PEPS-Beta.Tests.csproj", "{9B7BC9D8-1960-4185-862F-08BFAC9EB94A}"
 EndProject

@@ -7,7 +7,9 @@
 class Option
 {
 public:
+	bool custom;
 	double T; /// maturité
+	double* customDates;
 	int nbTimeSteps; /// nombre de pas de temps de discrétisation
 	int size; /// dimension du modèle, redondant avec BlackScholesModel::size_
 

@@ -14,6 +14,7 @@ BasketOption::BasketOption() {
 BasketOption::BasketOption(double T, double nbTimeSteps, int size, PnlVect *coefs, double strike) {
 	coefs_ = pnl_vect_copy(coefs); // taille n
 	strike_ = strike; // taille size_
+	this->custom = false;
 	this->T = T;
 	this->nbTimeSteps = nbTimeSteps;
 	this->size = size;
