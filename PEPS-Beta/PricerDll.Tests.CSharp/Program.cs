@@ -19,7 +19,7 @@ namespace PricerDll.Tests.CSharp
             double[] spots,
             double[] volatilities,
             double interestRate,
-            double correlation,
+            double[] correlations,
             int timestepNumber,
             double[] trends);
 
@@ -29,27 +29,39 @@ namespace PricerDll.Tests.CSharp
             double[] spots,
             double[] volatilities,
             double interestRate,
-            double correlation,
+            double[] correlations, //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
             double[] trends
         );
 
         static void Main(string[] args)
         {
-            int optionSize = 40;
-            double[] payoffCoefficients = new double[optionSize];
+            int optionSize = 6;
             double[] spots = new double[optionSize];
             double[] volatilities = new double[optionSize];
             double[] trends = new double[optionSize];
             for (int i=0; i<optionSize; i++)
             {
-                payoffCoefficients[i] = 0.025;
                 spots[i] = 100;
                 volatilities[i] = 0.2;
-                trends[i] = 0.1;
+                trends[i] = 0.0;
             }
 
-            /*
-            double d = PriceBasket (
+            double[] correlations = new double[optionSize * optionSize];
+            for (int i=0; i<optionSize; i++)
+            {
+                for (int j=0; j<optionSize; j++)
+                {
+                    correlations[i * optionSize + j] = (i == j) ? 1 : 0;
+                }
+            }
+            /*trends[0] = -0.5;
+            trends[1] = -0.5;
+            trends[2] = 0.5;
+            trends[3] = 0.5;
+            trends[4] = 0.5;
+            trends[5] = 0.5;*/
+            
+            /*double d = PriceBasket (
                 3.0, //maturity in years
                 40, //optionSize
                 100, //strike when applicable
@@ -67,8 +79,8 @@ namespace PricerDll.Tests.CSharp
                 100000,
                 spots,
                 volatilities,
-                0.05,
                 0.0,
+                correlations,
                 trends);
 
             Console.WriteLine(d);

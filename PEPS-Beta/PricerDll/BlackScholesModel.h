@@ -14,14 +14,14 @@ class BlackScholesModel
 public:
 	int size_; /// nombre d'actifs du modèle
 	double r_; /// taux d'intérêt
-	double rho_; /// paramètre de corrélation
+	PnlMat *correlations_; /// paramètre de corrélation
 	PnlVect *sigma_; /// vecteur de volatilités
 	PnlVect *spot_; /// valeurs initiales du sous-jacent
 
 	PnlVect *trend_; /// tendance du modèle
 
 	BlackScholesModel();
-	BlackScholesModel(int size, double r, double rho, PnlVect *sigma,
+	BlackScholesModel(int size, double r, PnlMat *correlations, PnlVect *sigma,
 		PnlVect *spot, PnlVect *trend);
 	BlackScholesModel(const BlackScholesModel & bsm);
 	virtual ~BlackScholesModel();
