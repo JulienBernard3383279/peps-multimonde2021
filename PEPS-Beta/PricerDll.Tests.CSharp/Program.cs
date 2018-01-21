@@ -45,7 +45,7 @@ namespace PricerDll.Tests.CSharp
                 payoffCoefficients[i] = 0.025;
                 spots[i] = 100;
                 volatilities[i] = 0.2;
-                trends[i] = 0.0;
+                trends[i] = 0.1;
             }
 
             /*
@@ -67,7 +67,7 @@ namespace PricerDll.Tests.CSharp
                 100000,
                 spots,
                 volatilities,
-                0.0,
+                0.05,
                 0.0,
                 trends);
 
