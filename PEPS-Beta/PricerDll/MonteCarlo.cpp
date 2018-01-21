@@ -39,7 +39,8 @@ void MonteCarlo::price(double &prix, double &ic) {
 		mySquaredSum += pow(opt_->payoff(path), 2);
 	}
 
-	prix = mySum / nbSamples_ * exp(-mod_->r_ * opt_->T);
+	std::cout << exp(-mod_->r_ * opt_->T) << std::endl;
+	prix = mySum / nbSamples_ * exp(- mod_->r_ * opt_->T);
 
 	var = exp(-mod_->r_ * opt_->T * 2)
 		* (mySquaredSum / nbSamples_ - pow(mySum / nbSamples_, 2));

@@ -10,8 +10,7 @@ namespace PricerDll.Tests.CSharp
     class Program
     {
         [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
-        extern static double Price(
-            int optionType,
+        extern static double PriceBasket(
             double maturity,
             int optionSize,
             double strike,
@@ -20,11 +19,19 @@ namespace PricerDll.Tests.CSharp
             double[] spots,
             double[] volatilities,
             double interestRate,
-            double correlation, //devra être une matrice
-            int timestepCustom, //0 = basic, 1 = custom
-            int timestepNumber, //osef si 1
-            double[] timestepCustoms, //osef si 0
+            double correlation,
+            int timestepNumber,
             double[] trends);
+
+        [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
+        extern static double PriceMultimonde2021(
+            int sampleNumber,
+            double[] spots,
+            double[] volatilities,
+            double interestRate,
+            double correlation,
+            double[] trends
+        );
 
         static void Main(string[] args)
         {
@@ -38,24 +45,31 @@ namespace PricerDll.Tests.CSharp
                 payoffCoefficients[i] = 0.025;
                 spots[i] = 100;
                 volatilities[i] = 0.2;
-                trends[i] = 0;
+                trends[i] = 0.0;
             }
 
-            double d = Price(
-                0, //optionType 1=Basket
+            /*
+            double d = PriceBasket (
                 3.0, //maturity in years
                 40, //optionSize
                 100, //strike when applicable
                 payoffCoefficients, //payoffCoefficients
-                1000, //nbSamples
+                50000, //nbSamples
                 spots, //spots
                 volatilities, //volatilities
                 0.04879, //interest rate
                 0.0, //correlation
-                0, //timestepCustom, 0 = basic, 1 = custom
                 1, //osef if 1
-                new double[] { }, //osef if 0
                 trends ); //trends
+                */
+
+            double d = PriceMultimonde2021(
+                100000,
+                spots,
+                volatilities,
+                0.0,
+                0.0,
+                trends);
 
             Console.WriteLine(d);
         }

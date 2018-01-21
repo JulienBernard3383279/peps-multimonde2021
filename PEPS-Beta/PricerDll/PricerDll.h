@@ -6,8 +6,7 @@
 #define PRICERDLL_API __declspec(dllimport)
 #endif
 
-extern "C" PRICERDLL_API double Price(
-	int optionType,
+extern "C" PRICERDLL_API double PriceBasket(
 	double maturity,
 	int optionSize,
 	double strike,
@@ -16,8 +15,15 @@ extern "C" PRICERDLL_API double Price(
 	double spots[],
 	double volatilities[],
 	double interestRate,
-	double correlation, //devra être une matrice
-	int timestepCustom, //0 = basic, 1 = custom
-	int timestepNumber, //osef si 1
-	double timestepCustoms[],
+	double correlation,
+	int timestepNumber,
 	double trends[]);
+
+extern "C" PRICERDLL_API double PriceMultimonde2021(
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate,
+	double correlation,
+	double trends[]
+);

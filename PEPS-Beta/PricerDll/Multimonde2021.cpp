@@ -17,8 +17,6 @@ Multimonde2021::~Multimonde2021() {
 
 }
 
-//TODO les valeurs doivent-elles être corrigés de l'actualisation ? A voir dans les specs
-
 double Multimonde2021::payoff(const PnlMat* path) { //path est obligatoirement une matrice de 6 de largeur et 7 de hauteur, représentant la liste suivante :
 	/*
 	* 01/10/15
@@ -58,6 +56,5 @@ double Multimonde2021::payoff(const PnlMat* path) { //path est obligatoirement u
 		stillHere[maxIndex] = false;
 	}
 
-	std::cout << 100 * globalPerf << std::endl;
 	return 100 * globalPerf;
 }
