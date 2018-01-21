@@ -76,7 +76,6 @@ namespace PricerDll.Tests.CSharp
                 trends ); //trends
                 */
 
-            double price;
             double d = PriceMultimonde2021(
                 100000,
                 spots,
