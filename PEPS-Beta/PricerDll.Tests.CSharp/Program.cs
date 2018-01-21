@@ -9,7 +9,7 @@ namespace PricerDll.Tests.CSharp
 {
     class Program
     {
-        [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
+        [DllImport(@"..\..\..\x64\Debug\PricerDll.dll")]
         extern static double PriceBasket(
             double maturity,
             int optionSize,
@@ -23,7 +23,7 @@ namespace PricerDll.Tests.CSharp
             int timestepNumber,
             double[] trends);
 
-        [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
+        [DllImport(@"..\..\..\x64\Debug\PricerDll.dll")]
         extern static double PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
