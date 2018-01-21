@@ -54,13 +54,14 @@ namespace PricerDll.Tests.CSharp
                     correlations[i * optionSize + j] = (i == j) ? 1 : 0;
                 }
             }
+
             /*trends[0] = -0.5;
             trends[1] = -0.5;
             trends[2] = 0.5;
             trends[3] = 0.5;
             trends[4] = 0.5;
             trends[5] = 0.5;*/
-            
+
             /*double d = PriceBasket (
                 3.0, //maturity in years
                 40, //optionSize
@@ -75,6 +76,7 @@ namespace PricerDll.Tests.CSharp
                 trends ); //trends
                 */
 
+            double price;
             double d = PriceMultimonde2021(
                 100000,
                 spots,
@@ -82,6 +84,7 @@ namespace PricerDll.Tests.CSharp
                 0.0,
                 correlations,
                 trends);
+
 
             Console.WriteLine(d);
         }

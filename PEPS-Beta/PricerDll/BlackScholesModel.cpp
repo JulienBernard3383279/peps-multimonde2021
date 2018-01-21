@@ -120,6 +120,15 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, double dates[], i
 	}
 }
 
+void shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int i, int from, int nbTimeSteps, double h) {
+	pnl_mat_clone(pathMinus,path);
+	pnl_mat_clone(pathPlus,path);
+	for (int j = from; j < nbTimeSteps + 1; j++) {
+		MLET(pathMinus, j, i) *= 1 - h;
+		MLET(pathPlus, j, i) *= 1 + h;
+	}
+}
+
 /**
 * Génère une trajectoire du modèle et la stocke dans path
 */

@@ -17,7 +17,6 @@ public:
 	PnlMat *correlations_; /// paramètre de corrélation
 	PnlVect *sigma_; /// vecteur de volatilités
 	PnlVect *spot_; /// valeurs initiales du sous-jacent
-
 	PnlVect *trend_; /// tendance du modèle
 
 	BlackScholesModel();
@@ -70,4 +69,17 @@ public:
 	* @param[in] rng générateur de nombres aléatoires
 	*/
 	void postInitAssetCustomDates(PnlMat *path, double dates[], int nbTimeSteps, PnlRng *rng);
+
+	/*
+	* Cette fonction shift la (i+1)ème colonne de la trajectoire de (1-h) ; (1+h) à partir de l'indice from.
+	* 
+	* @param[in] path  contient le path initial.
+	* @param[out] pathMinus contiendra le path shifté de -h après exécution. La matrice doit être déclarée au préalable.
+	* @param[out] pathPlus contiendra le path shifté de +h après exécution. La matrice doit être déclarée au préalable.
+	* @param[in] i contient l'indice de l'actif à shifter.
+	* @param[in] from contient le premier indice à shifter.
+	* @param[in] nbTimeSteps est le nombre de dates de constation (hauteur de la matrice - 1)
+	* @param[in] h est l'intensité de shifting
+	*/
+	void shiftPath(PnlMat* path, PnlMat *pathMinus, PnlMat *pathPlus, int i, int from, int nbTimeSteps, double h);
 };
