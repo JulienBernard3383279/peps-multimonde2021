@@ -15,7 +15,7 @@ namespace PEPS_Beta.Controllers
             double[] spots,
             double[] volatilities,
             double interestRate,
-            double correlation,
+            double[] correlations,
             double[] trends
         );
 
@@ -35,12 +35,21 @@ namespace PEPS_Beta.Controllers
                 trends[i] = 0;
             }
 
+            double[] correlations = new double[optionSize * optionSize];
+            for (int i = 0; i < optionSize; i++)
+            {
+                for (int j = 0; j < optionSize; j++)
+                {
+                    correlations[i * optionSize + j] = (i == j) ? 1 : 0;
+                }
+            }
+
             double d = PriceMultimonde2021(
                 100000,
                 spots,
                 volatilities,
                 0.0,
-                0.0,
+                correlations,
                 trends);
 
             ViewData["d"] = d;
