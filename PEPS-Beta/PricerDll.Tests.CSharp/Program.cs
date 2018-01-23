@@ -9,8 +9,8 @@ namespace PricerDll.Tests.CSharp
 {
     class Program
     {
-        [DllImport(@"..\..\..\x64\Debug\PricerDll.dll")]
-        extern static double PriceBasket(
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        unsafe extern static double PriceBasket(
             double maturity,
             int optionSize,
             double strike,
@@ -23,8 +23,8 @@ namespace PricerDll.Tests.CSharp
             int timestepNumber,
             double[] trends);
 
-        [DllImport(@"..\..\..\x64\Debug\PricerDll.dll")]
-        extern static double PriceMultimonde2021(
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        unsafe extern static double PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
             double[] volatilities,
