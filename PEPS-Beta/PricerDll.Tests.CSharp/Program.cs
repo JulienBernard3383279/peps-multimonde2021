@@ -74,7 +74,7 @@ namespace PricerDll.Tests.CSharp
                 spots[i] = 100;
                 volatilities[i] = 0.1;
                 trends[i] = 0.0;
-                FXRates[i] = 1.0;
+                FXRates[i] = i==0 ? 1.0 : 0.5 ;
             }
 
             double[] correlations = new double[optionSize * optionSize];
