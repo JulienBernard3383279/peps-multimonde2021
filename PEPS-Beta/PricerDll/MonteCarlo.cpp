@@ -6,7 +6,7 @@
 #include <cmath>
 
 #include "MonteCarlo.h"
-
+#include "Multimonde2021.h"
 using namespace std;
 
 MonteCarlo::MonteCarlo() {}
@@ -20,7 +20,7 @@ MonteCarlo::MonteCarlo(BlackScholesModel *mod, Option *opt, PnlRng *rng, int nbS
 
 MonteCarlo::~MonteCarlo() {}
 
-void MonteCarlo::price(double &prix, double &ic) {
+void MonteCarlo::price(double* prix, double* ic) {
 
 	double mySum = 0;
 	double mySquaredSum = 0;
@@ -40,23 +40,28 @@ void MonteCarlo::price(double &prix, double &ic) {
 	}
 
 	std::cout << exp(-mod_->r_ * opt_->T) << std::endl;
-	prix = mySum / nbSamples_ * exp(- mod_->r_ * opt_->T);
+	*prix = mySum / nbSamples_ * exp(- mod_->r_ * opt_->T);
 
 	var = exp(-mod_->r_ * opt_->T * 2)
 		* (mySquaredSum / nbSamples_ - pow(mySum / nbSamples_, 2));
 
-	ic = 2 * 1.96 * sqrt(var) / sqrt(nbSamples_);
+	*ic = 2 * 1.96 * sqrt(var) / sqrt(nbSamples_);
 
 	// Free memory
 	pnl_mat_free(&path);
 }
 
 void MonteCarlo::deltas(double* deltas) {
-	deltas = new double[mod_->size_];
+	for (int i = 0; i < mod_->size_; i++) {
+		deltas[i] = 0;
+	}
 
 	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 	PnlMat *pathMinus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 	PnlMat *pathPlus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
+
+	double payoffMinus = 0;
+	double payoffPlus = 0;
 
 	mod_->initAsset(opt_->nbTimeSteps);
 	for (int i = 0; i < nbSamples_; ++i) {
@@ -64,14 +69,19 @@ void MonteCarlo::deltas(double* deltas) {
 		else { mod_->postInitAssetCustomDates(path, opt_->customDates, opt_->nbTimeSteps, rng_); }
 		
 		for (int j = 0; j < mod_->size_; j++) {
-			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, 0.0001);
+			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, 0.01);
+			payoffPlus = opt_->payoff(pathPlus);
+			payoffMinus = opt_->payoff(pathMinus);
 			
-			deltas[j] += (opt_->payoff(pathPlus) - opt_->payoff(pathMinus)) / (2 * 0.0001);
+			
+			deltas[j] += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
 		}
+
 	}
 
 	for (int j = 0; j < mod_->size_; j++) {
 		deltas[j] /= nbSamples_;
+		deltas[j] *= exp(-mod_->r_ * opt_->T);
 	}
 
 	return;
