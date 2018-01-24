@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
@@ -9,7 +10,8 @@ namespace PEPS_Beta.Controllers
 {
     public class HomeController : Controller
     {
-        [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
+        [DllImport(@"D:\Documents\ensimag\3A-Cours\PEPS\PEPS\PEPS-Beta\x64\Debug\PricerDll.dll")]
+      //  [HandleProcessCorruptedStateExceptions]
         extern static double PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
@@ -43,6 +45,7 @@ namespace PEPS_Beta.Controllers
                 0.0,
                 trends);
 
+         
             ViewData["d"] = d;
             return View();
         }

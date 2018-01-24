@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,7 +10,7 @@ namespace PricerDll.Tests.CSharp
 {
     class Program
     {
-        [DllImport(@"..\..\..\x64\Debug\PricerDll.dll")]
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         extern static double PriceBasket(
             double maturity,
             int optionSize,
@@ -23,7 +24,7 @@ namespace PricerDll.Tests.CSharp
             int timestepNumber,
             double[] trends);
 
-        [DllImport(@"..\..\..\x64\Debug\PricerDll.dll")]
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         extern static double PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
@@ -75,7 +76,7 @@ namespace PricerDll.Tests.CSharp
                 1, //osef if 1
                 trends ); //trends
                 */
-
+            
             double d = PriceMultimonde2021(
                 100000,
                 spots,
@@ -86,6 +87,7 @@ namespace PricerDll.Tests.CSharp
 
 
             Console.WriteLine(d);
+            Console.ReadKey();
         }
     }
 }
