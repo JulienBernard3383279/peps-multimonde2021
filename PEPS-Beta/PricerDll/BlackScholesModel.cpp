@@ -120,12 +120,12 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, double dates[], i
 	}
 }
 
-void BlackScholesModel::shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int i, int from, int nbTimeSteps, double h) {
+void BlackScholesModel::shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int j, int from, int nbTimeSteps, double h) {
 	pnl_mat_clone(pathMinus,path);
 	pnl_mat_clone(pathPlus,path);
-	for (int j = from; j < nbTimeSteps + 1; j++) {
-		MLET(pathMinus, j, i) *= 1 - h;
-		MLET(pathPlus, j, i) *= 1 + h;
+	for (int i = from; i < nbTimeSteps + 1; i++) {
+		MLET(pathMinus, i, j) *= (1.0 - h);
+		MLET(pathPlus, i, j) *= (1.0 + h);
 	}
 }
 
