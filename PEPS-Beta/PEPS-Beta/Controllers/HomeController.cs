@@ -10,17 +10,19 @@ namespace PEPS_Beta.Controllers
     public class HomeController : Controller
     {
         [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
-        extern static double PriceMultimonde2021(
+        extern unsafe static void PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
             double[] volatilities,
             double interestRate,
             double[] correlations,
-            double[] trends
+            double[] trends,
+            double* price,
+            double* ic
         );
 
         // GET: Home
-        public ActionResult Index()
+        public unsafe ActionResult Index()
         {
             int optionSize = 40;
             double[] payoffCoefficients = new double[optionSize];
@@ -44,15 +46,19 @@ namespace PEPS_Beta.Controllers
                 }
             }
 
-            double d = PriceMultimonde2021(
+            double price;
+            double ic;
+            PriceMultimonde2021(
                 100000,
                 spots,
                 volatilities,
                 0.0,
                 correlations,
-                trends);
+                trends,
+                &price,
+                &ic);
 
-            ViewData["d"] = d;
+            ViewData["d"] = price;
             return View();
         }
     }
