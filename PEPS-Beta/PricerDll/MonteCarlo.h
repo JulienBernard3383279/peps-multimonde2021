@@ -27,12 +27,12 @@ public:
 	* @param[out] prix valeur de l'estimateur Monte Carlo
 	* @param[out] ic largeur de l'intervalle de confiance
 	*/
-	void price(double &prix, double &ic);
+	void price(double* prix, double* ic);
 
 	/**
-	* Calcule les deltas de l'option à la date 0
+	* Calcule les deltas de l'option à la date 0. 
 	*
-	* @param[out] tableau de taille opt->size_ contenant les deltas
+	* @param[out] Tableau de taille opt->size_ contenant les deltas. Doit être préalablement alloué.
 	*/
 	void deltas(double* deltas);
 };

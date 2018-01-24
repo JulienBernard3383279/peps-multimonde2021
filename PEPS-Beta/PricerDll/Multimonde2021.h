@@ -11,6 +11,8 @@ public:
 	~Multimonde2021();
 
 	double payoff(const PnlMat *path);
+
+	double verbosePayoff(const PnlMat *path);
 };
 
 
