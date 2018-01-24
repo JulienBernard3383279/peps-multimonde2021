@@ -49,26 +49,60 @@ public:
 	/**
 	* Génère une trajectoire du modèle et la stocke dans path. Les appels doivent être fait après un initAsset.
 	*
-	* @param[out] path contient une trajectoire du modèle.
-	* C'est une matrice de taille (nbTimeSteps+1) x d
+	* @param[out] path contient une trajectoire du modèle. C'est une matrice de taille (nbTimeSteps+1) x d
 	* @param[in] T  maturité
 	* @param[in] nbTimeSteps nombre de dates de constatation
 	* @param[in] rng générateur de nombres aléatoires
 	*/
-	void postInitAsset(PnlMat *path, double T, int nbTimeSteps, PnlRng *rng);
+	void postInitAsset(PnlMat *path, 
+		double T, int nbTimeSteps, PnlRng *rng);
+
+	/**
+	* Génère une trajectoire du modèle et la stocke dans path. Les appels doivent être fait après un initAsset.
+	*
+	* @param[out] path contient une trajectoire du modèle. C'est une matrice de taille (nbTimeSteps+1) x d
+	* @param[in] past contient la trajectoire déjà fixée du modèle.
+	* @param[in] t contient la date actuelle (tarée avec dates[0])
+	* @param[in] current contient les prix actuels
+	* @param[in] from contient le premier indice qu'il ne faut pas recopier de path. ie recopier la ligne 0 <=> from = 1. si from = 0, on recopie spots_
+	* @param[in] T  maturité
+	* @param[in] nbTimeSteps nombre de dates de constatation
+	* @param[in] rng générateur de nombres aléatoires
+	*/
+	void postInitAsset(PnlMat *path, 
+		PnlMat *past, double t, PnlVect *current, int from,
+		double T, int nbTimeSteps, PnlRng *rng);
 
 	/**
 	* Génère une trajectoire du modèle et la stocke dans path. Les appels doivent être fait après un initAsset.
 	* Cette fonction utilise, au lieu d'une maturité fixe, les dates de constations auxquelles nous devons générer les prix des indices.
 	* L'array doit être de taille nbTimeSteps+1.
 	*
-	* @param[out] path contient une trajectoire du modèle.
-	* C'est une matrice de taille (nbTimeSteps+1) x d
+	* @param[out] path contient une trajectoire du modèle. C'est une matrice de taille (nbTimeSteps+1) x d
 	* @param[in] T  maturité
 	* @param[in] nbTimeSteps nombre de dates de constatation
 	* @param[in] rng générateur de nombres aléatoires
 	*/
-	void postInitAssetCustomDates(PnlMat *path, double dates[], int nbTimeSteps, PnlRng *rng);
+	void postInitAssetCustomDates(PnlMat *path, 
+		double dates[], int nbTimeSteps, PnlRng *rng);
+	
+	/**
+	* Génère une trajectoire du modèle et la stocke dans path. Les appels doivent être fait après un initAsset.
+	* Cette fonction utilise, au lieu d'une maturité fixe, les dates de constations auxquelles nous devons générer les prix des indices.
+	* L'array doit être de taille nbTimeSteps+1.
+	*
+	* @param[out] path contient une trajectoire du modèle. C'est une matrice de taille (nbTimeSteps+1) x d
+	* @param[in] past contient la trajectoire déjà fixée du modèle.
+	* @param[in] t contient la date actuelle (tarée avec dates[0])
+	* @param[in] current contient les prix actuels
+	* @param[in] from contient le premier indice qu'il ne faut pas recopier de path. ie recopier la ligne 0 <=> from = 1
+	* @param[in] dates dates de constation customs
+	* @param[in] nbTimeSteps nombre de dates de constatation
+	* @param[in] rng générateur de nombres aléatoires
+	*/
+	void postInitAssetCustomDates(PnlMat *path, 
+		PnlMat *past, double t, PnlVect *current, int from,
+		double dates[], int nbTimeSteps, PnlRng *rng);
 
 	/*
 	* Cette fonction shift la (i+1)ème colonne de la trajectoire de (1-h) ; (1+h) à partir de l'indice from.

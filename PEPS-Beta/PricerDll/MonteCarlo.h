@@ -35,4 +35,23 @@ public:
 	* @param[out] Tableau de taille opt->size_ contenant les deltas. Doit être préalablement alloué.
 	*/
 	void deltas(double* deltas);
+
+	/**
+	* Calcule le prix de l'option en toute date t.
+	*
+	* @param[in] past le path jusqu'à présent
+	* @param[in] t la date actuelle
+	* @param[out] prix valeur de l'estimateur Monte Carlo
+	* @param[out] ic largeur de l'intervalle de confiance
+	*/
+	void price(PnlMat* past, double t, double* prix, double* ic);
+
+	/**
+	* Calcule les deltas de l'option en toute date t.
+	*
+	* @param[in] past le path jusqu'à présent
+	* @param[in] t la date actuelle
+	* @param[out] Tableau de taille opt->size_ contenant les deltas. Doit être préalablement alloué.
+	*/
+	void deltas(PnlMat *past, double t, double* deltas);
 };

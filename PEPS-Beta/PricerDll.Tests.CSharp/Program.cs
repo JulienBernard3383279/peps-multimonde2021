@@ -135,7 +135,6 @@ namespace PricerDll.Tests.CSharp
                     &ic);
 
                 double[] deltas = new double[6];
-                IntPtr deltasPtr;
                 DeltasMultiCurrencyMultimonde2021(
                     200000,
                     spots,
@@ -143,14 +142,12 @@ namespace PricerDll.Tests.CSharp
                     interestRate,
                     correlations,
                     trends,
-                    out deltasPtr);
+                    out IntPtr deltasPtr);
                 Marshal.Copy(deltasPtr, deltas, 0, 6);
                 //Marshal.FreeCoTaskMem(deltasPtr); "PricerDll.Tests.CSharp a cessé de fonctionner." Ah.
 
                 double[] deltasAssets = new double[6];
-                IntPtr deltasAssetsPtr;
                 double[] deltasFXRates = new double[6];
-                IntPtr deltasFXRatesPtr;
 
                 DeltasSingleCurrencyMultimonde2021(
                     200000,
@@ -160,8 +157,8 @@ namespace PricerDll.Tests.CSharp
                     correlations,
                     trends,
                     FXRates,
-                    out deltasAssetsPtr,
-                    out deltasFXRatesPtr);
+                    out IntPtr deltasAssetsPtr,
+                    out IntPtr deltasFXRatesPtr);
 
                 Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
                 Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
