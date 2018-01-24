@@ -57,8 +57,8 @@ namespace PricerDll.Tests.CSharp
             double[] correlations,
             double[] trends,
             double[] FXRates,
-            double[] deltasAssets,
-            double[] deltasFXRates
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
 
         static unsafe void Main(string[] args)
@@ -67,11 +67,14 @@ namespace PricerDll.Tests.CSharp
             double[] spots = new double[optionSize];
             double[] volatilities = new double[optionSize];
             double[] trends = new double[optionSize];
+            double[] FXRates = new double[optionSize];
+
             for (int i=0; i<optionSize; i++)
             {
                 spots[i] = 100;
-                volatilities[i] = 0.2;
+                volatilities[i] = 0.1;
                 trends[i] = 0.0;
+                FXRates[i] = 1.0;
             }
 
             double[] correlations = new double[optionSize * optionSize];
@@ -119,7 +122,6 @@ namespace PricerDll.Tests.CSharp
 
             double[] deltas = new double[6];
             IntPtr deltasPtr;
-
             DeltasMultiCurrencyMultimonde2021(
                 1000000,
                 spots,
@@ -128,40 +130,48 @@ namespace PricerDll.Tests.CSharp
                 correlations,
                 trends,
                 out deltasPtr);
-
             Marshal.Copy(deltasPtr, deltas, 0, 6);
             //Marshal.FreeCoTaskMem(deltasPtr); "PricerDll.Tests.CSharp a cessé de fonctionner." Ah.
 
-            double[] FXRates = new double[6] { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
             double[] deltasAssets = new double[6];
+            IntPtr deltasAssetsPtr;
             double[] deltasFXRates = new double[6];
-            /*DeltasSingleCurrencyMultimonde2021(
-                100000,
+            IntPtr deltasFXRatesPtr;
+
+            DeltasSingleCurrencyMultimonde2021(
+                1000000,
                 spots,
                 volatilities,
                 0.0,
                 correlations,
                 trends,
                 FXRates,
-                deltasAssets,
-                deltasFXRates);*/
+                out deltasAssetsPtr,
+                out deltasFXRatesPtr);
+
+            Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
+            Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
+
 
             Console.WriteLine("Prix Multimonde : " + price);
             Console.WriteLine("Intervalle de confiance Multimonde : " + ic);
+            Console.WriteLine();
             Console.WriteLine("Deltas Multimonde en monnaies étrangères : ");
             for (int i = 0; i < 6; i++)
             {
                 Console.WriteLine(deltas[i]);
             }
             Console.WriteLine();
+            Console.WriteLine("Deltas Multimonde en Euros - actifs : ");
             for (int i = 0; i < 6; i++)
             {
-                Console.Write(deltasAssets[i]);
+                Console.WriteLine(deltasAssets[i]);
             }
             Console.WriteLine();
+            Console.WriteLine("Deltas Multimonde en Euros - taux de change : ");
             for (int i = 0; i < 6; i++)
             {
-                Console.Write(deltasFXRates[i]);
+                Console.WriteLine(deltasFXRates[i]);
             }
             Console.WriteLine();
         }
