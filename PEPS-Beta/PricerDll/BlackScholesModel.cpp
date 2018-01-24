@@ -16,7 +16,7 @@ using namespace std;
 BlackScholesModel::BlackScholesModel() {
 	size_ = 0;
 	r_ = 0;
-	rho_ = 0;
+	correlations_ = pnl_mat_new();
 	sigma_ = pnl_vect_new();
 	spot_ = pnl_vect_new();
 	trend_ = pnl_vect_new();
@@ -28,16 +28,16 @@ BlackScholesModel::BlackScholesModel() {
 /**
 * \brief Constructeur avec arguments de la classe BlackScholesModel
 */
-BlackScholesModel::BlackScholesModel(int size, double r, double rho,
+BlackScholesModel::BlackScholesModel(int size, double r, PnlMat *correlations,
 	PnlVect *sigma, PnlVect *spot, PnlVect *trend) {
 	size_ = size;
 	r_ = r;
-	rho_ = rho;
+	correlations_ = correlations;
 	sigma_ = pnl_vect_copy(sigma);
 	spot_ = pnl_vect_copy(spot);
 	trend_ = pnl_vect_copy(trend);
 
-	gammaMemSpace_ = pnl_mat_create_from_scalar(size, size, rho);
+	gammaMemSpace_ = pnl_mat_create(size, size);
 	gMemSpace_ = pnl_mat_new();
 }
 
@@ -47,7 +47,7 @@ BlackScholesModel::BlackScholesModel(int size, double r, double rho,
 BlackScholesModel::BlackScholesModel(const BlackScholesModel &bsm) {
 	size_ = bsm.size_;
 	r_ = bsm.r_;
-	rho_ = bsm.rho_;
+	correlations_ = bsm.correlations_;
 	sigma_ = pnl_vect_copy(bsm.sigma_);
 	spot_ = pnl_vect_copy(bsm.spot_);
 	trend_ = pnl_vect_copy(bsm.trend_);
@@ -68,7 +68,8 @@ BlackScholesModel::~BlackScholesModel() {
 
 void BlackScholesModel::initAsset(int nbTimeSteps) {
 	// Création de la matrice Gamma
-	gammaMemSpace_ = pnl_mat_create_from_scalar(size_, size_, rho_);
+	gammaMemSpace_ = pnl_mat_copy(correlations_);
+	//gammaMemSpace_ = pnl_mat_create_from_scalar(size_, size_, rho_);
 	for (int d = 0; d < size_; ++d) {
 		MLET(gammaMemSpace_, d, d) = 1;
 	}
@@ -116,6 +117,15 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, double dates[], i
 				* exp((GET(trend_, d) - pow(GET(sigma_, d), 2) / 2.) * step
 					+ GET(sigma_, d) * sqrt(step) * pnl_vect_scalar_prod(&tempMemSpace1_, &tempMemSpace2_));
 		}
+	}
+}
+
+void BlackScholesModel::shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int i, int from, int nbTimeSteps, double h) {
+	pnl_mat_clone(pathMinus,path);
+	pnl_mat_clone(pathPlus,path);
+	for (int j = from; j < nbTimeSteps + 1; j++) {
+		MLET(pathMinus, j, i) *= 1 - h;
+		MLET(pathPlus, j, i) *= 1 + h;
 	}
 }
 

@@ -15,7 +15,7 @@ extern "C" PRICERDLL_API double PriceBasket(
 	double spots[],
 	double volatilities[],
 	double interestRate,
-	double correlation,
+	double correlation[], //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
 	int timestepNumber,
 	double trends[]);
 
@@ -24,6 +24,27 @@ extern "C" PRICERDLL_API double PriceMultimonde2021(
 	double spots[],
 	double volatilities[],
 	double interestRate,
-	double correlation,
+	double correlation[], //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
 	double trends[]
 );
+
+extern "C" PRICERDLL_API double DeltasMultiCurrencyMultimonde2021(
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate,
+	double correlation[],
+	double trends[]
+);
+
+extern "C" PRICERDLL_API double DeltasSingleCurrencyMultimonde2021(
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate,
+	double correlation[],
+	double trends[],
+	double FXRates[]
+);
+
+

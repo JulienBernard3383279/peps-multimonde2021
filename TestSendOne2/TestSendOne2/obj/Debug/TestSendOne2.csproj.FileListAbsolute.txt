@@ -1,7 +1,0 @@
-C:\Users\Julien\Desktop\PEPS-2017-2018\TestSendOne2\TestSendOne2\bin\Debug\TestSendOne2.exe.config
-C:\Users\Julien\Desktop\PEPS-2017-2018\TestSendOne2\TestSendOne2\bin\Debug\TestSendOne2.exe
-C:\Users\Julien\Desktop\PEPS-2017-2018\TestSendOne2\TestSendOne2\bin\Debug\TestSendOne2.pdb
-C:\Users\Julien\Desktop\PEPS-2017-2018\TestSendOne2\TestSendOne2\obj\Debug\TestSendOne2.csprojResolveAssemblyReference.cache
-C:\Users\Julien\Desktop\PEPS-2017-2018\TestSendOne2\TestSendOne2\obj\Debug\TestSendOne2.csproj.CoreCompileInputs.cache
-C:\Users\Julien\Desktop\PEPS-2017-2018\TestSendOne2\TestSendOne2\obj\Debug\TestSendOne2.exe
-C:\Users\Julien\Desktop\PEPS-2017-2018\TestSendOne2\TestSendOne2\obj\Debug\TestSendOne2.pdb
