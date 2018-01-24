@@ -77,7 +77,7 @@ namespace PricerDll.Tests.CSharp
                 */
 
             double d = PriceMultimonde2021(
-                100000,
+                100,
                 spots,
                 volatilities,
                 0.0,

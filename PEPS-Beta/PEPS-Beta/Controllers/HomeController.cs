@@ -9,7 +9,7 @@ namespace PEPS_Beta.Controllers
 {
     public class HomeController : Controller
     {
-        [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
+        [DllImport(@"C:\Programmation\peps\PEPS-Beta\x64\Debug\PricerDll.dll")]
         extern static double PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
