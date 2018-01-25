@@ -75,7 +75,8 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 timestepNumber,
-                trends);
+                trends,
+                0.0);
 
             if (Math.Abs( (realPrice-price)/price) > 0.05) {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
