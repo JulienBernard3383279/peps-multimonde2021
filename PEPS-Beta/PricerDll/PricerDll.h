@@ -32,6 +32,7 @@ extern "C" PRICERDLL_API void PriceMultimonde2021(
 	double* ic
 );
 
+
 extern "C" PRICERDLL_API void DeltasMultiCurrencyMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -53,3 +54,4 @@ extern "C" PRICERDLL_API void DeltasSingleCurrencyMultimonde2021(
 	double** deltasAssets,
 	double** deltasFXRates
 );
+
