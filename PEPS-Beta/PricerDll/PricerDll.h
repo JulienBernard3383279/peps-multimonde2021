@@ -53,3 +53,4 @@ extern "C" PRICERDLL_API void DeltasSingleCurrencyMultimonde2021(
 	double** deltasAssets,
 	double** deltasFXRates
 );
+

@@ -50,11 +50,7 @@ void MonteCarlo::price(double* prix, double* ic) {
 	pnl_mat_free(&path);
 }
 
-void MonteCarlo::deltas(double* deltas) {
-	for (int i = 0; i < mod_->size_; i++) {
-		deltas[i] = 0;
-	}
-
+void MonteCarlo::deltas(PnlVect* deltas) {
 	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 	PnlMat *pathMinus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 	PnlMat *pathPlus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
@@ -73,14 +69,13 @@ void MonteCarlo::deltas(double* deltas) {
 			payoffMinus = opt_->payoff(pathMinus);
 			
 			
-			deltas[j] += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
+			LET(deltas,j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
 		}
-
 	}
 
 	for (int j = 0; j < mod_->size_; j++) {
-		deltas[j] /= nbSamples_;
-		deltas[j] *= exp(-mod_->r_ * opt_->T);
+		LET(deltas,j) /= nbSamples_;
+		LET(deltas,j) *= exp(-mod_->r_ * opt_->T);
 	}
 
 	return;
@@ -120,10 +115,7 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 	pnl_mat_free(&path);
 }
 
-void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, double* deltas) {
-	for (int i = 0; i < mod_->size_; i++) {
-		deltas[i] = 0;
-	}
+void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* deltas) {
 
 	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 	PnlMat *pathMinus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
@@ -150,14 +142,13 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, double* deltas
 			payoffPlus = opt_->payoff(pathPlus);
 			payoffMinus = opt_->payoff(pathMinus);
 
-			deltas[j] += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
+			LET(deltas,j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
 		}
-
 	}
 
 	for (int j = 0; j < mod_->size_; j++) {
-		deltas[j] /= nbSamples_;
-		deltas[j] *= exp(-mod_->r_ * (opt_->T - t));
+		LET(deltas,j) /= nbSamples_;
+		LET(deltas,j) *= exp(-mod_->r_ * (opt_->T - t));
 	}
 
 	return;

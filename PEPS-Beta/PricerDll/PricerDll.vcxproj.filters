@@ -39,6 +39,13 @@
     <ClInclude Include="Multimonde2021.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="ProfitAndLossUtilities.h">
+=======
+    <ClInclude Include="AsianOption.h">
+>>>>>>> 96bbeb9e6933a9fcdb8ebb8f34278ce9195b29e2
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -60,6 +67,13 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Multimonde2021.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="ProfitAndLossUtilities.cpp">
+=======
+    <ClCompile Include="AsianOption.cpp">
+>>>>>>> 96bbeb9e6933a9fcdb8ebb8f34278ce9195b29e2
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
