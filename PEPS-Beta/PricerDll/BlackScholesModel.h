@@ -64,13 +64,12 @@ public:
 	* @param[in] past contient la trajectoire déjà fixée du modèle.
 	* @param[in] t contient la date actuelle (tarée avec dates[0])
 	* @param[in] current contient les prix actuels
-	* @param[in] from contient le premier indice qu'il ne faut pas recopier de path. ie recopier la ligne 0 <=> from = 1. si from = 0, on recopie spots_
 	* @param[in] T  maturité
 	* @param[in] nbTimeSteps nombre de dates de constatation
 	* @param[in] rng générateur de nombres aléatoires
 	*/
 	void postInitAsset(PnlMat *path, 
-		PnlMat *past, double t, PnlVect *current, int from,
+		PnlMat *past, double t, PnlVect *current,
 		double T, int nbTimeSteps, PnlRng *rng);
 
 	/**
@@ -95,13 +94,12 @@ public:
 	* @param[in] past contient la trajectoire déjà fixée du modèle.
 	* @param[in] t contient la date actuelle (tarée avec dates[0])
 	* @param[in] current contient les prix actuels
-	* @param[in] from contient le premier indice qu'il ne faut pas recopier de path. ie recopier la ligne 0 <=> from = 1
 	* @param[in] dates dates de constation customs
 	* @param[in] nbTimeSteps nombre de dates de constatation
 	* @param[in] rng générateur de nombres aléatoires
 	*/
 	void postInitAssetCustomDates(PnlMat *path, 
-		PnlMat *past, double t, PnlVect *current, int from,
+		PnlMat *past, double t, PnlVect *current,
 		double dates[], int nbTimeSteps, PnlRng *rng);
 
 	/*

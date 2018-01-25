@@ -124,9 +124,11 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, double dates[], i
 
 // Simulation temps t, dates de constations équiréparties
 void BlackScholesModel::postInitAsset(PnlMat *path, 
-									  PnlMat *past, double t, PnlVect *current, int from,
+									  PnlMat *past, double t, PnlVect *current,
 									  double T, int nbTimeSteps, PnlRng *rng) {
 	// Initialisation de path
+	int from = past->m;
+
 	if (from == 0) {
 		pnl_mat_set_row(path, spot_, 0);
 	}
@@ -165,9 +167,12 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 
 // Simulation temps t, dates de constations personnalisées
 void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
-	PnlMat *past, double t, PnlVect *current, int from,
+	PnlMat *past, double t, PnlVect *current,
 	double dates[], int nbTimeSteps, PnlRng *rng) {
+	
 	// Initialisation de path
+	int from = past->m;
+
 	if (from == 0) {
 		pnl_mat_set_row(path, spot_, 0);
 	}
@@ -204,7 +209,6 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 		}
 	}
 }
-
 
 void BlackScholesModel::shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int j, int from, int nbTimeSteps, double h) {
 	pnl_mat_clone(pathMinus,path);
