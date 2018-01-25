@@ -26,6 +26,25 @@ namespace PricerDll.CustomTests
             double* ic);
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void PriceBasketAnyTime(
+            double maturity,
+            int optionSize,
+            double strike,
+            double[] payoffCoefficients,
+            int sampleNumber,
+            double[] past, // format [,]
+            int nbRows,
+            double t,
+            double[] current,
+            double[] volatilities,
+            double interestRate,
+            double[] correlation, //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+            int timestepNumber,
+            double[] trends,
+            double* price,
+            double* ic);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
