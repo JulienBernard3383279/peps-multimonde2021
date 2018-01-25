@@ -56,6 +56,19 @@ extern "C" PRICERDLL_API void DeltasMultiCurrencyMultimonde2021(
 	double** deltas
 );
 
+extern "C" PRICERDLL_API void DeltasMultiCurrencyMultimonde2021AnyTime(
+	int sampleNumber,
+	double past[], // format [,]
+	int nbRows,
+	double t,
+	double current[],
+	double volatilities[],
+	double interestRate,
+	double correlation[],
+	double trends[],
+	double** deltas
+);
+
 extern "C" PRICERDLL_API void DeltasSingleCurrencyMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -63,7 +76,7 @@ extern "C" PRICERDLL_API void DeltasSingleCurrencyMultimonde2021(
 	double interestRate,
 	double correlation[],
 	double trends[],
-	double FXRates[],
+	double currentFXRates[],
 	double** deltasAssets,
 	double** deltasFXRates
 );
