@@ -174,7 +174,7 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 	int from = past->m;
 
 	if (from == 0) {
-		pnl_mat_set_row(path, spot_, 0);
+		pnl_mat_set_row(path, spot_, 0); //Ici pour le debug. Pour les appels avec past via API, spot n'est pas initialisé !
 	}
 	else { // Pas trouvé de solution évidemment plus efficace. Mais il doit y avoir mieux ?
 		for (int i = 0; i < from; i++) {

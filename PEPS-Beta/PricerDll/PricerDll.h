@@ -32,6 +32,20 @@ extern "C" PRICERDLL_API void PriceMultimonde2021(
 	double* ic
 );
 
+extern "C" PRICERDLL_API void PriceMultimonde2021AnyTime(
+	int sampleNumber,
+	double past[], // format [,]
+	int nbRows,
+	double t,
+	double current[],
+	double volatilities[],
+	double interestRate,
+	double correlation[], //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+	double trends[],
+	double* price,
+	double* ic
+);
+
 extern "C" PRICERDLL_API void DeltasMultiCurrencyMultimonde2021(
 	int sampleNumber,
 	double spots[],
