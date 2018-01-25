@@ -14,15 +14,22 @@ namespace PricerDll.CustomTests
             double strike,
             double[] payoffCoefficients,
             int nbSamples,
-            double[] spots,
+            double[] currents,
             double[] volatilities,
             double interestRate,
             double[] correlations,
             int timestepNumber,
-            double[] trends) //potentiellement pas tous nécessaires
+            double[] trends,
+            double date) //potentiellement pas tous nécessaires
         {
-            return 0; //formule fermée du prix
+            //double resultat = 0.0;
+            //double d1 = Math.Log(currents[0] / strike) + ((interestRate + volatilities[0]) /( volatilities[0] * (maturity - date)));
+            //double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
+            //return currents[0]*pnl_cdfnor(d1)-strike*Math.Exp(-interestRate*(maturity-date)*pnl_cdfnor(d2);
+            return 0;
+            //formule fermée du prix
         }
+        
 
         private static void PriceTest(double maturity,
             int optionSize,
