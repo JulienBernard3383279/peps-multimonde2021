@@ -50,7 +50,6 @@ namespace PricerDll.CustomTests
                 volatilities, //volatilities
                 interestRate, //interest rate
                 correlations, //correlations
-                timestepNumber,
                 trends, //trends (donc égaux au taux d'intérêt)
                 &price,
                 &ic);
