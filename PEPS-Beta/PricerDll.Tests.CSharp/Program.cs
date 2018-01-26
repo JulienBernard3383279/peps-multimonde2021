@@ -99,6 +99,25 @@ namespace PricerConsole
                 double price;
                 double ic;
 
+                /* */
+
+                double tracking_error;
+
+                API.TrackingErrorMultimonde(
+                    1000,
+                    spotsOrCurrent,
+                    volatilities,
+                    interestRate,
+                    correlations,
+                    FXRates,
+                    &tracking_error);
+
+                Console.WriteLine();
+                Console.WriteLine("Tracking Error associée aux paramètres rentrés :" + tracking_error);
+                /* */
+
+                
+                
                 if (t == 0)
                 {
                     API.PriceMultimonde2021(
@@ -126,6 +145,7 @@ namespace PricerConsole
                         &price,
                         &ic);
                 }
+                
                 
                 double[] deltas = new double[6];
 
@@ -228,7 +248,8 @@ namespace PricerConsole
                     Console.WriteLine(deltasFXRates[i]);
                 }
                 Console.WriteLine();
+                
             }
-        }
+        } 
     }
 }

@@ -189,6 +189,16 @@ extern "C" PRICERDLL_API void DeltasSingleCurrencyMultimonde2021AnyTime(
 	double** deltasFXRates
 );
 
+extern "C" PRICERDLL_API void TrackingErrorMultimonde(
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate,
+	double correlation[],
+	double FXRates[],
+	double* tracking_error
+);
+
 extern "C" PRICERDLL_API void ConvertDeltas(
 	double deltas[],
 	double prices[],

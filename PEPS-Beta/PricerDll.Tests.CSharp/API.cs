@@ -207,6 +207,17 @@ namespace PricerConsole
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void TrackingErrorMultimonde(
+            int sampleNumber,
+            double[] spots,
+            double[] volatilities,
+            double interestRate,
+            double[] correlation,
+            double[] FXRates,
+            double* tracking_error
+        );
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void ConvertDeltas(
             double[] deltas,
             double[] prices,
