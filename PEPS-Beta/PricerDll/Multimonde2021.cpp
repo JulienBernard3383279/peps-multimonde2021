@@ -3,18 +3,18 @@
 #include <iostream>
 #include <cstring>
 
-Multimonde2021::Multimonde2021(double* customDates) {
+Multimonde2021::Multimonde2021(PnlVect* customDates) {
 	payoffVectMemSpaceInit_ = pnl_vect_create_from_zero(6);
 	payoffVectMemSpaceCurrent_ = pnl_vect_create_from_zero(6);
+	this->custom = true;
 	this->customDates = customDates;
 	this->size = 6;
 	this->nbTimeSteps = 6;
-	this->T = customDates[6];
+	this->T = GET(customDates,6);
 }
 
 
 Multimonde2021::~Multimonde2021() {
-
 }
 
 double Multimonde2021::payoff(const PnlMat* path) { //path est obligatoirement une matrice de 6 de largeur et 7 de hauteur, représentant la liste suivante :
@@ -96,7 +96,6 @@ double Multimonde2021::verbosePayoff(const PnlMat* path) { //path est obligatoir
 		else {
 			globalPerf += (max < 1 ? -0.15 : 0.15);
 		}
-		std::cout << globalPerf << std::endl;
 		stillHere[maxIndex] = false;
 	}
 

@@ -101,7 +101,7 @@ void BlackScholesModel::postInitAsset(PnlMat *path, double T, int nbTimeSteps, P
 }
 
 // Simulation temps 0, dates de constations personalisées
-void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, double dates[], int nbTimeSteps, PnlRng *rng) {
+void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, PnlVect* dates, int nbTimeSteps, PnlRng *rng) {
 	// Initialisation de path
 	pnl_mat_set_row(path, spot_, 0);
 
@@ -110,7 +110,7 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, double dates[], i
 	double step;
 
 	for (int i = 1; i <= nbTimeSteps; ++i) {
-		step = dates[i] - dates[i - 1];
+		step = GET(dates,i) - GET(dates,i-1);
 		for (int d = 0; d < size_; ++d) {
 			tempMemSpace1_ = pnl_vect_wrap_mat_row(gammaMemSpace_, d);
 			tempMemSpace2_ = pnl_vect_wrap_mat_row(gMemSpace_, i);
@@ -168,25 +168,27 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 // Simulation temps t, dates de constations personnalisées
 void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 	PnlMat *past, double t, PnlVect *current,
-	double dates[], int nbTimeSteps, PnlRng *rng) {
-	
+	PnlVect* dates, int nbTimeSteps, PnlRng *rng) {
+
+	PnlVect* temp = pnl_vect_create(6);
+
 	// Initialisation de path
 	int from = past->m;
-
+	
 	if (from == 0) {
 		pnl_mat_set_row(path, spot_, 0); //Ici pour le debug. Pour les appels avec past via API, spot n'est pas initialisé !
 	}
 	else { // Pas trouvé de solution évidemment plus efficace. Mais il doit y avoir mieux ?
 		for (int i = 0; i < from; i++) {
-			pnl_mat_get_row(&tempMemSpace1_, past, i);
-			pnl_mat_set_row(path, &tempMemSpace1_, i);
+			pnl_mat_get_row(temp, past, i);
+			pnl_mat_set_row(path, temp, i);
 		}
 	}
 
 	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
 
-	double step = dates[from] - t;
 
+	double step = GET(dates,from) - t;
 	//from est traité différemment car t n'est pas la date de constatation précédente
 	for (int d = 0; d < size_; ++d) {
 		tempMemSpace1_ = pnl_vect_wrap_mat_row(gammaMemSpace_, d);
@@ -196,9 +198,10 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 			* exp((GET(trend_, d) - pow(GET(sigma_, d), 2) / 2.) * (step)
 				+ GET(sigma_, d) * sqrt(step) * pnl_vect_scalar_prod(&tempMemSpace1_, &tempMemSpace2_));
 	}
+	//DEBUG //TODO LES 10 LIGNES PRECEDENTES METTENT DES -1.#IND00 dans path
 
 	for (int i = from + 1; i <= nbTimeSteps; ++i) {
-		step = dates[i] - dates[i - 1];
+		step = GET(dates, i) - GET(dates, i - 1);
 		for (int d = 0; d < size_; ++d) {
 			tempMemSpace1_ = pnl_vect_wrap_mat_row(gammaMemSpace_, d);
 			tempMemSpace2_ = pnl_vect_wrap_mat_row(gMemSpace_, i - from);

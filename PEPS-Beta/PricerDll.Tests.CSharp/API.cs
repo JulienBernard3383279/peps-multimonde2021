@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PricerDll.CustomTests
+namespace PricerConsole
 {
     public static unsafe class API
     {
@@ -24,9 +24,6 @@ namespace PricerDll.CustomTests
             double[] trends,
             double* price,
             double* ic);
-
-        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
-        public static extern double call_pnl_cdfnor(double x);
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceBasketAnyTime(
@@ -93,8 +90,8 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            out IntPtr deltasAssets,
-            out IntPtr deltasFXRates
+            IntPtr deltasAssets,
+            IntPtr deltasFXRates
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
@@ -113,8 +110,8 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            out IntPtr deltasAssets,
-            out IntPtr deltasFXRates
+            IntPtr deltasAssets,
+            IntPtr deltasFXRates
         );
 
 
