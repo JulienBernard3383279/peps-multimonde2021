@@ -99,6 +99,18 @@ namespace PricerConsole
                 double price;
                 double ic;
 
+                /*
+                API.TrackingErrorMultimonde(
+                        nbSamples,
+                        spotsOrCurrent,
+                        volatilities,
+                        interestRate,
+                        correlations,
+                        trends,
+                        &price,
+                        &ic); */
+
+                
                 if (t == 0)
                 {
                     API.PriceMultimonde2021(
@@ -126,6 +138,7 @@ namespace PricerConsole
                         &price,
                         &ic);
                 }
+                
                 
                 double[] deltas = new double[6];
 
@@ -221,7 +234,8 @@ namespace PricerConsole
                     Console.WriteLine(deltasFXRates[i]);
                 }
                 Console.WriteLine();
+                
             }
-        }
+        } 
     }
 }
