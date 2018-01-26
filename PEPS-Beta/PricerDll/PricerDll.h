@@ -196,6 +196,7 @@ extern "C" PRICERDLL_API void TrackingErrorMultimonde(
 	double interestRate,
 	double correlation[],
 	double FXRates[],
+	double trends[],
 	double* tracking_error
 );
 

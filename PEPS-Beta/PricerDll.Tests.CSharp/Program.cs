@@ -110,11 +110,12 @@ namespace PricerConsole
                     interestRate,
                     correlations,
                     FXRates,
+                    trends,
                     &tracking_error);
 
                 Console.WriteLine();
                 Console.WriteLine("Tracking Error associée aux paramètres rentrés :" + tracking_error);
-                /* */
+                /* 
 
                 
                 
@@ -226,7 +227,7 @@ namespace PricerConsole
                     Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
                     Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
                 }*/
-
+                /*
                 Console.WriteLine("Prix Multimonde : " + price);
                 Console.WriteLine("Intervalle de confiance Multimonde : " + ic);
                 Console.WriteLine();
@@ -248,7 +249,7 @@ namespace PricerConsole
                     Console.WriteLine(deltasFXRates[i]);
                 }
                 Console.WriteLine();
-                
+                */
             }
         } 
     }
