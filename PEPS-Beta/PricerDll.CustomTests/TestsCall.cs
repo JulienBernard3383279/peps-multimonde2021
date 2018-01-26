@@ -18,10 +18,11 @@ namespace PricerDll.CustomTests
             double date) 
         {
 
-            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0]*volatilities[0]*0.5)) / (volatilities[0] *Math.Sqrt (maturity - date)));
+            double d1 = ( Math.Log(currents[0] / strike) + (interestRate + volatilities[0]*volatilities[0]*0.5)*(maturity - date) ) / (volatilities[0] *Math.Sqrt (maturity - date));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
             return currents[0] * API.call_pnl_cdfnor(d1) - strike * Math.Exp(-interestRate * (maturity - date) )* API.call_pnl_cdfnor(d2);
         }
+        
 
         private static void PriceTest(double maturity,
             int optionSize,
@@ -50,7 +51,6 @@ namespace PricerDll.CustomTests
                 volatilities, //volatilities
                 interestRate, //interest rate
                 correlations, //correlations
-                timestepNumber,
                 trends, //trends (donc égaux au taux d'intérêt)
                 &price,
                 &ic);
@@ -65,9 +65,14 @@ namespace PricerDll.CustomTests
                 correlations,
                 0.0);
 
-            if (Math.Abs( (realPrice-price)/price) > 0.05) {
-                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
-                Console.WriteLine("problème !");
+            Console.WriteLine(realPrice);
+            Console.WriteLine(price);
+            if (Math.Abs( (realPrice-price)/price) > 0.02) {
+                Console.WriteLine("Test du prix du call : différence de prix supérieur à 2%.");
+            }
+            else
+            {
+                Console.WriteLine("Test du prix du call concluant.");
             }
         }
 
@@ -77,13 +82,13 @@ namespace PricerDll.CustomTests
             int optionSize = 1;
             double strike = 100.0;
             double[] payoffCoefficients = new double[1] { 1.0 };
-            int nbSamples = 100000;
-            double[] spots = new double[1] { 1.0 };
-            double[] volatilities = new double[1] { 1.0 };
+            int nbSamples = 1000000;
+            double[] spots = new double[1] { 100.0 };
+            double[] volatilities = new double[1] { 0.05 };
             double interestRate = 0.05;
             double[] correlations = new double[1] { 1.0 };
             int timestepNumber = 1;
-            double[] trends = new double[1] { 1.0 };
+            double[] trends = new double[1] { 0.05 };
 
             PriceTest(maturity,
                 optionSize,
@@ -227,6 +232,66 @@ namespace PricerDll.CustomTests
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
                 Console.WriteLine("le delta calculé par le pricer à la date rentrée n'est pas bon !");
             }
+        }
+        public static void PerformDeltaTests0()
+        {
+            double maturity = 3.0;
+            int optionSize = 1;
+            double strike = 100.0;
+            double[] payoffCoefficients = new double[1] { 1.0 };
+            int nbSamples = 100000;
+            double[] spots = new double[1] { 1.0 };
+            double[] volatilities = new double[1] { 1.0 };
+            double interestRate = 0.05;
+            double[] correlations = new double[1] { 1.0 };
+            int timestepNumber = 1;
+            double[] trends = new double[1] { 1.0 };
+
+            DeltaTest0(maturity,
+                optionSize,
+                strike,
+                payoffCoefficients,
+                nbSamples,
+                spots,
+                volatilities,
+                interestRate,
+                correlations,
+                timestepNumber,
+                trends);
+        }
+        public static void PerformDeltaTestsAnyTime()
+        {
+            double maturity = 3.0;
+            int optionSize = 1;
+            double strike = 100.0;
+            double[] payoffCoefficients = new double[1] { 1.0 };
+            int nbSamples = 100000;
+            double[] spots = new double[1] { 1.0 };
+            double[] volatilities = new double[1] { 1.0 };
+            double interestRate = 0.05;
+            double[] correlations = new double[1] { 1.0 };
+            int timestepNumber = 1;
+            double[] trends = new double[1] { 1.0 };
+            double t = 1.0;
+            double[] past = new double[1] { 0 };
+            int nbRows = 1;
+            double[] currents = new double[1] { 3.0 };
+
+            DeltaTestAnyTime(maturity,
+                optionSize,
+                 strike,
+                 payoffCoefficients,
+                 nbSamples,
+                 spots,
+                 volatilities,
+                 interestRate,
+                 correlations,
+                 timestepNumber,
+                 past,
+                 nbRows,
+                 currents,
+                 t,
+                 trends);
         }
     }
 }

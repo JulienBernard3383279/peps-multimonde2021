@@ -20,7 +20,6 @@ namespace PricerDll.CustomTests
             double[] volatilities,
             double interestRate,
             double[] correlations,
-            int timestepNumber,
             double[] trends,
             double* price,
             double* ic);
@@ -205,6 +204,15 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] currentFXRates,
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
+        );
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void ConvertDeltas(
+            double[] deltas,
+            double[] prices,
+            double[] FXRates,
             out IntPtr deltasAssets,
             out IntPtr deltasFXRates
         );

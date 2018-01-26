@@ -214,7 +214,17 @@ namespace PricerConsole
             double interestRate,
             double[] correlation,
             double[] FXRates,
+            double[] trends,
             double* tracking_error
+        );
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void ConvertDeltas(
+            double[] deltas,
+            double[] prices,
+            double[] FXRates,
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
     }
 }

@@ -196,9 +196,16 @@ extern "C" PRICERDLL_API void TrackingErrorMultimonde(
 	double interestRate,
 	double correlation[],
 	double FXRates[],
+	double trends[],
 	double* tracking_error
 );
 
+extern "C" PRICERDLL_API void ConvertDeltas(
+	double deltas[],
+	double prices[],
+	double FXRates[],
+	double** deltasAssets,
+	double** deltasFXRates);
 
 // FONCTIONS PNL EXPORTEES
 

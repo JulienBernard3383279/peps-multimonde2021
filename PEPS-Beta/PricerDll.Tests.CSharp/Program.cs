@@ -100,6 +100,7 @@ namespace PricerConsole
                 double ic;
 
                 /*
+
                 double tracking_error;
 
                 API.TrackingErrorMultimonde(
@@ -109,13 +110,12 @@ namespace PricerConsole
                     interestRate,
                     correlations,
                     FXRates,
+                    trends,
                     &tracking_error);
 
                 Console.WriteLine();
                 Console.WriteLine("Tracking Error associée aux paramètres rentrés :" + tracking_error);
                 */
-
-                
                 
                 if (t == 0)
                 {
@@ -182,7 +182,15 @@ namespace PricerConsole
                 double[] deltasAssets = new double[6];
                 double[] deltasFXRates = new double[6];
 
-                if (t == 0)
+                API.ConvertDeltas(deltas,
+                    spotsOrCurrent,
+                    FXRates,
+                    out IntPtr deltasAssetsPtr,
+                    out IntPtr deltasFXRatesPtr);
+                Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
+                Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
+
+                /*if (t == 0)
                 {
                     API.DeltasSingleCurrencyMultimonde2021(
                         nbSamples,
@@ -216,9 +224,8 @@ namespace PricerConsole
 
                     Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
                     Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
-                }
-
-
+                }*/
+                
                 Console.WriteLine("Prix Multimonde : " + price);
                 Console.WriteLine("Intervalle de confiance Multimonde : " + ic);
                 Console.WriteLine();
@@ -234,13 +241,18 @@ namespace PricerConsole
                     Console.WriteLine(deltasAssets[i]);
                 }
                 Console.WriteLine();
-                Console.WriteLine("Quantité de monnaie à acheter : ");
+                Console.WriteLine("Quantité de monnaie étrangère à acheter : ");
                 for (int i = 1; i < 6; i++)
                 {
                     Console.WriteLine(deltasFXRates[i]);
                 }
                 Console.WriteLine();
-                
+                Console.WriteLine("Euros restants à mettre au taux sans risque européen : ");
+                Console.WriteLine(price - deltasAssets[0] * spotsOrCurrent[0]);
+                Console.WriteLine();
+                Console.WriteLine("===== New entry =====");
+                Console.WriteLine();
+
             }
         } 
     }
