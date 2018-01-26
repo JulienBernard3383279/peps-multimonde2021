@@ -11,6 +11,8 @@
 # Note: This is only used by command line
 ###############################################################################
 #*.cs     diff=csharp
+*.cpp crlf diff
+*.h  crlf diff
 
 ###############################################################################
 # Set the merge driver for project and solution files

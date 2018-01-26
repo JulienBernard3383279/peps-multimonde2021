@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AsianOption.h" />
     <ClInclude Include="BasketOption.h" />
     <ClInclude Include="BlackScholesModel.h" />
     <ClInclude Include="MonteCarlo.h" />
@@ -161,6 +162,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AsianOption.cpp" />
     <ClCompile Include="BasketOption.cpp" />
     <ClCompile Include="BlackScholesModel.cpp" />
     <ClCompile Include="dllmain.cpp" />
