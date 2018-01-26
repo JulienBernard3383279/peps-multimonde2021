@@ -18,6 +18,7 @@ namespace PricerDll.CustomTests
             double date) 
         {
 
+
             double d1 = ( Math.Log(currents[0] / strike) + (interestRate + volatilities[0]*volatilities[0]*0.5)*(maturity - date) ) / (volatilities[0] *Math.Sqrt (maturity - date));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
             return currents[0] * API.call_pnl_cdfnor(d1) - strike * Math.Exp(-interestRate * (maturity - date) )* API.call_pnl_cdfnor(d2);
@@ -65,6 +66,7 @@ namespace PricerDll.CustomTests
                 correlations,
                 0.0);
 
+
             Console.WriteLine(realPrice);
             Console.WriteLine(price);
             if (Math.Abs( (realPrice-price)/price) > 0.02) {
@@ -73,6 +75,7 @@ namespace PricerDll.CustomTests
             else
             {
                 Console.WriteLine("Test du prix du call concluant.");
+
             }
         }
 
@@ -113,7 +116,7 @@ namespace PricerDll.CustomTests
                double date)
         {
 
-            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0] * volatilities[0] * 0.5)) / (volatilities[0] * Math.Sqrt(maturity)));
+            double d1 = (Math.Log(currents[0] / strike) + (interestRate + volatilities[0] * volatilities[0] * 0.5)*(maturity)) / (volatilities[0] * Math.Sqrt(maturity));
             return API.call_pnl_cdfnor(d1);
         }
 
@@ -128,7 +131,7 @@ namespace PricerDll.CustomTests
               double date)
         {
 
-            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0] * volatilities[0] * 0.5)) / (volatilities[0] * Math.Sqrt(maturity-date)));
+            double d1 = ((Math.Log(currents[0] / strike) + (interestRate + volatilities[0] * volatilities[0] * 0.5)*(maturity-date)) / (volatilities[0] * Math.Sqrt(maturity-date)));
             return API.call_pnl_cdfnor(d1);
         }
         private static void DeltaTest0(double maturity,
@@ -162,8 +165,7 @@ namespace PricerDll.CustomTests
                  out IntPtr deltasFXRates);
 
             System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 6); //< -deltas contient maintenant les deltas
-            //price et ics contiennent prix et intervalle de couverture selon le pricer
-
+            
             double realDelta = RealDelta0(maturity,
                 strike,
                 spots,
@@ -171,6 +173,8 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 0.0);
+            Console.WriteLine(realDelta);
+            Console.WriteLine(deltas[0]);
             //on teste juste le delta de l'option ,rien de plus,et en 0
             if (Math.Abs( (realDelta - deltas[0]) / deltas[0] ) > 0.05)
             {
