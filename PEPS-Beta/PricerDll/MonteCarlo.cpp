@@ -92,16 +92,24 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 
 	mod_->initAsset(opt_->nbTimeSteps);
+
+	double tempPayoff = 0;
+
 	for (int i = 0; i < nbSamples_; ++i) {
-		if (!opt_->custom) { mod_->postInitAsset(path, 
+
+		if (!opt_->custom) { 
+			mod_->postInitAsset(path,
 			                                     past, t, current,
 			                                     opt_->T, opt_->nbTimeSteps, rng_); }
-		else { mod_->postInitAssetCustomDates(path,
+		else {
+			mod_->postInitAssetCustomDates(path,
 			                                  past, t, current,
 			                                  opt_->customDates, opt_->nbTimeSteps, rng_); }
 
-		mySum += opt_->payoff(path);
-		mySquaredSum += pow(opt_->payoff(path), 2);
+
+		tempPayoff = opt_->payoff(path);
+		mySum += tempPayoff;
+		mySquaredSum += pow(tempPayoff, 2);
 	}
 
 	*prix = mySum / nbSamples_ * exp(-mod_->r_ * (opt_->T - t) );
@@ -137,12 +145,17 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 				opt_->customDates, opt_->nbTimeSteps, rng_);
 		}
 
+		int from = 0;
+		while ( GET(opt_->customDates,from) < t) {
+			from++;
+		}
+
 		for (int j = 0; j < mod_->size_; j++) {
-			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, 0.01);
+			mod_->shiftPath(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, 0.01);
 			payoffPlus = opt_->payoff(pathPlus);
 			payoffMinus = opt_->payoff(pathMinus);
 
-			LET(deltas,j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
+			LET(deltas,j) += (payoffPlus - payoffMinus) / (GET(current, j) * 2 * 0.01);
 		}
 	}
 

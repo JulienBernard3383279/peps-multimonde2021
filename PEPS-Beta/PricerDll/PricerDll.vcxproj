@@ -104,12 +104,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;PRICERDLL_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Alexandra\Desktop\peps\pnl-win64-1.9.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\..\pnl-win64-1.9.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Alexandra\Desktop\peps\pnl-win64-1.9.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)\..\pnl-win64-1.9.2\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>libpnl.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -156,6 +156,7 @@
     <ClInclude Include="MonteCarlo.h" />
     <ClInclude Include="Multimonde2021.h" />
     <ClInclude Include="Option.h" />
+    <ClInclude Include="Param.h" />
     <ClInclude Include="PricerDll.h" />
     <ClInclude Include="ProfitAndLossUtilities.h" />
     <ClInclude Include="stdafx.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="MonteCarlo.cpp" />
     <ClCompile Include="Multimonde2021.cpp" />
+    <ClCompile Include="Param.cpp" />
     <ClCompile Include="PricerDll.cpp" />
     <ClCompile Include="ProfitAndLossUtilities.cpp" />
     <ClCompile Include="stdafx.cpp">

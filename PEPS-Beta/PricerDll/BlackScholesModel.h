@@ -83,7 +83,7 @@ public:
 	* @param[in] rng générateur de nombres aléatoires
 	*/
 	void postInitAssetCustomDates(PnlMat *path, 
-		double dates[], int nbTimeSteps, PnlRng *rng);
+		PnlVect* dates, int nbTimeSteps, PnlRng *rng);
 	
 	/**
 	* Génère une trajectoire du modèle et la stocke dans path. Les appels doivent être fait après un initAsset.
@@ -100,7 +100,7 @@ public:
 	*/
 	void postInitAssetCustomDates(PnlMat *path, 
 		PnlMat *past, double t, PnlVect *current,
-		double dates[], int nbTimeSteps, PnlRng *rng);
+		PnlVect* dates, int nbTimeSteps, PnlRng *rng);
 
 	/*
 	* Cette fonction shift la (i+1)ème colonne de la trajectoire de (1-h) ; (1+h) à partir de l'indice from.
