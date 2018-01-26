@@ -20,7 +20,6 @@ namespace PricerDll.CustomTests
             double[] volatilities,
             double interestRate,
             double[] correlations,
-            int timestepNumber,
             double[] trends,
             double* price,
             double* ic);
