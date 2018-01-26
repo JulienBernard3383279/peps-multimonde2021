@@ -216,5 +216,14 @@ namespace PricerConsole
             double[] FXRates,
             double* tracking_error
         );
+
+
+        public static extern unsafe void ConvertDeltas(
+            double[] deltas,
+            double[] prices,
+            double[] FXRates,
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
+        );
     }
 }

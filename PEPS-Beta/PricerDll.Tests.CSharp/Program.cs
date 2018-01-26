@@ -182,7 +182,15 @@ namespace PricerConsole
                 double[] deltasAssets = new double[6];
                 double[] deltasFXRates = new double[6];
 
-                if (t == 0)
+                API.ConvertDeltas(deltas,
+                    spotsOrCurrent,
+                    FXRates,
+                    out IntPtr deltasAssetsPtr,
+                    out IntPtr deltasFXRatesPtr);
+                Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
+                Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
+
+                /*if (t == 0)
                 {
                     API.DeltasSingleCurrencyMultimonde2021(
                         nbSamples,
@@ -216,8 +224,7 @@ namespace PricerConsole
 
                     Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
                     Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
-                }
-
+                }*/
 
                 Console.WriteLine("Prix Multimonde : " + price);
                 Console.WriteLine("Intervalle de confiance Multimonde : " + ic);

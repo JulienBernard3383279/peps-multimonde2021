@@ -228,5 +228,65 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("le delta calculé par le pricer à la date rentrée n'est pas bon !");
             }
         }
+        public static void PerformDeltaTests0()
+        {
+            double maturity = 3.0;
+            int optionSize = 1;
+            double strike = 100.0;
+            double[] payoffCoefficients = new double[1] { 1.0 };
+            int nbSamples = 100000;
+            double[] spots = new double[1] { 1.0 };
+            double[] volatilities = new double[1] { 1.0 };
+            double interestRate = 0.05;
+            double[] correlations = new double[1] { 1.0 };
+            int timestepNumber = 1;
+            double[] trends = new double[1] { 1.0 };
+
+            DeltaTest0(maturity,
+                optionSize,
+                strike,
+                payoffCoefficients,
+                nbSamples,
+                spots,
+                volatilities,
+                interestRate,
+                correlations,
+                timestepNumber,
+                trends);
+        }
+        public static void PerformDeltaTestsAnyTime()
+        {
+            double maturity = 3.0;
+            int optionSize = 1;
+            double strike = 100.0;
+            double[] payoffCoefficients = new double[1] { 1.0 };
+            int nbSamples = 100000;
+            double[] spots = new double[1] { 1.0 };
+            double[] volatilities = new double[1] { 1.0 };
+            double interestRate = 0.05;
+            double[] correlations = new double[1] { 1.0 };
+            int timestepNumber = 1;
+            double[] trends = new double[1] { 1.0 };
+            double t = 1.0;
+            double[] past = new double[1] { 0 };
+            int nbRows = 1;
+            double[] currents = new double[1] { 3.0 };
+
+            DeltaTestAnyTime(maturity,
+                optionSize,
+                 strike,
+                 payoffCoefficients,
+                 nbSamples,
+                 spots,
+                 volatilities,
+                 interestRate,
+                 correlations,
+                 timestepNumber,
+                 past,
+                 nbRows,
+                 currents,
+                 t,
+                 trends);
+        }
     }
 }

@@ -208,5 +208,14 @@ namespace PricerDll.CustomTests
             out IntPtr deltasAssets,
             out IntPtr deltasFXRates
         );
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void ConvertDeltas(
+            double[] deltas,
+            double[] prices,
+            double[] FXRates,
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
+        );
     }
 }
