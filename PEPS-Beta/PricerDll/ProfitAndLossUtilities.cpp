@@ -12,6 +12,7 @@ ProfitAndLossUtilities::~ProfitAndLossUtilities()
 {
 }
 
+// This function updates all deltas to match hedge our option, as well as matching our portfolio value
 void ProfitAndLossUtilities::updateDeltas(PnlVect * asset_deltas, PnlVect* fx_deltas, const PnlVect * FXRate, const PnlVect * spotsVect, const double port_value)
 {
 	pnl_vect_div_vect_term(asset_deltas, FXRate);
