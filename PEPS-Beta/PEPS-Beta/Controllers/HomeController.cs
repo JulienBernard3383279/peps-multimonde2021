@@ -28,6 +28,8 @@ namespace PEPS_Beta.Controllers
             Models.DataStorage ds = new Models.DataStorage();
             ds.FillData();
             ds.DataToArray();
+            Models.DataCurrencies dc = new Models.DataCurrencies();
+            dc.Fill();
             //
 
             int optionSize = 40;
