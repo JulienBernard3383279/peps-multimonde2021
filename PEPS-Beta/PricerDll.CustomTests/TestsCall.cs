@@ -10,18 +10,17 @@ namespace PricerDll.CustomTests
     {
         private static double RealPrice(
             double maturity,
-            int optionSize,
             double strike,
-            double[] payoffCoefficients,
-            int nbSamples,
-            double[] spots,
+            double[] currents,
             double[] volatilities,
             double interestRate,
             double[] correlations,
-            int timestepNumber,
-            double[] trends) //potentiellement pas tous nécessaires
+            double date) 
         {
-            return 0; //formule fermée du prix
+
+            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0]*volatilities[0]*0.5)) / (volatilities[0] *Math.Sqrt (maturity - date)));
+            double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
+            return currents[0] * API.call_pnl_cdfnor(d1) - strike * Math.Exp(-interestRate * (maturity - date) )* API.call_pnl_cdfnor(d2);
         }
 
         private static void PriceTest(double maturity,
@@ -59,16 +58,12 @@ namespace PricerDll.CustomTests
             //price et ics contiennent prix et intervalle de couverture selon le pricer
 
             double realPrice = RealPrice(maturity,
-                optionSize,
                 strike,
-                payoffCoefficients,
-                nbSamples,
                 spots,
                 volatilities,
                 interestRate,
                 correlations,
-                timestepNumber,
-                trends);
+                0.0);
 
             if (Math.Abs( (realPrice-price)/price) > 0.05) {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
@@ -101,6 +96,137 @@ namespace PricerDll.CustomTests
                 correlations,
                 timestepNumber,
                 trends);
+        }
+
+        private static double RealDelta0(
+               double maturity,
+               double strike,
+               double[] currents,
+               double[] volatilities,
+               double interestRate,
+               double[] correlations,
+               double date)
+        {
+
+            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0] * volatilities[0] * 0.5)) / (volatilities[0] * Math.Sqrt(maturity)));
+            return API.call_pnl_cdfnor(d1);
+        }
+
+
+        private static double RealDeltaAnyTime(
+              double maturity,
+              double strike,
+              double[] currents,
+              double[] volatilities,
+              double interestRate,
+              double[] correlations,
+              double date)
+        {
+
+            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0] * volatilities[0] * 0.5)) / (volatilities[0] * Math.Sqrt(maturity-date)));
+            return API.call_pnl_cdfnor(d1);
+        }
+        private static void DeltaTest0(double maturity,
+                int optionSize,
+                double strike,
+                double[] payoffCoefficients,
+                int nbSamples,
+                double[] spots,
+                double[] volatilities,
+                double interestRate,
+                double[] correlations,
+                int timestepNumber,
+                double[] trends)
+        {
+
+            double[] deltas = new double[6];
+            double[] FXRates = new double[6];
+            API.DeltasSingleCurrencyBasket(
+                 maturity,
+                optionSize,
+                 strike,
+                payoffCoefficients,
+                 nbSamples,
+                 spots,
+                 volatilities,
+                 interestRate,
+                 correlations,
+                 trends,
+                  FXRates,
+                 out IntPtr deltasAssets,
+                 out IntPtr deltasFXRates);
+
+            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 6); //< -deltas contient maintenant les deltas
+            //price et ics contiennent prix et intervalle de couverture selon le pricer
+
+            double realDelta = RealDelta0(maturity,
+                strike,
+                spots,
+                volatilities,
+                interestRate,
+                correlations,
+                0.0);
+            //on teste juste le delta de l'option ,rien de plus,et en 0
+            if (Math.Abs( (realDelta - deltas[0]) / deltas[0] ) > 0.05)
+            {
+                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
+                Console.WriteLine("le delta du call calculé en 0 par le pricer est faux !");
+            }
+        }
+
+        private static void DeltaTestAnyTime(double maturity,
+                int optionSize,
+                double strike,
+                double[] payoffCoefficients,
+                int nbSamples,
+                double[] spots,
+                double[] volatilities,
+                double interestRate,
+                double[] correlations,
+                int timestepNumber,
+                double[]past,
+                int nbRows,
+                double [] currents,
+                double t,
+                double[] trends)
+        {
+
+            double[] deltas = new double[6];
+            double[] FXRates = new double[6];
+            API.DeltasSingleCurrencyBasketAnyTime(
+            maturity,
+            optionSize,
+            strike,
+            payoffCoefficients,
+            nbSamples,
+            past,
+            nbRows,
+            t,
+            currents,
+            volatilities,
+            interestRate,
+            correlations,
+            trends,
+            FXRates,
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates);
+
+            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 6); //< -deltas contient maintenant les deltas
+            //price et ics contiennent prix et intervalle de couverture selon le pricer
+            //on recupère le delta de la formule fermée qu'on met dans realDelta
+            double realDelta = RealDeltaAnyTime(maturity,
+                strike,
+                spots,
+                volatilities,
+                interestRate,
+                correlations,
+                t);
+
+            if (Math.Abs((realDelta - deltas[0]) / deltas[0]) > 0.05)
+            {
+                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
+                Console.WriteLine("le delta calculé par le pricer à la date rentrée n'est pas bon !");
+            }
         }
     }
 }
