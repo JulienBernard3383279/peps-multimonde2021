@@ -157,6 +157,7 @@
     <ClInclude Include="Multimonde2021.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="PricerDll.h" />
+    <ClInclude Include="ProfitAndLossUtilities.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -168,6 +169,7 @@
     <ClCompile Include="MonteCarlo.cpp" />
     <ClCompile Include="Multimonde2021.cpp" />
     <ClCompile Include="PricerDll.cpp" />
+    <ClCompile Include="ProfitAndLossUtilities.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
