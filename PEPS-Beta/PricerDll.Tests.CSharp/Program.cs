@@ -203,20 +203,20 @@ namespace PricerConsole
                 Console.WriteLine("Prix Multimonde : " + price);
                 Console.WriteLine("Intervalle de confiance Multimonde : " + ic);
                 Console.WriteLine();
-                Console.WriteLine("Deltas Multimonde en monnaies étrangères : ");
+                Console.WriteLine("Deltas intermédiaires (indicatif) : ");
                 for (int i = 0; i < 6; i++)
                 {
                     Console.WriteLine(deltas[i]);
                 }
                 Console.WriteLine();
-                Console.WriteLine("Deltas Multimonde en Euros - actifs : ");
+                Console.WriteLine("Nombre d'actifs à acheter : ");
                 for (int i = 0; i < 6; i++)
                 {
                     Console.WriteLine(deltasAssets[i]);
                 }
                 Console.WriteLine();
-                Console.WriteLine("Deltas Multimonde en Euros - taux de change : ");
-                for (int i = 0; i < 6; i++)
+                Console.WriteLine("Quantité de monnaie à acheter : ");
+                for (int i = 1; i < 6; i++)
                 {
                     Console.WriteLine(deltasFXRates[i]);
                 }
