@@ -155,7 +155,7 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 			payoffPlus = opt_->payoff(pathPlus);
 			payoffMinus = opt_->payoff(pathMinus);
 
-			LET(deltas,j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
+			LET(deltas,j) += (payoffPlus - payoffMinus) / (GET(current, j) * 2 * 0.01);
 		}
 	}
 
