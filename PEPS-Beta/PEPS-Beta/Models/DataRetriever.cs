@@ -23,7 +23,7 @@ namespace PEPS_Beta.Models
          * type depends on the dateTime format due to different sources for data
          * 0 : Yahoo
          **/
-        public Dictionary<DateTime, double> ReadCSVData(String path, int type)
+        public Dictionary<DateTime, double> ReadCSVData(String path, int type, int dataCol)
         {
             string line;
             DateTime compareDate;
@@ -37,13 +37,15 @@ namespace PEPS_Beta.Models
             //Managing first line out of loop to prevent error when trying to reach last element of dictionnary
             //First line is supposed to have correct values
             line = file.ReadLine();
-            tmp = ParseLine(line, type);
+            tmp = ParseLine(line, type, dataCol);
             data.Add(tmp.Key, tmp.Value);
+            int debug = 0;
 
             //Loop on the other lines
             while ((line = file.ReadLine()) != null)
             {
-                tmp = ParseLine(line,type);
+                debug++;
+                tmp = ParseLine(line,type, dataCol);
                 //si valeur de ligne null on met le dernier prix relevé
                 if (tmp.Value.CompareTo(-1.0) == 0)
                 {
@@ -61,12 +63,16 @@ namespace PEPS_Beta.Models
                 {
 
                     //Check if a date is missing.
-                    compareDate = data.Last().Key;
-                    compareDate = AddBusinessDays(compareDate, 1);
-                    while (compareDate.CompareTo(tmp.Key) != 0)
+                    // no date is missing for Forex so this should be skipped
+                    if (dataCol != 2)
                     {
-                        data.Add(compareDate, data.Last().Value);
+                        compareDate = data.Last().Key;
                         compareDate = AddBusinessDays(compareDate, 1);
+                        while (compareDate.CompareTo(tmp.Key) != 0)
+                        {
+                            data.Add(compareDate, data.Last().Value);
+                            compareDate = AddBusinessDays(compareDate, 1);
+                        }
                     }
                     data.Add(tmp.Key, tmp.Value);
                 }
@@ -80,41 +86,47 @@ namespace PEPS_Beta.Models
          * @param:
          * type depends on the dateTime format due to different sources for data
          **/
-        public KeyValuePair<DateTime, double> ParseLine(String line, int type)
+        public KeyValuePair<DateTime, double> ParseLine(String line, int type,int dataPos)
         {
             // count number of comas      
             int comas = 0;
+            bool hasNext = false;
             StringBuilder kvpValues = new StringBuilder();
             DateTime date;
             IEnumerator<char> ite = line.GetEnumerator();
             //Start iteration
-            ite.MoveNext();
-            while (ite.Current != ',')
+            hasNext = ite.MoveNext();
+
+            // First column must be the date
+            while (ite.Current != ',' && hasNext)
             {
                 kvpValues.Append(ite.Current);
-                ite.MoveNext();
+                hasNext =ite.MoveNext();
             }
-            //Parse Date : 2 possibilities atm
+
+            // 0 : Yahoo, 1 : , 2 : OFX.com
             if (type == 0)
                 date = DateTime.ParseExact(kvpValues.ToString(), "yyyy-MM-dd", null);
-            else 
+            else if (type == 1)
                 date = DateTime.ParseExact(kvpValues.ToString(), "yyyyMMdd", null);
+            else
+                date = DateTime.ParseExact(kvpValues.ToString(), "dd MM yyyy", null);
 
             // Clear stringbuilder
             kvpValues.Clear();
-            while (ite != null)
+            while (hasNext)
             {
                 if (ite.Current.Equals(','))
                 {
                     comas++;
                 }
-                if (comas == 4)
+                if (comas == dataPos - 1)
                 {
-                    ite.MoveNext();
-                    while (!ite.Current.Equals(','))
+                    hasNext = ite.MoveNext();
+                    while ( hasNext && !ite.Current.Equals(',') )
                     {
                         kvpValues.Append(ite.Current);
-                        ite.MoveNext();
+                        hasNext = ite.MoveNext();
                     }
                     break;
                 }
