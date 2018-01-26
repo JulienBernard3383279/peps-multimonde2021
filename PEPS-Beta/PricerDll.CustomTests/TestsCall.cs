@@ -22,6 +22,7 @@ namespace PricerDll.CustomTests
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
             return currents[0] * API.call_pnl_cdfnor(d1) - strike * Math.Exp(-interestRate * (maturity - date) )* API.call_pnl_cdfnor(d2);
         }
+        
 
         private static void PriceTest(double maturity,
             int optionSize,
@@ -94,6 +95,7 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 timestepNumber,
+
                 trends);
         }
 
