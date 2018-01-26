@@ -10,18 +10,17 @@ namespace PricerDll.CustomTests
     {
         private static double RealPrice(
             double maturity,
-            int optionSize,
             double strike,
-            double[] payoffCoefficients,
-            int nbSamples,
-            double[] spots,
+            double[] currents,
             double[] volatilities,
             double interestRate,
             double[] correlations,
-            int timestepNumber,
-            double[] trends) //potentiellement pas tous nécessaires
+            double date) 
         {
-            return 0; //formule fermée du prix
+
+            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0]*volatilities[0]*0.5)) / (volatilities[0] *Math.Sqrt (maturity - date)));
+            double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
+            return currents[0] * API.call_pnl_cdfnor(d1) - strike * Math.Exp(-interestRate * (maturity - date) )* API.call_pnl_cdfnor(d2);
         }
 
         private static void PriceTest(double maturity,
@@ -59,16 +58,12 @@ namespace PricerDll.CustomTests
             //price et ics contiennent prix et intervalle de couverture selon le pricer
 
             double realPrice = RealPrice(maturity,
-                optionSize,
                 strike,
-                payoffCoefficients,
-                nbSamples,
                 spots,
                 volatilities,
                 interestRate,
                 correlations,
-                timestepNumber,
-                trends);
+                0.0);
 
             if (Math.Abs( (realPrice-price)/price) > 0.05) {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
