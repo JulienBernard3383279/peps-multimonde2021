@@ -93,8 +93,8 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
@@ -113,8 +113,8 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
 
 
