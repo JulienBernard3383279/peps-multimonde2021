@@ -15,7 +15,7 @@ namespace PricerConsole
             {
                 Console.WriteLine("Samples number (empty <-> 200 000) :");
                 string intermediateNbSamples = Console.ReadLine().Replace('.', ',');
-                double nbSamples = (intermediateNbSamples == "") ? 200000 : double.Parse(intermediateNbSamples);
+                int nbSamples = (intermediateNbSamples == "") ? 200000 : int.Parse(intermediateNbSamples);
 
                 Console.WriteLine("Current time in year since option creation (in [0 , 6.094], empty <-> 0) :");
                 string intermediateT = Console.ReadLine().Replace('.', ',');
@@ -75,7 +75,8 @@ namespace PricerConsole
                 }
 
                 double[] past = null;
-                int nbRows;
+                int nbRows = 0;
+
                 if (t != 0)
                 {
                     nbRows = 1 + (int)(t / (371.0 / 365.25));
@@ -89,10 +90,6 @@ namespace PricerConsole
                         .Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)
                         .Select(s => double.Parse(s.Replace('.', ',')))
                         .ToArray();
-                    foreach (double d in past)
-                    {
-                        Console.WriteLine(d);
-                    }
                 }
                 
                 Console.WriteLine();
@@ -101,48 +98,106 @@ namespace PricerConsole
 
                 double price;
                 double ic;
-                
-                API.PriceMultimonde2021(
-                    200000,
-                    spotsOrCurrent,
-                    volatilities,
-                    interestRate,
-                    correlations,
-                    trends,
-                    &price,
-                    &ic);
+
+                if (t == 0)
+                {
+                    API.PriceMultimonde2021(
+                        nbSamples,
+                        spotsOrCurrent,
+                        volatilities,
+                        interestRate,
+                        correlations,
+                        trends,
+                        &price,
+                        &ic);
+                }
+                else
+                {
+                    API.PriceMultimonde2021AnyTime(
+                        nbSamples,
+                        past,
+                        nbRows,
+                        t,
+                        spotsOrCurrent,
+                        volatilities,
+                        interestRate,
+                        correlations,
+                        trends,
+                        &price,
+                        &ic);
+                }
                 
                 double[] deltas = new double[6];
 
-                API.DeltasMultiCurrencyMultimonde2021(
-                    200000,
-                    spotsOrCurrent,
-                    volatilities,
-                    interestRate,
-                    correlations,
-                    trends,
-                    out IntPtr deltasPtr);
+                if (t == 0)
+                {
+                    API.DeltasMultiCurrencyMultimonde2021(
+                        nbSamples,
+                        spotsOrCurrent,
+                        volatilities,
+                        interestRate,
+                        correlations,
+                        trends,
+                        out IntPtr deltasPtr);
+                    Marshal.Copy(deltasPtr, deltas, 0, 6);
+                }
+                else
+                {
+                    API.DeltasMultiCurrencyMultimonde2021AnyTime(
+                        nbSamples,
+                        past,
+                        nbRows,
+                        t,
+                        spotsOrCurrent,
+                        volatilities,
+                        interestRate,
+                        correlations,
+                        trends,
+                        out IntPtr deltasPtr);
+                    Marshal.Copy(deltasPtr, deltas, 0, 6);
 
-                Marshal.Copy(deltasPtr, deltas, 0, 6);
+                }
 
                 //Marshal.FreeCoTaskMem(deltasPtr); "PricerDll.Tests.CSharp a cessé de fonctionner." Ah.
 
                 double[] deltasAssets = new double[6];
                 double[] deltasFXRates = new double[6];
 
-                API.DeltasSingleCurrencyMultimonde2021(
-                    200000,
-                    spotsOrCurrent,
-                    volatilities,
-                    interestRate,
-                    correlations,
-                    trends,
-                    FXRates,
-                    out IntPtr deltasAssetsPtr,
-                    out IntPtr deltasFXRatesPtr);
+                if (t == 0)
+                {
+                    API.DeltasSingleCurrencyMultimonde2021(
+                        nbSamples,
+                        spotsOrCurrent,
+                        volatilities,
+                        interestRate,
+                        correlations,
+                        trends,
+                        FXRates,
+                        out IntPtr deltasAssetsPtr,
+                        out IntPtr deltasFXRatesPtr);
 
-                Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
-                Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
+                    Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
+                    Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
+                }
+                else
+                {
+                    API.DeltasSingleCurrencyMultimonde2021AnyTime(
+                        nbSamples,
+                        past,
+                        nbRows,
+                        t,
+                        spotsOrCurrent,
+                        volatilities,
+                        interestRate,
+                        correlations,
+                        trends,
+                        FXRates,
+                        out IntPtr deltasAssetsPtr,
+                        out IntPtr deltasFXRatesPtr);
+
+                    Marshal.Copy(deltasAssetsPtr, deltasAssets, 0, 6);
+                    Marshal.Copy(deltasFXRatesPtr, deltasFXRates, 0, 6);
+                }
 
 
                 Console.WriteLine("Prix Multimonde : " + price);

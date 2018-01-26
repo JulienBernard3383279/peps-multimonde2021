@@ -138,9 +138,38 @@ namespace PricerConsole
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void PriceMultimonde2021AnyTime(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] current,
+            double[] volatilities,
+            double interestRate,
+            double[] correlation,
+            double[] trends,
+            double* price,
+            double* ic
+        );
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void DeltasMultiCurrencyMultimonde2021(
             int sampleNumber,
             double[] spots,
+            double[] volatilities,
+            double interestRate,
+            double[] correlation,
+            double[] trends,
+            out IntPtr deltas
+        );
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void DeltasMultiCurrencyMultimonde2021AnyTime(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] current,
             double[] volatilities,
             double interestRate,
             double[] correlation,
@@ -157,6 +186,22 @@ namespace PricerConsole
             double[] correlations,
             double[] trends,
             double[] FXRates,
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
+        );
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void DeltasSingleCurrencyMultimonde2021AnyTime(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] current,
+            double[] volatilities,
+            double interestRate,
+            double[] correlation,
+            double[] trends,
+            double[] currentFXRates,
             out IntPtr deltasAssets,
             out IntPtr deltasFXRates
         );
