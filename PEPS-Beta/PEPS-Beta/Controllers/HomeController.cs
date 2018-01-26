@@ -24,6 +24,12 @@ namespace PEPS_Beta.Controllers
         // GET: Home
         public unsafe ActionResult Index()
         {
+            // ParseData
+            Models.DataStorage ds = new Models.DataStorage();
+            ds.FillData();
+            ds.DataToArray();
+            //
+
             int optionSize = 40;
             double[] payoffCoefficients = new double[optionSize];
             double[] spots = new double[optionSize];
