@@ -14,6 +14,14 @@ namespace PEPS_Beta.Models
         private Dictionary<DateTime, double> EurGbp;
         private Dictionary<DateTime, double> EurJpy;
         private Dictionary<DateTime, double> EurHkd;
+
+        double[,] _changeValues;
+
+        public double[,] ChangeValues
+        {
+            get { return _changeValues; }
+            private set { _changeValues = value; }
+        }
         public DataCurrencies()
         {
             EurAud = new Dictionary<DateTime, double>();
@@ -31,6 +39,37 @@ namespace PEPS_Beta.Models
             EurGbp = ds.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\Currencies\EURGBP.csv"), 2,2);
             EurJpy = ds.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\Currencies\EURJPY.csv"), 2,2);
             EurHkd = ds.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\Currencies\EURHKD.csv"), 2,2);
+        }
+
+        /**@brief :
+         * Column 1 : EUR/AUD
+         * Column 2 : EUR/USD
+         * Column 3 : EUR/GBP
+         * Column 4 : EUR/JPY
+         * Column 5 : EUR/HKD
+         * */
+        public void DataToArray()
+        {
+            DateTime key;
+            this.ChangeValues = new double[5, EurAud.Count];
+            int count = 0;
+            foreach (KeyValuePair<DateTime, double> kvp in EurAud)
+            {
+                key = kvp.Key;
+                this.ChangeValues[0, count] = kvp.Value;
+                this.ChangeValues[1, count] = EurUsd[key];
+                this.ChangeValues[2, count] = EurGbp[key];
+                this.ChangeValues[3, count] = EurJpy[key];
+                this.ChangeValues[4, count] = EurHkd[key];
+                count++;
+            }
+
+            // empty dictionnaries to save memory
+            EurAud.Clear();
+            EurGbp.Clear();
+            EurUsd.Clear();
+            EurHkd.Clear();
+            EurJpy.Clear();
         }
     }
 
