@@ -18,7 +18,7 @@ namespace PricerDll.CustomTests
             double date) 
         {
 
-            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0]*volatilities[0]*0.5)) / (volatilities[0] *Math.Sqrt (maturity - date)));
+            double d1 = ( Math.Log(currents[0] / strike) + (interestRate + volatilities[0]*volatilities[0]*0.5)*(maturity - date) ) / (volatilities[0] *Math.Sqrt (maturity - date));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
             return currents[0] * API.call_pnl_cdfnor(d1) - strike * Math.Exp(-interestRate * (maturity - date) )* API.call_pnl_cdfnor(d2);
         }
@@ -65,9 +65,14 @@ namespace PricerDll.CustomTests
                 correlations,
                 0.0);
 
-            if (Math.Abs( (realPrice-price)/price) > 0.05) {
-                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
-                Console.WriteLine("problème !");
+            Console.WriteLine(realPrice);
+            Console.WriteLine(price);
+            if (Math.Abs( (realPrice-price)/price) > 0.02) {
+                Console.WriteLine("Test du prix du call : différence de prix supérieur à 2%.");
+            }
+            else
+            {
+                Console.WriteLine("Test du prix du call concluant.");
             }
         }
 
@@ -77,13 +82,13 @@ namespace PricerDll.CustomTests
             int optionSize = 1;
             double strike = 100.0;
             double[] payoffCoefficients = new double[1] { 1.0 };
-            int nbSamples = 100000;
-            double[] spots = new double[1] { 1.0 };
-            double[] volatilities = new double[1] { 1.0 };
+            int nbSamples = 1000000;
+            double[] spots = new double[1] { 100.0 };
+            double[] volatilities = new double[1] { 0.05 };
             double interestRate = 0.05;
             double[] correlations = new double[1] { 1.0 };
             int timestepNumber = 1;
-            double[] trends = new double[1] { 1.0 };
+            double[] trends = new double[1] { 0.05 };
 
             PriceTest(maturity,
                 optionSize,
@@ -95,7 +100,6 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 timestepNumber,
-
                 trends);
         }
 
