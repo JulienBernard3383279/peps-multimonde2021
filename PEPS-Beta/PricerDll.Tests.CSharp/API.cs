@@ -214,6 +214,7 @@ namespace PricerConsole
             double interestRate,
             double[] correlation,
             double[] FXRates,
+            double[] trends,
             double* tracking_error
         );
 
