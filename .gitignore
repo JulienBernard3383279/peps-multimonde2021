@@ -1,3 +1,7 @@
+#Custom
+PricerDll.vcxproj
+PricerDll.vcxproj.filters
+
 # User-specific files
 *.suo
 *.user
