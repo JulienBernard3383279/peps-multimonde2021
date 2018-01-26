@@ -29,13 +29,12 @@ namespace PEPS_Beta.Models
             DateTime compareDate;
 
             KeyValuePair<DateTime, Double> tmp;
-            int count = 0;
             Dictionary<DateTime, double> data = new Dictionary<DateTime, double>();
             System.IO.StreamReader file = new System.IO.StreamReader(path);
             //Skip first line (header)
             file.ReadLine();
 
-            //Managing first line out of loop to prevent error when trying to reach last element
+            //Managing first line out of loop to prevent error when trying to reach last element of dictionnary
             //First line is supposed to have correct values
             line = file.ReadLine();
             tmp = ParseLine(line, type);
@@ -167,7 +166,6 @@ namespace PEPS_Beta.Models
             }
 
             return date.AddDays(extraDays);
-
         }
     }
 }

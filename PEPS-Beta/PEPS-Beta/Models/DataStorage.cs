@@ -15,6 +15,13 @@ namespace PEPS_Beta.Models
         private Dictionary<DateTime, double> hang;
         private Dictionary<DateTime, double> n225;
         private Dictionary<DateTime, double> sp500;
+        double[,] _indexValues;
+
+        public double[,] IndexValues
+        {
+            get { return _indexValues; }
+            private set { _indexValues = value; }
+        }
 
         public DataStorage()
         {
@@ -32,19 +39,13 @@ namespace PEPS_Beta.Models
             
 
             DataRetriever dr = new DataRetriever();
-            // ASX //
             asx = dr.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\ASX.csv"),0);
-
             // CAC 40 //
             // uncomment if needed
             //cac = dr.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\CAC40.csv"),0);
-            //ESTOXX50//
+
             estox = dr.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\ESTOXX50.csv"),0);
-            //FTSE100//
             ftse = dr.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\FTSE100.csv"),1);
-            //HANG//
-            //N225//
-            //SP500//
             sp500 = dr.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\SP500.csv"),0);
             n225 = dr.ReadCSVData(Path.Combine(HttpRuntime.AppDomainAppPath, @"..\DataFiYa\n225.csv"),0);
 
@@ -52,9 +53,39 @@ namespace PEPS_Beta.Models
 
         }
 
-        // Now remove the dates without data
+        /**@brief : store dictonaries values in an array 
+         * Column 1 : ASX
+         * Column 2 : ESTOXX
+         * Column 3 : FTSE
+         * Column 4 : SP500
+         * Column 5 : N225
+         * Column 6 : Hang
+         * */
 
+        public void DataToArray()
+        {
+            DateTime key;
+            this.IndexValues = new double[6, asx.Count];
+            int count = 0;
+            foreach (KeyValuePair<DateTime, double> kvp in asx)
+            {
+                key = kvp.Key;
+                this.IndexValues[0, count] = kvp.Value;
+                this.IndexValues[1, count] = estox[key];
+                this.IndexValues[2, count] = ftse[key];
+                this.IndexValues[3, count] = sp500[key];
+                this.IndexValues[4, count] = n225[key];
+                this.IndexValues[5, count] = hang[key];
+                count++;
+            }
 
-
+            // empty dictionnaries to save memory
+            asx.Clear();
+            estox.Clear();
+            ftse.Clear();
+            sp500.Clear();
+            n225.Clear();
+            hang.Clear();
+        }
     }
 }
