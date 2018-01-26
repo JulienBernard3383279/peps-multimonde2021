@@ -9,7 +9,8 @@ namespace PEPS_Beta.Controllers
 {
     public class HomeController : Controller
     {
-        [DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
+        //[DllImport(@"C:\Users\Julien\Desktop\PEPS-2017-2018\PEPS-Beta\x64\Debug\PricerDll.dll")]
+        [DllImport(@"D:\Documents\ensimag\3A-Cours\PEPS\PEPS\PEPS-Beta\x64\Debug\PricerDll.dll")]
         extern unsafe static void PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
@@ -24,6 +25,7 @@ namespace PEPS_Beta.Controllers
         // GET: Home
         public unsafe ActionResult Index()
         {
+
             int optionSize = 40;
             double[] payoffCoefficients = new double[optionSize];
             double[] spots = new double[optionSize];
