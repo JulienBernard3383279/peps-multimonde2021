@@ -1,0 +1,42 @@
+﻿@{
+    Layout = null;
+
+    if (IsPost)
+    {
+        int nbEchan = Request.Form["nbSamples"].AsInt();
+
+        <text>
+            NbSamples: @nbEchan <br />
+        </text>
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index2</title>
+</head>
+<body>
+
+    @using (Ajax.BeginForm("Pricer", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "ourPrice" }))
+    {
+        <legend>Paramètres du multimonde</legend>
+
+        <div>
+            <label for="nbSamples">Nombre d'échantillons pour pricer le multimonde :</label>
+            <input id="nbSamples" name="nbSamples" type="number" value="10000">
+        </div>
+
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+
+        <div id="ourPrice">
+        </div>
+    }
+
+</body>
+</html>

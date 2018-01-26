@@ -59,7 +59,56 @@ namespace PEPS_Beta.Controllers
                 &ic);
 
             ViewData["d"] = price;
+            ViewData["ic"] = ic;
             return View();
         }
+
+        public unsafe ActionResult Index2()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public unsafe ActionResult Pricer(int nbSamples)
+        {
+            int optionSize = 40;
+            double[] payoffCoefficients = new double[optionSize];
+            double[] spots = new double[optionSize];
+            double[] volatilities = new double[optionSize];
+            double[] trends = new double[optionSize];
+            for (int i = 0; i < optionSize; i++)
+            {
+                payoffCoefficients[i] = 0.025;
+                spots[i] = 100;
+                volatilities[i] = 0.2;
+                trends[i] = 0;
+            }
+
+            double[] correlations = new double[optionSize * optionSize];
+            for (int i = 0; i < optionSize; i++)
+            {
+                for (int j = 0; j < optionSize; j++)
+                {
+                    correlations[i * optionSize + j] = (i == j) ? 1 : 0;
+                }
+            }
+
+            double price;
+            double ic;
+            PriceMultimonde2021(
+                nbSamples,
+                spots,
+                volatilities,
+                0.0,
+                correlations,
+                trends,
+                &price,
+                &ic);
+
+            ViewData["price"] = price;
+            ViewData["ic"] = ic;
+            return PartialView();
+        }
+
     }
 }

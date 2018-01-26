@@ -18,6 +18,18 @@ namespace PEPS_Beta
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+                name: "Index2",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Index2", id = UrlParameter.Optional }
+            );
+
+            routes.MapRoute(
+                name: "Pricer",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "Pricer", id = UrlParameter.Optional }
+            );
         }
     }
 }
