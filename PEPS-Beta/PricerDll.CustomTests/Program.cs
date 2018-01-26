@@ -11,7 +11,7 @@ namespace PricerDll.CustomTests
         static void Main(string[] args)
         {
             TestsCall.PerformPriceTests();
-            TestsCall.PerformDeltaTests0();
+            //TestsCall.PerformDeltaTests0();
             //TestsCall.PerformDeltaTestsAnyTime();
             //TestsQuanto.PerformPriceTests();
             //TestsQuanto.PerformDeltaTests0();

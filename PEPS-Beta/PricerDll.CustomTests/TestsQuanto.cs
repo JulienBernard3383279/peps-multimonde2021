@@ -17,7 +17,7 @@ namespace PricerDll.CustomTests
             double[] correlations,//une seule
             double date)
         {
-            double d1 = (Math.Log(currents[0] / strike) + (interestRates[0] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0])) / (volatilities[0] * Math.Sqrt(maturity - date));
+            double d1 = ( (Math.Log(currents[0] / strike) + (interestRates[0] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]))*(maturity-date)) / (volatilities[0] * Math.Sqrt(maturity - date));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
             return currents[0] * API.call_pnl_cdfnor(d1) * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) - strike * Math.Exp(-interestRates[0] * (maturity - date)) * API.call_pnl_cdfnor(d2);
 

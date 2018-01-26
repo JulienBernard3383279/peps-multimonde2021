@@ -18,7 +18,7 @@ namespace PricerDll.CustomTests
             double date) 
         {
 
-            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0]*volatilities[0]*0.5)) / (volatilities[0] *Math.Sqrt (maturity - date)));
+            double d1 = ((Math.Log(currents[0] / strike) + (interestRate + volatilities[0]*volatilities[0]*0.5)*(maturity -date)) / (volatilities[0] *Math.Sqrt (maturity - date)));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
             return currents[0] * API.call_pnl_cdfnor(d1) - strike * Math.Exp(-interestRate * (maturity - date) )* API.call_pnl_cdfnor(d2);
         }
@@ -67,7 +67,7 @@ namespace PricerDll.CustomTests
 
             if (Math.Abs( (realPrice-price)/price) > 0.05) {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
-                Console.WriteLine("problème !");
+                Console.WriteLine("problème  avec le prix en 0!");
             }
         }
 
@@ -109,7 +109,7 @@ namespace PricerDll.CustomTests
                double date)
         {
 
-            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0] * volatilities[0] * 0.5)) / (volatilities[0] * Math.Sqrt(maturity)));
+            double d1 = ((Math.Log(currents[0] / strike) + (interestRate + volatilities[0] * volatilities[0] * 0.5)*(maturity)) / (volatilities[0] * Math.Sqrt(maturity)));
             return API.call_pnl_cdfnor(d1);
         }
 
@@ -124,7 +124,7 @@ namespace PricerDll.CustomTests
               double date)
         {
 
-            double d1 = (Math.Log(currents[0] / strike) + ((interestRate + volatilities[0] * volatilities[0] * 0.5)) / (volatilities[0] * Math.Sqrt(maturity-date)));
+            double d1 = ((Math.Log(currents[0] / strike) + (interestRate + volatilities[0] * volatilities[0] * 0.5)*(maturity-date)) / (volatilities[0] * Math.Sqrt(maturity-date)));
             return API.call_pnl_cdfnor(d1);
         }
         private static void DeltaTest0(double maturity,
