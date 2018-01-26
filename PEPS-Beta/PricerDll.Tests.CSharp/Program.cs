@@ -99,17 +99,23 @@ namespace PricerConsole
                 double price;
                 double ic;
 
-                /*
-                API.TrackingErrorMultimonde(
-                        nbSamples,
-                        spotsOrCurrent,
-                        volatilities,
-                        interestRate,
-                        correlations,
-                        trends,
-                        &price,
-                        &ic); */
+                
+                double tracking_error;
 
+                API.TrackingErrorMultimonde(
+                    1000,
+                    spotsOrCurrent,
+                    volatilities,
+                    interestRate,
+                    correlations,
+                    FXRates,
+                    &tracking_error);
+
+                Console.WriteLine();
+                Console.WriteLine("Tracking Error associée aux paramètres rentrés :" + tracking_error);
+                
+
+                /*
                 
                 if (t == 0)
                 {
@@ -235,7 +241,7 @@ namespace PricerConsole
                 }
                 Console.WriteLine();
                 
-            }
+            }*/
         } 
     }
 }
