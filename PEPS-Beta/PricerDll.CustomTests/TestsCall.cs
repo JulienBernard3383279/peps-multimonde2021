@@ -243,13 +243,13 @@ namespace PricerDll.CustomTests
             int optionSize = 1;
             double strike = 100.0;
             double[] payoffCoefficients = new double[1] { 1.0 };
-            int nbSamples = 100000;
-            double[] spots = new double[1] { 1.0 };
-            double[] volatilities = new double[1] { 1.0 };
+            int nbSamples = 1000000;
+            double[] spots = new double[1] { 100.0 };
+            double[] volatilities = new double[1] { 0.05 };
             double interestRate = 0.05;
             double[] correlations = new double[1] { 1.0 };
             int timestepNumber = 1;
-            double[] trends = new double[1] { 1.0 };
+            double[] trends = new double[1] { 0.05 };
 
             DeltaTest0(maturity,
                 optionSize,
@@ -269,13 +269,13 @@ namespace PricerDll.CustomTests
             int optionSize = 1;
             double strike = 100.0;
             double[] payoffCoefficients = new double[1] { 1.0 };
-            int nbSamples = 100000;
-            double[] spots = new double[1] { 1.0 };
-            double[] volatilities = new double[1] { 1.0 };
+            int nbSamples = 1000000;
+            double[] spots = new double[1] { 100.0 };
+            double[] volatilities = new double[1] { 0.05 };
             double interestRate = 0.05;
             double[] correlations = new double[1] { 1.0 };
             int timestepNumber = 1;
-            double[] trends = new double[1] { 1.0 };
+            double[] trends = new double[1] { 0.05 };
             double t = 1.0;
             double[] past = new double[1] { 0 };
             int nbRows = 1;
