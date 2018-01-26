@@ -75,7 +75,7 @@ void Param::computeMean()
 	mean = pnl_vect_create_from_zero(data->n);
 	for (int j = 0; j < data->n; j++) {
 		double temp = 0;
-		for (int i = 0; i < data->m; i++) {
+		for (int i = 0; i < data->m -1; i++) {
 			temp += MGET(returns, i, j);
 		}
 		LET(mean, j) = temp/data->n;
