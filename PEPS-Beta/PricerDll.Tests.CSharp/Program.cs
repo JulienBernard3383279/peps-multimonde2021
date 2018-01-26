@@ -99,7 +99,7 @@ namespace PricerConsole
                 double price;
                 double ic;
 
-                
+                /*
                 double tracking_error;
 
                 API.TrackingErrorMultimonde(
@@ -113,9 +113,9 @@ namespace PricerConsole
 
                 Console.WriteLine();
                 Console.WriteLine("Tracking Error associée aux paramètres rentrés :" + tracking_error);
-                
+                */
 
-                /*
+                
                 
                 if (t == 0)
                 {
@@ -241,7 +241,7 @@ namespace PricerConsole
                 }
                 Console.WriteLine();
                 
-            }*/
+            }
         } 
     }
 }

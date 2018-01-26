@@ -26,6 +26,9 @@ namespace PricerDll.CustomTests
             double* ic);
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern double call_pnl_cdfnor(double x);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceBasketAnyTime(
             double maturity,
             int optionSize,
@@ -90,8 +93,8 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
@@ -110,8 +113,8 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
 
 
