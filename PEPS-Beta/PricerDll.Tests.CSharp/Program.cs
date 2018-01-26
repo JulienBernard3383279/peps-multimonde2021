@@ -99,7 +99,7 @@ namespace PricerConsole
                 double price;
                 double ic;
 
-                /* */
+                /*
 
                 double tracking_error;
 
@@ -114,9 +114,7 @@ namespace PricerConsole
 
                 Console.WriteLine();
                 Console.WriteLine("Tracking Error associée aux paramètres rentrés :" + tracking_error);
-                /* */
-
-                
+                */
                 
                 if (t == 0)
                 {
@@ -242,13 +240,17 @@ namespace PricerConsole
                     Console.WriteLine(deltasAssets[i]);
                 }
                 Console.WriteLine();
-                Console.WriteLine("Quantité de monnaie à acheter : ");
+                Console.WriteLine("Quantité de monnaie étrangère à acheter : ");
                 for (int i = 1; i < 6; i++)
                 {
                     Console.WriteLine(deltasFXRates[i]);
                 }
                 Console.WriteLine();
-                
+                Console.WriteLine("Euros restants à mettre au taux sans risque européen : ");
+                Console.WriteLine(price - deltasAssets[0] * spotsOrCurrent[0]);
+                Console.WriteLine();
+                Console.WriteLine("===== New entry =====");
+                Console.WriteLine();
             }
         } 
     }
