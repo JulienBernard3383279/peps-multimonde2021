@@ -18,6 +18,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PricerConsole", "PricerDll.
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PricerDll.CustomTests", "PricerDll.CustomTests\PricerDll.CustomTests.csproj", "{20A712A4-F662-4D13-BE1D-F62FEBF64529}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EB6DF5A8-C86D-4DF2-A984-0EB413F3B06B} = {EB6DF5A8-C86D-4DF2-A984-0EB413F3B06B}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

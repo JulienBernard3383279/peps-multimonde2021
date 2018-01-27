@@ -65,9 +65,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API.cs" />
+    <Compile Include="DataCurrencies.cs" />
+    <Compile Include="DataRetriever.cs" />
+    <Compile Include="DataStorage.cs" />
     <Compile Include="MathUtils.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestHistoricalData.cs" />
     <Compile Include="TestsCall.cs" />
     <Compile Include="TestsQuanto.cs" />
   </ItemGroup>
