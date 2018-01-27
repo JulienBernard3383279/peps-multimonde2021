@@ -34,6 +34,7 @@ void ProfitAndLossUtilities::updatePortfolioValue(double& port_value, double tim
 	pnl_vect_mult_vect_term(prices_in_euro, FXRate);
 
 	int nbAssets = fx_deltas->size;
+
 	for (int i = 0; i < nbAssets; ++i) {
 		LET(fx_deltas, i) *= exp(GET(taux, i)*timestep);
 	}

@@ -11,9 +11,9 @@ namespace PricerConsole
     {
         static Boolean IsNegative(double[] tab)
         {
-            for (int i = 0; i<tab.Length; i++)
+            for (int i = 0; i < tab.Length; i++)
             {
-                if (tab[i]<0)
+                if (tab[i] < 0)
                 {
                     Console.WriteLine("Don't input negative numbers");
                     return true;
@@ -264,7 +264,7 @@ namespace PricerConsole
                     double tracking_error;
 
                     API.TrackingErrorMultimonde(
-                        1000,
+                        nbSamples,
                         spotsOrCurrent,
                         volatilities,
                         interestRate,
@@ -275,6 +275,9 @@ namespace PricerConsole
 
                     Console.WriteLine();
                     Console.WriteLine("Tracking Error associée aux paramètres rentrés :" + tracking_error);
+                    Console.WriteLine();
+                    Console.WriteLine("===== New entry =====");
+                    Console.WriteLine();
                 }
                 else
                 {
@@ -402,13 +405,17 @@ namespace PricerConsole
                         Console.WriteLine(deltasAssets[i]);
                     }
                     Console.WriteLine();
-                    Console.WriteLine("Quantité de monnaie à acheter : ");
+                    Console.WriteLine("Quantité de monnaie étrangère à acheter : ");
                     for (int i = 1; i < 6; i++)
                     {
                         Console.WriteLine(deltasFXRates[i]);
                     }
                     Console.WriteLine();
-
+                    Console.WriteLine("Euros restants à mettre au taux sans risque européen : ");
+                    Console.WriteLine(price - deltasAssets[0] * spotsOrCurrent[0]);
+                    Console.WriteLine();
+                    Console.WriteLine("===== New entry =====");
+                    Console.WriteLine();
                 }
             }
         }
