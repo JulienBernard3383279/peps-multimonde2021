@@ -202,7 +202,7 @@ namespace PricerConsole
                 }
                 while (FXInvalide);
 
-                Console.WriteLine("Correlations are not yet implemented. Currently, all assets are assumed independant.");
+                Console.WriteLine("Correlations cannot be entered yet. Currently, all assets are assumed independant.");
 
                 double[] correlations = new double[thingsToSimulate * thingsToSimulate];
 
