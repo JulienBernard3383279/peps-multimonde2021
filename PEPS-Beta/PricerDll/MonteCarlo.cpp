@@ -172,5 +172,9 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 		LET(deltas,j) *= exp(-mod_->r_ * (opt_->T - t));
 	}
 
+	pnl_mat_free(&path);
+	pnl_mat_free(&pathMinus);
+	pnl_mat_free(&pathPlus);
+
 	return;
 }

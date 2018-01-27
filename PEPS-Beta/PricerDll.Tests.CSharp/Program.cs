@@ -37,9 +37,9 @@ namespace PricerConsole
                 {
                     try
                     {
-                        Console.WriteLine("Samples number (empty <-> 200 000) :");
+                        Console.WriteLine("Samples number (empty <-> "+(goToTrackingError ? "2 000" : "200 000")+") :");
                         string intermediateNbSamples = Console.ReadLine().Replace('.', ',');
-                        nbSamples = (intermediateNbSamples == "") ? 200000 : int.Parse(intermediateNbSamples);
+                        nbSamples = (intermediateNbSamples == "") ? (goToTrackingError ? 2000 : 200000)  : int.Parse(intermediateNbSamples);
                         if (nbSamples <= 0)
                         {
                             nbSamples = 0;
@@ -136,7 +136,6 @@ namespace PricerConsole
                     }
                 }
                 while (volatilitiesInvalide || volatilities.Length != thingsToSimulate);
-
 
                 Boolean rfInvalide = true;
                 do
