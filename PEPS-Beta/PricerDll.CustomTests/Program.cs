@@ -10,12 +10,17 @@ namespace PricerDll.CustomTests
     {
         static void Main(string[] args)
         {
-            //TestsCall.PerformPriceTests();
+            TestsCall.PerformPriceTests();
+            TestsCall.PerformPriceTestsAnyTime();
             TestsCall.PerformDeltaTests0();
-            //TestsCall.PerformDeltaTestsAnyTime();
+            TestsCall.PerformDeltaTestsAnyTime();
+
             //TestsQuanto.PerformPriceTests();
             //TestsQuanto.PerformDeltaTests0();
             //TestsQuanto.PerformDeltaTestsAnyTime();
+
+            Console.WriteLine("Appuyez sur une touche pour terminer le programme.");
+            Console.ReadKey();
         }
     }
 }

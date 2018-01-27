@@ -56,7 +56,7 @@ namespace PricerConsole
             double interestRate,
             double[] correlation,
             double[] trends,
-            IntPtr deltas
+            out IntPtr deltas
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
@@ -74,7 +74,7 @@ namespace PricerConsole
             double[] interestRate,
             double[] correlation,
             double[] trends,
-            IntPtr deltas
+            out IntPtr deltas
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
@@ -90,8 +90,8 @@ namespace PricerConsole
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
 
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
@@ -110,8 +110,8 @@ namespace PricerConsole
             double[] correlation,
             double[] trends,
             double[] FXRates,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates
         );
 
 
