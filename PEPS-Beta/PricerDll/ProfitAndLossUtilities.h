@@ -10,6 +10,6 @@ public:
 
 	void updateDeltas(PnlVect* asset_deltas, PnlVect* fx_deltas, const PnlVect* FXRate, const PnlVect* spotsVect, const double port_value);
 
-	void updatePortfolioValue(double& port_value, double timestep, const PnlVect* asset_deltas, PnlVect* fx_deltas, const PnlVect* FXRate, const PnlVect* spotsVect);
+	void updatePortfolioValue(double& port_value, double timestep, const PnlVect* asset_deltas, PnlVect* fx_deltas, const PnlVect * FXRate, const PnlVect * taux, const PnlVect * spotsVect);
 };
 
