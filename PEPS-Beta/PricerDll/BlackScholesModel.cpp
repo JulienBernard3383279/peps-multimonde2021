@@ -172,7 +172,7 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 	PnlMat *past, double t, PnlVect *current,
 	PnlVect* dates, int nbTimeSteps, PnlRng *rng) {
 
-	PnlVect* temp = pnl_vect_create(6);
+	PnlVect* temp = pnl_vect_create(size_);
 
 	// Initialisation de path
 	int from = past->m;

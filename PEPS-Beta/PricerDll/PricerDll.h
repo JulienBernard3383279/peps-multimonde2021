@@ -6,8 +6,6 @@
 #define PRICERDLL_API __declspec(dllimport)
 #endif
 
-// TODO FACTORISATION SERIEUSE A FAIRE POST RENDU BETA
-
 extern "C" PRICERDLL_API void PriceBasket(
 	double maturity,
 	int optionSize,

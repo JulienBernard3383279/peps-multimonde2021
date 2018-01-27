@@ -129,11 +129,12 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 	PnlMat *pathMinus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 	PnlMat *pathPlus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
-
+	
 	double payoffMinus = 0;
 	double payoffPlus = 0;
 
 	mod_->initAsset(opt_->nbTimeSteps);
+
 	for (int i = 0; i < nbSamples_; ++i) {
 		if (!opt_->custom) {
 			mod_->postInitAsset(path,
@@ -145,10 +146,14 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 				past, t, current,
 				opt_->customDates, opt_->nbTimeSteps, rng_);
 		}
-
-		int from = 0;
-		while ( GET(opt_->customDates,from) < t) {
-			from++;
+		int from;
+		if (opt_->custom) {
+			while (GET(opt_->customDates, from) < t) {
+				from++;
+			}
+		}
+		else {
+			from = (int)(t / (opt_->T / opt_->nbTimeSteps)) + 1;
 		}
 
 		for (int j = 0; j < mod_->size_; j++) {
