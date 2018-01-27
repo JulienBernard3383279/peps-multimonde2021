@@ -146,8 +146,10 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 				past, t, current,
 				opt_->customDates, opt_->nbTimeSteps, rng_);
 		}
-		int from;
+
+		int from = 0;
 		if (opt_->custom) {
+
 			while (GET(opt_->customDates, from) < t) {
 				from++;
 			}
