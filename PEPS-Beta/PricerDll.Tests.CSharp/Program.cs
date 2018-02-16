@@ -135,7 +135,7 @@ namespace PricerConsole
                         volatilitiesInvalide = true;
                     }
                 }
-                while (volatilitiesInvalide || spotsOrCurrent.Length != thingsToSimulate);
+                while (volatilitiesInvalide || volatilities.Length != thingsToSimulate);
 
 
                 Boolean rfInvalide = true;
