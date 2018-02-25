@@ -6,8 +6,6 @@
 #define PRICERDLL_API __declspec(dllimport)
 #endif
 
-// TODO FACTORISATION SERIEUSE A FAIRE POST RENDU BETA
-
 extern "C" PRICERDLL_API void PriceBasket(
 	double maturity,
 	int optionSize,
@@ -206,6 +204,19 @@ extern "C" PRICERDLL_API void ConvertDeltas(
 	double FXRates[],
 	double** deltasAssets,
 	double** deltasFXRates);
+
+
+extern "C" PRICERDLL_API void PriceQuanto(
+	double maturity,
+	double strike,
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate[],
+	double correlations[],
+	double* price,
+	double* ic);
+
 
 // FONCTIONS PNL EXPORTEES
 

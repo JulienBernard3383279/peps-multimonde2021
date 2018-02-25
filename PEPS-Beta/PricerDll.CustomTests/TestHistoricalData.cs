@@ -184,7 +184,6 @@ namespace PricerDll.CustomTests
                     trends,
                     out IntPtr deltasPtr);
                 System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 6);
-
             }
 
             //Marshal.FreeCoTaskMem(deltasPtr); "PricerDll.Tests.CSharp a cessé de fonctionner." Ah.
