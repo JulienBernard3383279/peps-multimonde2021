@@ -27,7 +27,13 @@ namespace PricerDll.CustomTests
         }
 
 
-
+        /*
+         * Test pour un ensemble de paramètres donné.
+         * Appelle l'API et la formule fermée et compare les résultats.
+         * Test actuel : appartenance du résultat à l'intervalle de confiance à 95%.
+         * La fonction prend en paramètres les volatilités et covariances de l'actif dans sa monnaie étrangère (S) et du taux de change (X).
+         * Les calculs pour envoyer celles de SX et X à l'API sont faites ici. (Temporaires, pour le debug, à changer !)
+         */
         private static void PriceTestQuanto(double maturity,
                double strike,
                int nbSamples,
@@ -40,6 +46,8 @@ namespace PricerDll.CustomTests
             double price;
             double ic;
 
+            //DEBUG
+            double[] correlationsModif = MathUtils.GenCorrAPlusBBFromCorrAB(correlations, volatilities);
 
             API.PriceQuanto(
                 maturity, //maturity in years
@@ -48,7 +56,7 @@ namespace PricerDll.CustomTests
                 spots, //spots
                 volatilities, //volatilities
                 interestRates, //interest rate
-                correlations, //correlations
+                correlationsModif, //correlations
                 &price,
                 &ic);
 
@@ -69,13 +77,15 @@ namespace PricerDll.CustomTests
             Console.WriteLine("Prix calculé par formule fermée : " + realPrice);
             if ((realPrice > price + ic / 2) || (realPrice < price - ic / 2))
             {
-                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
                 Console.WriteLine("Vrai prix en dehors de l'intervalle de confiance !");
             }
             Console.WriteLine("");
             Console.WriteLine("");
         }
 
+        /*
+         * Lance le test pour certaines combinaisons de valeurs.
+         */
         public static void PerformPriceTests()
         {
             double maturity = 3.0;
@@ -86,7 +96,8 @@ namespace PricerDll.CustomTests
             double[] spots = new double[2] { 100.0, 1.0};
             double[] volatilities = new double[2] { 0.05, 0.00};
             double[] interestRates = new double[2] { 0.05, 0.05 };
-            double[] correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            //double[] correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            double[] correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
 
             PriceTestQuanto(maturity,
                 strike,
@@ -100,7 +111,8 @@ namespace PricerDll.CustomTests
             spots = new double[2] { 100.0, 0.8 };
             volatilities = new double[2] { 0.05, 0.00 };
             interestRates = new double[2] { 0.05, 0.05 };
-            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            //correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
 
             PriceTestQuanto(maturity,
                 strike,
@@ -113,8 +125,24 @@ namespace PricerDll.CustomTests
             // test sur Call quanto 
             spots = new double[2] { 100.0, 0.8 };
             volatilities = new double[2] { 0.05, 0.05 };
-            interestRates = new double[2] { 0.05, 0.06 };
-            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            interestRates = new double[2] { 0.05, 0.05 };
+            //correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+
+            PriceTestQuanto(maturity,
+                strike,
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            // test sur Call quanto 
+            spots = new double[2] { 100.0, 0.8 };
+            volatilities = new double[2] { 0.05, 0.02 };
+            interestRates = new double[2] { 0.05, 0.05 };
+            //correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
 
             PriceTestQuanto(maturity,
                 strike,
