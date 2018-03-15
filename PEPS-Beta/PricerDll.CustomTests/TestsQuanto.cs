@@ -47,7 +47,7 @@ namespace PricerDll.CustomTests
             double ic;
 
             //DEBUG
-            double[] correlationsModif = MathUtils.GenCorrAPlusBBFromCorrAB(correlations, volatilities);
+            //double[] correlationsModif = MathUtils.GenCorrAPlusBBFromCorrAB(correlations, volatilities);
 
             API.PriceQuanto(
                 maturity, //maturity in years
@@ -56,7 +56,7 @@ namespace PricerDll.CustomTests
                 spots, //spots
                 volatilities, //volatilities
                 interestRates, //interest rate
-                correlationsModif, //correlations
+                correlations, //correlations
                 &price,
                 &ic);
 
