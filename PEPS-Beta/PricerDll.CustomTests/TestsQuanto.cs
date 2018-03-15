@@ -96,8 +96,8 @@ namespace PricerDll.CustomTests
             double[] spots = new double[2] { 100.0, 1.0};
             double[] volatilities = new double[2] { 0.05, 0.00};
             double[] interestRates = new double[2] { 0.05, 0.05 };
-            //double[] correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
-            double[] correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            double[] correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            //double[] correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
 
             PriceTestQuanto(maturity,
                 strike,
@@ -111,8 +111,8 @@ namespace PricerDll.CustomTests
             spots = new double[2] { 100.0, 0.8 };
             volatilities = new double[2] { 0.05, 0.00 };
             interestRates = new double[2] { 0.05, 0.05 };
-            //correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
-            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            //correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
 
             PriceTestQuanto(maturity,
                 strike,
@@ -126,8 +126,8 @@ namespace PricerDll.CustomTests
             spots = new double[2] { 100.0, 0.8 };
             volatilities = new double[2] { 0.05, 0.05 };
             interestRates = new double[2] { 0.05, 0.05 };
-            //correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
-            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            //correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
 
             PriceTestQuanto(maturity,
                 strike,
@@ -141,8 +141,8 @@ namespace PricerDll.CustomTests
             spots = new double[2] { 100.0, 0.8 };
             volatilities = new double[2] { 0.05, 0.02 };
             interestRates = new double[2] { 0.05, 0.05 };
-            //correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
-            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            //correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
 
             PriceTestQuanto(maturity,
                 strike,
