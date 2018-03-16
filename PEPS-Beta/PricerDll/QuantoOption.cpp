@@ -17,13 +17,7 @@ QuantoOption::~QuantoOption()
 
 double QuantoOption::payoff(const PnlMat * path)
 {
-	double strikeEuro = strike_ * MGET(path, path->m-1, 1);
-	double vFinale = MGET(path, path->m-1, 0);
-	double payoff = vFinale - strikeEuro;
-	if (payoff <= 0) {
-		return 0;
-	}
-	else {
-		return payoff / MGET(path, path->m - 1, 1);
-	}
+	double vFinale = MGET(path, path->m - 1, 0) * MGET(path, path->m - 1, 1);
+	return max(0, vFinale - strike_);
+	
 }
