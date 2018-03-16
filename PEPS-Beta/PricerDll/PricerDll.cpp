@@ -16,6 +16,7 @@
 #include "pnl/pnl_cdf.h"
 
 #include "ProfitAndLossUtilities.h"
+#include "MathUtils.cpp"
 
 void InitBasket(
 	MonteCarlo** mc,
@@ -83,7 +84,7 @@ void PriceBasket(
 	double spots[],
 	double volatilities[],
 	double interestRate,
-	double correlation[], //optionSize², traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+	double correlation[], //optionSize*optionSize, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
 	double trends[],
 	double* price,
 	double* ic)
@@ -105,10 +106,10 @@ void PriceBasketAnyTime(
 	double past[], // format [,]
 	int nbRows,
 	double t,
-	double current[], 
+	double current[],
 	double volatilities[],
 	double interestRate,
-	double correlation[], //optionSize², traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+	double correlation[], //optionSize*optionSize, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
 	double trends[],
 	double* price,
 	double* ic)
@@ -423,8 +424,8 @@ void DeltasMultiCurrencyMultimonde2021(
 		intermediate[i] = GET(myDeltas, i);
 	}
 
-	*deltas = static_cast<double*>(malloc(6*sizeof(double)));
-	memcpy(*deltas, &(intermediate[0]), 6*sizeof(double));
+	*deltas = static_cast<double*>(malloc(6 * sizeof(double)));
+	memcpy(*deltas, &(intermediate[0]), 6 * sizeof(double));
 }
 
 void DeltasMultiCurrencyMultimonde2021AnyTime(
@@ -432,7 +433,7 @@ void DeltasMultiCurrencyMultimonde2021AnyTime(
 	double past[], // format [,]
 	int nbRows,
 	double t,
-	double current[], 
+	double current[],
 	double volatilities[],
 	double interestRate,
 	double correlation[],
@@ -485,8 +486,8 @@ void DeltasSingleCurrencyMultimonde2021(
 	double* myDeltasFXRates = new double[6];
 
 	for (int i = 0; i < 6; i++) {
-		myDeltasAssets[i] = GET(deltas,i) / FXRates[i];
-		myDeltasFXRates[i] = -GET(deltas,i) * spots[i] / FXRates[i];
+		myDeltasAssets[i] = GET(deltas, i) / FXRates[i];
+		myDeltasFXRates[i] = -GET(deltas, i) * spots[i] / FXRates[i];
 	}
 
 	*deltasAssets = static_cast<double*>(malloc(6 * sizeof(double)));
@@ -501,7 +502,7 @@ void DeltasSingleCurrencyMultimonde2021AnyTime(
 	double past[], // format [,]
 	int nbRows,
 	double t,
-	double current[], 
+	double current[],
 	double volatilities[],
 	double interestRate,
 	double correlation[],
@@ -550,7 +551,7 @@ void ConvertDeltas(
 
 	for (int i = 0; i < 6; i++) {
 		myDeltasAssets[i] = deltas[i] / FXRates[i];
-		myDeltasFXRates[i] = - deltas[i] * prices[i] / FXRates[i];
+		myDeltasFXRates[i] = -deltas[i] * prices[i] / FXRates[i];
 	}
 
 	*deltasAssets = static_cast<double*>(malloc(6 * sizeof(double)));
@@ -613,22 +614,22 @@ void TrackingErrorMultimonde(
 	pnl_mat_set_subblock(correlationsMatHisto, correlationsMat, 0, 0);
 	modDonnees = new BlackScholesModel(11, interestRate, correlationsMatHisto, volatilitiesVectHisto, spotsVectHisto, trendsVectHisto);
 	modDonnees->initAsset(2227);
-	
+
 	PnlMat* simulated_prices = pnl_mat_create_from_double(2227, opt->size * 2 - 1, 0.);
-	
+
 	modDonnees->postInitAsset(simulated_prices, temp * 6, 2226, rng);
-	
+
 	PnlMat* asset_prices = pnl_mat_create_from_double(2227, opt->size, 1.);
 	PnlMat* FX_prices = pnl_mat_create_from_double(2227, opt->size - 1, 1.);
-	
+
 	pnl_mat_extract_subblock(asset_prices, simulated_prices, 0, 2227, 0, 6);
 	pnl_mat_extract_subblock(FX_prices, simulated_prices, 0, 2227, 6, 5);
-	
+
 	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
-	
+
 	PnlVect* current_prices = pnl_vect_create_from_zero(opt->size);
-	PnlVect* tmp_current_fx_rates = pnl_vect_create_from_double(opt->size-1, 1.);
-	PnlVect* current_fx_rates = pnl_vect_create_from_double(opt->size-1, 1.);
+	PnlVect* tmp_current_fx_rates = pnl_vect_create_from_double(opt->size - 1, 1.);
+	PnlVect* current_fx_rates = pnl_vect_create_from_double(opt->size - 1, 1.);
 
 	int t = 0;
 	int T = 371 * 6;
@@ -640,7 +641,7 @@ void TrackingErrorMultimonde(
 	current_fx_rates = pnl_vect_create_from_zero(5);
 	pnl_vect_clone(current_fx_rates, tmp_current_fx_rates);
 	pnl_vect_resize(current_fx_rates, current_fx_rates->size + 1);
-	for (int i = current_fx_rates->size - 1; i >0; i--) {
+	for (int i = current_fx_rates->size - 1; i > 0; i--) {
 		LET(current_fx_rates, i) = GET(current_fx_rates, i - 1);
 	}
 	LET(current_fx_rates, 0) = 1.;
@@ -667,7 +668,7 @@ void TrackingErrorMultimonde(
 		current_fx_rates = pnl_vect_create_from_zero(5);
 		pnl_vect_clone(current_fx_rates, tmp_current_fx_rates);
 		pnl_vect_resize(current_fx_rates, current_fx_rates->size + 1);
-		for (int i = current_fx_rates->size-1; i >0; i--) {
+		for (int i = current_fx_rates->size - 1; i > 0; i--) {
 			LET(current_fx_rates, i) = GET(current_fx_rates, i - 1);
 		}
 		LET(current_fx_rates, 0) = 1.;
@@ -716,31 +717,34 @@ void PriceQuanto(
 	Option *opt;
 	BlackScholesModel *mod;
 
-
 	opt = new QuantoOption(maturity, strike);
 
-	// LE POINT QUI CLOCHE EST ICI JE PENSE
+	// LE POINT QUI CLOCHE EST ICI JE PENSE [yoann]
+
+	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
-	LET(volatilitiesVect, 0) = sqrt(volatilities[1]*volatilities[1] + volatilities[0]*volatilities[0] - 2*correlations[1]*volatilities[0]*volatilities[1]);
+	LET(volatilitiesVect, 0) = sqrt(volatilities[1] * volatilities[1] + volatilities[0] * volatilities[0] - 2 * correlations[1] * volatilities[0] * volatilities[1]);
 	std::cout << "Volatilities" << std::endl;
 	pnl_vect_print_asrow(volatilitiesVect);
-	
+
+	// Calcul de la cor de S-X et X
+	PnlMat* correlationsMat = GenCorrAPlusBBFromCorrAB(correlations, volatilities);
+	std::cout << "Correlations" << std::endl;
+
+	pnl_mat_print(correlationsMat);
+
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) *= GET(spotsVect, 1);
+	LET(spotsVect, 0) /= GET(spotsVect, 1);
 	std::cout << "Spots en euros" << std::endl;
 	pnl_vect_print_asrow(spotsVect);
 
-	// On fixe les µ avec les taux sans risque
+	// On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];
-	LET(trendsVect, 1) = interestRate[0] - interestRate[1] + volatilities[1]*volatilities[1];
+	LET(trendsVect, 1) = interestRate[1] - interestRate[0] + volatilities[1] * volatilities[1];
 	std::cout << "Trends de la simulation" << std::endl;
 	pnl_vect_print_asrow(trendsVect);
-	
-	PnlMat* correlationsMat = pnl_mat_create_from_ptr(2, 2, correlations);
-	std::cout << "Correlations" << std::endl;
-	pnl_mat_print(correlationsMat);
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
 
@@ -750,9 +754,8 @@ void PriceQuanto(
 	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
 
 	mc->price(price, ic);
-
 }
-	
+
 double call_pnl_cdfnor(double x) {
 	return pnl_cdfnor(x);
 }

@@ -137,10 +137,9 @@ namespace PricerDll.CustomTests
 
             Console.WriteLine("Test sur call quanto avec taux de change non constant et taux d'intérêt différents");
             spots = new double[2] { 100.0, 0.8 };
-            volatilities = new double[2] { 0.05, 0.03 };
-            interestRates = new double[2] { 0.05, 0.06 };
-            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
-
+            volatilities = new double[2] { 0.05, 0.05 };
+            interestRates = new double[2] { 0.05, 0.02 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
             PriceTestQuanto(maturity,
                 strike,
                 nbSamples,
