@@ -6,9 +6,10 @@ using System.IO;
 
 namespace PEPS_Beta.Models
 {
+#pragma warning disable CS0436
     public class DataStorage
     {
-        private Dictionary<DateTime,double> asx;
+        private Dictionary<DateTime, double> asx;
         //private Dictionary<DateTime, double> cac;
         private Dictionary<DateTime, double> estox;
         private Dictionary<DateTime, double> ftse;
@@ -17,7 +18,7 @@ namespace PEPS_Beta.Models
         private Dictionary<DateTime, double> sp500;
         double[,] _indexValues;
         double[,] _changeValues;
-        String LastUpdate;
+        public String LastUpdate {get; private set;}
 
         public double[,] ChangeValues
         {
@@ -40,6 +41,7 @@ namespace PEPS_Beta.Models
             hang = new Dictionary<DateTime, double>();
             n225 = new Dictionary<DateTime, double>();
             sp500 = new Dictionary<DateTime, double>();
+            LastUpdate = "15/10/2015";
         }
         /**
          * 
@@ -198,4 +200,6 @@ namespace PEPS_Beta.Models
             hang.Clear();
         }
     }
+#pragma warning restore CS0436
+
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace PEPS_Beta.Controllers
 {
@@ -27,7 +28,7 @@ namespace PEPS_Beta.Controllers
            
 
             // ParseData
-         //   Models.DataStorage ds = new Models.DataStorage();
+            Models.DataStorage ds = new Models.DataStorage();
          //   ds.FillDataHtml(500,500);
             //
 
@@ -67,6 +68,7 @@ namespace PEPS_Beta.Controllers
 
             ViewData["d"] = price;
             ViewData["ic"] = ic;
+            ViewData["date"] = "HELLO";
             return View();
         }
 
@@ -115,6 +117,13 @@ namespace PEPS_Beta.Controllers
             ViewData["price"] = price;
             ViewData["ic"] = ic;
             return PartialView();
+        }
+
+        [HttpPost]
+        public ActionResult DisplayDate(string button)
+        {
+            ViewData["date"] = "MISUMI";
+            return (RedirectToAction("Index"));
         }
 
     }

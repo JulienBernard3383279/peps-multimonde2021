@@ -151,7 +151,8 @@ namespace PEPS_Beta.Models
                 );
 
             this.USDHKD = USDHKDResponse.Data;
-#pragma warning restore CS0436 // Le type est en conflit avec le type importé
         }
     }
+#pragma warning restore CS0436 // Le type est en conflit avec le type importé
+
 }
