@@ -119,7 +119,7 @@ void PriceBasketAnyTime(
 	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
 
 	//Gestion paramètres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c-sharp devra être multidimensionnel [,], pas jagged !
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
 	mc->price(pastMat, t, currentVect, price, ic);
@@ -177,7 +177,7 @@ void DeltasMultiCurrencyBasketAnyTime(
 	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
 
 	//Gestion paramètres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c-sharp devra être multidimensionnel [,], pas jagged !
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
 	PnlVect* myDeltas = pnl_vect_create_from_zero(6);
