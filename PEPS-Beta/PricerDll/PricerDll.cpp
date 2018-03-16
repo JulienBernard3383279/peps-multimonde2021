@@ -788,7 +788,7 @@ void InitMultimonde2021Quanto(
 	Option** opt,
 	BlackScholesModel** mod,
 	int sampleNumber, // Nombre de tirages ; les taux de changes attendus sont UN EURO EN LA MONNAIE ETRANGERE. (€/$)
-	double spots[], // Taille 11. Spots des actifs/tdc dans leurs monnaies. Indice 0/6 = domestique. 
+	double currentPrices[], // Taille 11. Prix des actifs dans leurs monnaies / taux de change. Indice 0/6 = domestique. 
 	double volatilities[], // Taille 11 Volatilités des actifs/tdc dans leurs monnaies ; volatilités des taux de change. Indice 0/6 = domestique.
 	double interestRates[], // Taille 6. Taux d'intérêts. Indice 0 = domestique.
 	double correlations[]) // Taille 11x11. Corrélations entre les actifs dans leurs monnaies et les tdc €/"$".
@@ -800,10 +800,14 @@ void InitMultimonde2021Quanto(
 	}
 
 	// Calcul des spots des actifs en euros
-	PnlVect* spotsVect = pnl_vect_create_from_ptr(11, spots);
+	PnlVect* spotsVect = pnl_vect_create_from_zero(11);
+	// Pour des appels au temps t, les spots sont extraits de past.
+	// Le vecteur passé à BlackScholes est donc inutilisé et est purement là pour la compatibilité avec les appels en temps 0 des autres options.
+
+	/*PnlVect* spotsVect = pnl_vect_create_from_ptr(11, currentPrices);
 	for (int i = 1; i <= 5; i++) {
 		LET(spotsVect, i) /= GET(spotsVect, 5+i);
-	}
+	}*/
 
 	// Mises des tendances des actifs au taux sans risque domestique ; calcul des tendances des taux de change
 	PnlVect* trendsVect = pnl_vect_create(11);
@@ -816,9 +820,82 @@ void InitMultimonde2021Quanto(
 	
 	// Mises à jour des corrélations
 	PnlMat* correlationsMat = pnl_mat_create_from_zero(11, 11);
-	
-	//actifs-tdc //WIP
-	//actifs-actifs //WIP
+	for (int y = 0; y <= 10; y++) {
+		for (int x = 0; x <= 10; x++) {
+			if (x == y) {
+				MLET(correlationsMat, y, x) = 1;
+			}
+			else {
+				if (y == 0) { // Actif européen
+					if (x <= 5) { // Actif non européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (x)+(x + 5)],
+							correlations[11 * (x)+(y)],
+							correlations[11 * (x + 5) + (y)],
+							volatilities[x],
+							volatilities[x + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = actif européen
+					}
+					else { // Taux de change
+						MLET(correlationsMat, y, x) = correlations[11 * (x)+(y)];
+					}
+				} 
+				else if (y <= 5) { // Actif non européen
+					if (x == 0) { // Actif européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (y)+(y + 5)],
+							correlations[11 * (y)+(x)],
+							correlations[11 * (y + 5) + (x)],
+							volatilities[y],
+							volatilities[y + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = actif européen
+					}
+					else if (x <= 5) { // Actif non européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithCminusD(
+							correlations[11 * (y)+(y + 5)],
+							correlations[11 * (y)+(x)],
+							correlations[11 * (y)+(x + 5)],
+							correlations[11 * (y + 5) + (x)],
+							correlations[11 * (y + 5) + (x + 5)],
+							correlations[11 * (x)+(x + 5)],
+							volatilities[y],
+							volatilities[y + 5],
+							volatilities[x],
+							volatilities[x + 5]
+						);
+						//A = actif non européen ; B = taux de change €/$ ; C = actif non européen ; D = taux de change €/$
+					}
+					else { // Taux de change
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (y)+(y + 5)],
+							correlations[11 * (y)+(x)],
+							correlations[11 * (y + 5) + (x)],
+							volatilities[y],
+							volatilities[y + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = taux de change €/$
+					}
+				}
+				else { // Taux de change
+					if (x == 0) { // Actif européen
+						MLET(correlationsMat, y, x) = correlations[11 * (y)+(x)];
+
+					}
+					else if (x <= 5) { // Actif non européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (x)+(x + 5)],
+							correlations[11 * (x)+(y)],
+							correlations[11 * (x + 5) + (y)],
+							volatilities[x],
+							volatilities[x + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = taux de change €/$
+					}
+					else { // Taux de change
+						MLET(correlationsMat, y, x) = correlations[11 * (y)+(x)];
+					}
+				}
+			}
+		}
+	}
 
 	*opt = new Multimonde2021Quanto();
 
@@ -827,6 +904,46 @@ void InitMultimonde2021Quanto(
 	PnlRng *rng = pnl_rng_create(0);
 	pnl_rng_sseed(rng, time(NULL));
 	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
+}
+
+PnlMat* Multimonde2021Quanto_BuildFromPast(
+	int nbRows,
+	double past[]
+) {
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 11, past);
+	for (int y = 0; y < nbRows; y++) {
+		for (int x = 1; x <= 5; x++) {
+			MLET(pastMat, y, x) /= MGET(pastMat, y, x + 5);
+		}
+	}
+	return pastMat;
+}
+
+#pragma endregion
+#pragma region Price
+void PriceMultimonde2021Quanto(
+	int sampleNumber,
+	double past[], // format [,]
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[], //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+	double* price,
+	double* ic)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+
+	//Gestions paramètres past
+	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
+	PnlVect* currentVect = pnl_vect_create_from_ptr(11, currentPrices);
+
+	mc->price(pastMat, t, currentVect, price, ic);
 }
 #pragma endregion
 #pragma endregion
