@@ -36,6 +36,9 @@ void MonteCarlo::price(double* prix, double* ic) {
 		else { mod_->postInitAssetCustomDates(path, opt_->customDates, opt_->nbTimeSteps, rng_); }
 
 		double payoff = opt_->payoff(path);
+		if (i % 1000 == 0 || i == nbSamples_ -1) {
+			//std::cout << payoff << std::endl;
+		}
 		mySum += payoff;
 		mySquaredSum += payoff * payoff;
 	}
