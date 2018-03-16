@@ -10,7 +10,7 @@ Multimonde2021Quanto::Multimonde2021Quanto()
 	double temp = 371.0 / 365.25;
 	pnl_vect_create_from_list(7, 0.0, temp, temp * 2, temp * 3, temp * 4, temp * 5, temp * 6);
 	this->customDates = customDates;
-	this->size = 11; //Actif euro [1] //Actifs étrangers [5] // Taux de change : 1 € en monnaie étrangère
+	this->size = 11; //Actif euro [1] //Actifs étrangers [5] // Taux de change [5] : 1 € en monnaie étrangère
 	this->nbTimeSteps = 6;
 	this->T = GET(customDates, 6);
 }

@@ -1,3 +1,4 @@
+#pragma region Includes
 #include "stdafx.h"
 
 #include "time.h"
@@ -11,13 +12,17 @@
 #include "QuantoOption.h"
 #include "BasketOption.h"
 #include "Multimonde2021.h"
+#include "Multimonde2021Quanto.h"
 
 #include "pnl/pnl_vector.h"
 #include "pnl/pnl_cdf.h"
 
 #include "ProfitAndLossUtilities.h"
 #include "MathUtils.cpp"
+#pragma endregion
 
+#pragma region Basket Option
+#pragma region Inits
 void InitBasket(
 	MonteCarlo** mc,
 	Option** opt,
@@ -74,7 +79,8 @@ void InitBasketAnyTime(
 	pnl_rng_sseed(rng, time(NULL));
 	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
 }
-
+#pragma endregion
+#pragma region Price
 void PriceBasket(
 	double maturity,
 	int optionSize,
@@ -125,7 +131,8 @@ void PriceBasketAnyTime(
 
 	mc->price(pastMat, t, currentVect, price, ic);
 }
-
+#pragma endregion
+#pragma region Deltas multi currency
 void DeltasMultiCurrencyBasket(
 	double maturity,
 	int optionSize,
@@ -192,7 +199,8 @@ void DeltasMultiCurrencyBasketAnyTime(
 	*deltas = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltas, &(intermediate[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Deltas single currency
 void DeltasSingleCurrencyBasket(
 	double maturity,
 	int optionSize,
@@ -291,8 +299,11 @@ void DeltasSingleCurrencyBasketAnyTime(
 	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
 }
+#pragma endregion
+#pragma endregion
 
-
+#pragma region Multimonde 2021 (deprecated)
+#pragma region Inits
 void InitMultimonde2021(
 	MonteCarlo** mc,
 	Option** opt,
@@ -345,8 +356,8 @@ void InitMultimonde2021AnyTime(
 	pnl_rng_sseed(rng, time(NULL));
 	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
 }
-
-
+#pragma endregion
+#pragma region Price
 void PriceMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -392,7 +403,8 @@ void PriceMultimonde2021AnyTime(
 
 	mc->price(pastMat, t, currentVect, price, ic);
 }
-
+#pragma endregion
+#pragma region Deltas multi currency
 void DeltasMultiCurrencyMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -461,7 +473,8 @@ void DeltasMultiCurrencyMultimonde2021AnyTime(
 	*deltas = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltas, &(intermediate[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Deltas single currency
 void DeltasSingleCurrencyMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -538,7 +551,8 @@ void DeltasSingleCurrencyMultimonde2021AnyTime(
 	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Convert deltas
 void ConvertDeltas(
 	double deltas[],
 	double prices[],
@@ -560,7 +574,8 @@ void ConvertDeltas(
 	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Tracking error
 void TrackingErrorMultimonde(
 	int sampleNumber,
 	double spots[],
@@ -700,7 +715,11 @@ void TrackingErrorMultimonde(
 
 
 }
+#pragma endregion
+#pragma endregion
 
+#pragma region Quanto Option
+#pragma region Price
 void PriceQuanto(
 	double maturity,
 	double strike,
@@ -755,7 +774,65 @@ void PriceQuanto(
 
 	mc->price(price, ic);
 }
+#pragma endregion
+#pragma endregion
 
+#pragma region Multimonde 2021 Quanto
+#pragma region Inits
+/*
+ * Initialise le MonteCarlo, l'Option, le BlackScholesModel, en calculant
+ * au préalable les nouvelles volatilités, tendances & corrélations.
+ */
+void InitMultimonde2021Quanto(
+	MonteCarlo** mc,
+	Option** opt,
+	BlackScholesModel** mod,
+	int sampleNumber, // Nombre de tirages ; les taux de changes attendus sont UN EURO EN LA MONNAIE ETRANGERE. (€/$)
+	double spots[], // Taille 11. Spots des actifs/tdc dans leurs monnaies. Indice 0/6 = domestique. 
+	double volatilities[], // Taille 11 Volatilités des actifs/tdc dans leurs monnaies ; volatilités des taux de change. Indice 0/6 = domestique.
+	double interestRates[], // Taille 6. Taux d'intérêts. Indice 0 = domestique.
+	double correlations[]) // Taille 11x11. Corrélations entre les actifs dans leurs monnaies et les tdc €/"$".
+{
+	// Calcul de la volatilités des actifs en euros
+	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(11,volatilities);
+	for (int i = 1; i <= 5; i++) {
+		LET(volatilitiesVect, i) = sqrt(volatilities[5+i] * volatilities[5+i] + volatilities[i] * volatilities[i] - 2 * correlations[11*(i) + (5+i)] * volatilities[i] * volatilities[5+i]);
+	}
+
+	// Calcul des spots des actifs en euros
+	PnlVect* spotsVect = pnl_vect_create_from_ptr(11, spots);
+	for (int i = 1; i <= 5; i++) {
+		LET(spotsVect, i) /= GET(spotsVect, 5+i);
+	}
+
+	// Mises des tendances des actifs au taux sans risque domestique ; calcul des tendances des taux de change
+	PnlVect* trendsVect = pnl_vect_create(11);
+	for (int i = 0; i <= 5; i++) {
+		LET(trendsVect, i) = interestRates[0];
+	} // trends(actifs) = r€
+	for (int i = 6; i <= 10; i++) {
+		LET(trendsVect, i) = interestRates[i-5] - interestRates[0] + volatilities[i-5]*volatilities[i-5];
+	} // trends(tdc €/$) = r$ - r€ + sigma$^2
+	
+	// Mises à jour des corrélations
+	PnlMat* correlationsMat = pnl_mat_create_from_zero(11, 11);
+	
+	//actifs-tdc //WIP
+	//actifs-actifs //WIP
+
+	*opt = new Multimonde2021Quanto();
+
+	*mod = new BlackScholesModel(11, interestRates[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
+
+	PnlRng *rng = pnl_rng_create(0);
+	pnl_rng_sseed(rng, time(NULL));
+	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
+}
+#pragma endregion
+#pragma endregion
+
+#pragma region Utils
 double call_pnl_cdfnor(double x) {
 	return pnl_cdfnor(x);
 }
+#pragma endregion
