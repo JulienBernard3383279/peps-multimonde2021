@@ -1,4 +1,4 @@
-ï»¿#include "stdafx.h"
+#include "stdafx.h"
 
 #include "time.h"
 #include <iostream>
@@ -83,7 +83,7 @@ void PriceBasket(
 	double spots[],
 	double volatilities[],
 	double interestRate,
-	double correlation[], //optionSizeÂ², traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+	double correlation[], //optionSize², traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
 	double trends[],
 	double* price,
 	double* ic)
@@ -108,7 +108,7 @@ void PriceBasketAnyTime(
 	double current[], 
 	double volatilities[],
 	double interestRate,
-	double correlation[], //optionSizeÂ², traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+	double correlation[], //optionSize², traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
 	double trends[],
 	double* price,
 	double* ic)
@@ -118,8 +118,8 @@ void PriceBasketAnyTime(
 	BlackScholesModel *mod;
 	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
 
-	//Gestion paramÃ¨tres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra Ãªtre multidimensionnel [,], pas jagged !
+	//Gestion paramètres past
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
 	mc->price(pastMat, t, currentVect, price, ic);
@@ -176,8 +176,8 @@ void DeltasMultiCurrencyBasketAnyTime(
 	BlackScholesModel *mod;
 	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
 
-	//Gestion paramÃ¨tres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra Ãªtre multidimensionnel [,], pas jagged !
+	//Gestion paramètres past
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
 	PnlVect* myDeltas = pnl_vect_create_from_zero(6);
@@ -261,8 +261,8 @@ void DeltasSingleCurrencyBasketAnyTime(
 	BlackScholesModel *mod;
 	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
 
-	//Gestion paramÃ¨tres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra Ãªtre multidimensionnel [,], pas jagged !
+	//Gestion paramètres past
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
 	/*PnlVect* myDeltas = pnl_vect_create_from_zero(6);
@@ -385,8 +385,8 @@ void PriceMultimonde2021AnyTime(
 
 	InitMultimonde2021AnyTime(&mc, &opt, &mod, sampleNumber, volatilities, interestRate, correlation, trends);
 
-	//Gestions paramÃ¨tres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra Ãªtre multidimensionnel [,], pas jagged !
+	//Gestions paramètres past
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
 	mc->price(pastMat, t, currentVect, price, ic);
@@ -402,12 +402,12 @@ void DeltasMultiCurrencyMultimonde2021(
 	double** deltas)
 {
 	/*
-	* Pour obtenir le delta en "0" il faut shifter en "0+". MathÃ©matiquement, on obtiendrait un delta
-	* ne rendant pas compte du changement de performance mais juste de l'Ã©ventualitÃ© qu'on se heurte au mur des 15%.
-	* C'est le cas pour toutes les dates de constation, on s'intÃ©resse Ã  l'instant suivant.
+	* Pour obtenir le delta en "0" il faut shifter en "0+". Mathématiquement, on obtiendrait un delta
+	* ne rendant pas compte du changement de performance mais juste de l'éventualité qu'on se heurte au mur des 15%.
+	* C'est le cas pour toutes les dates de constation, on s'intéresse à l'instant suivant.
 	* Exemple, avec une option qui donne la performance de l'option entre 0 et T (ie prix de l'actif en T / prix
-	* de l'actif en 0), si on shift en 0 et non 0+, alors le delta obtenu pour cet actif par rapport Ã  son sous-jacent
-	* serait de 0 alors qu'il est Ã©videmment de 1. - Julien
+	* de l'actif en 0), si on shift en 0 et non 0+, alors le delta obtenu pour cet actif par rapport à son sous-jacent
+	* serait de 0 alors qu'il est évidemment de 1. - Julien
 	*/
 	MonteCarlo *mc;
 	Option *opt;
@@ -445,7 +445,7 @@ void DeltasMultiCurrencyMultimonde2021AnyTime(
 
 	InitMultimonde2021AnyTime(&mc, &opt, &mod, sampleNumber, volatilities, interestRate, correlation, trends);
 
-	//Gestions paramÃ¨tres past
+	//Gestions paramètres past
 	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past);
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
@@ -516,7 +516,7 @@ void DeltasSingleCurrencyMultimonde2021AnyTime(
 
 	InitMultimonde2021AnyTime(&mc, &opt, &mod, sampleNumber, volatilities, interestRate, correlation, trends);
 
-	//Gestions paramÃ¨tres past
+	//Gestions paramètres past
 	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past);
 	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
 
@@ -731,7 +731,7 @@ void PriceQuanto(
 	std::cout << "Spots en euros" << std::endl;
 	pnl_vect_print_asrow(spotsVect);
 
-	// On fixe les Âµ avec les taux sans risque
+	// On fixe les µ avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];
 	LET(trendsVect, 1) = interestRate[0] - interestRate[1] + volatilities[1]*volatilities[1];
