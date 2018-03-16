@@ -112,7 +112,7 @@ namespace PricerDll.CustomTests
 
             // test sur Call quanto 
             spots = new double[2] { 100.0, 0.8 };
-            volatilities = new double[2] { 0.05, 0.05 };
+            volatilities = new double[2] { 0.05, 0.03 };
             interestRates = new double[2] { 0.05, 0.06 };
             correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
 
