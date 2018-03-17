@@ -20,6 +20,11 @@
 </head>
 <body>
 
+    <script src="@Url.Content("~/Scripts/jquery-1.10.2.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
+
     @using (Ajax.BeginForm("Pricer", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "ourPrice" }))
     {
         <legend>Paramètres du multimonde</legend>
@@ -34,9 +39,10 @@
             <input type="submit" value="Submit" class="submit" />
         </div>
 
-        <div id="ourPrice">
-        </div>
     }
 
+    <div id="ourPrice">
+        @*@{ Html.RenderPartial("~/Views/Home/Pricer.cshtml");}*@
+    </div>
 </body>
 </html>

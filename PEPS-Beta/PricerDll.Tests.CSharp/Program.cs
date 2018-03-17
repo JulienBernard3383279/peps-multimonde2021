@@ -37,9 +37,9 @@ namespace PricerConsole
                 {
                     try
                     {
-                        Console.WriteLine("Samples number (empty <-> 200 000) :");
+                        Console.WriteLine("Samples number (empty <-> "+(goToTrackingError ? "2 000" : "200 000")+") :");
                         string intermediateNbSamples = Console.ReadLine().Replace('.', ',');
-                        nbSamples = (intermediateNbSamples == "") ? 200000 : int.Parse(intermediateNbSamples);
+                        nbSamples = (intermediateNbSamples == "") ? (goToTrackingError ? 2000 : 200000)  : int.Parse(intermediateNbSamples);
                         if (nbSamples <= 0)
                         {
                             nbSamples = 0;
@@ -135,8 +135,7 @@ namespace PricerConsole
                         volatilitiesInvalide = true;
                     }
                 }
-                while (volatilitiesInvalide || spotsOrCurrent.Length != thingsToSimulate);
-
+                while (volatilitiesInvalide || volatilities.Length != thingsToSimulate);
 
                 Boolean rfInvalide = true;
                 do
@@ -203,7 +202,7 @@ namespace PricerConsole
                 }
                 while (FXInvalide);
 
-                Console.WriteLine("Correlations are not yet implemented. Currently, all assets are assumed independant.");
+                Console.WriteLine("Correlations cannot be entered yet. Currently, all assets are assumed independant.");
 
                 double[] correlations = new double[thingsToSimulate * thingsToSimulate];
 

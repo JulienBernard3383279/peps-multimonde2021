@@ -8,6 +8,7 @@ namespace PricerDll.CustomTests
 {
     public static unsafe class MathUtils
     {
+        #region Utils Soufiane
         public static double[,] ComputeReturns(double[,] data)
         {
             /*double[,] returns = new double[data.GetLength(0)-1, data.GetLength(1)];
@@ -43,7 +44,6 @@ namespace PricerDll.CustomTests
             }
             return mean;
         }
-
         public static double[,] ComputeCovMatrix(double[,] returns)
         {
             double[,] covMat = new double[returns.GetLength(1), returns.GetLength(1)];
@@ -88,5 +88,48 @@ namespace PricerDll.CustomTests
             }
             return corrMat;
         }
+        #endregion
+
+        #region A,B to A+B,B Correlation matrixes utils
+        /*
+         * Compute the correlation of A+B with B assuming A and B follow normal laws
+         */
+        public static double CorrAplusBwithB(double corrAB, double volA, double volB)
+        {
+            return (corrAB * volA + volB) / Math.Sqrt(volA * volA + volB + volB + corrAB * volA * volB);
+        }
+
+        /*
+         * Takes a 2x2 correlation matrix for variables A and B and
+         * transforms it into the correlation matrix of variables A+B and B
+         * Uses an array
+         * Arrays are passed by reference in C#
+         */
+        public static void FromCorrABToCorrAPlusBB(double[] matrix, double volA, double volB)
+        {
+            matrix[1] = CorrAplusBwithB(matrix[1], volA, volB);
+            matrix[2] = CorrAplusBwithB(matrix[2], volA, volB);
+        }
+
+        /*
+         * Generates a 2x2 correlation matrix for variables A+B and B
+         * from the correlation matrix of variables A+B and B
+         * Uses an array
+         */
+        public static double[] GenCorrAPlusBBFromCorrAB(double[] matrix, double volA, double volB)
+        {
+            double[] toBeReturned;
+            toBeReturned = (double[])matrix.Clone();
+            FromCorrABToCorrAPlusBB(toBeReturned, volA, volB);
+            return toBeReturned;
+        }
+        public static double[] GenCorrAPlusBBFromCorrAB(double[] matrix, double[] vol)
+        {
+            double[] toBeReturned;
+            toBeReturned = (double[])matrix.Clone();
+            FromCorrABToCorrAPlusBB(toBeReturned, vol[0], vol[1]);
+            return toBeReturned;
+        }
+        #endregion
     }
 }

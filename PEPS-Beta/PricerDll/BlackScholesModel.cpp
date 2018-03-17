@@ -129,13 +129,15 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 	// Initialisation de path
 	int from = past->m;
 
+	PnlVect* temp = pnl_vect_create(size_);
+
 	if (from == 0) {
 		pnl_mat_set_row(path, spot_, 0);
 	}
 	else { // Pas trouvé de solution évidemment plus efficace. Mais il doit y avoir mieux ?
 		for (int i = 0; i < from; i++) {
-			pnl_mat_get_row(&tempMemSpace1_, past, i);
-			pnl_mat_set_row(path, &tempMemSpace1_, i);
+			pnl_mat_get_row(temp, past, i);
+			pnl_mat_set_row(path, temp, i);
 		}
 	}
 
@@ -170,7 +172,7 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 	PnlMat *past, double t, PnlVect *current,
 	PnlVect* dates, int nbTimeSteps, PnlRng *rng) {
 
-	PnlVect* temp = pnl_vect_create(6);
+	PnlVect* temp = pnl_vect_create(size_);
 
 	// Initialisation de path
 	int from = past->m;
@@ -198,7 +200,6 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 			* exp((GET(trend_, d) - pow(GET(sigma_, d), 2) / 2.) * (step)
 				+ GET(sigma_, d) * sqrt(step) * pnl_vect_scalar_prod(&tempMemSpace1_, &tempMemSpace2_));
 	}
-	//DEBUG //TODO LES 10 LIGNES PRECEDENTES METTENT DES -1.#IND00 dans path
 
 	for (int i = from + 1; i <= nbTimeSteps; ++i) {
 		step = GET(dates, i) - GET(dates, i - 1);
