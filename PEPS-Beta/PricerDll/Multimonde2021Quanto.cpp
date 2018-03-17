@@ -4,8 +4,8 @@
 
 Multimonde2021Quanto::Multimonde2021Quanto()
 {
-	payoffVectMemSpaceInit_ = pnl_vect_create_from_zero(6);
-	payoffVectMemSpaceCurrent_ = pnl_vect_create_from_zero(6);
+	payoffVectMemSpaceInit_ = pnl_vect_create_from_zero(11);
+	payoffVectMemSpaceCurrent_ = pnl_vect_create_from_zero(11);
 	this->custom = true;
 	double temp = 371.0 / 365.25;
 	this->customDates = pnl_vect_create_from_list(7, 0.0, temp, temp * 2, temp * 3, temp * 4, temp * 5, temp * 6);

@@ -922,6 +922,13 @@ PnlMat* Multimonde2021Quanto_BuildFromPast(
 	}
 	return pastMat;
 }
+PnlVect* Multimonde2021Quanto_BuildFromCurrentPrices(double current[]) {
+	PnlVect* toBeReturned = pnl_vect_create_from_ptr(11, current);
+	for (int i = 1; i <= 5; i++) {
+		LET(toBeReturned, i) /= GET(toBeReturned, i + 5);
+	}
+	return toBeReturned;
+}
 
 #pragma endregion
 #pragma region Price
@@ -942,9 +949,11 @@ void PriceMultimonde2021Quanto(
 	BlackScholesModel *mod;
 
 	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+
 	//Gestions paramètres past
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
-	PnlVect* currentVect = pnl_vect_create_from_ptr(11, currentPrices);
+	//ConvertToEuros(pastMat);
+	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
 	mc->price(pastMat, t, currentVect, price, ic);
 
 }
