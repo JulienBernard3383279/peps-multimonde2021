@@ -9,6 +9,7 @@ namespace PricerDll.CustomTests
 {
     public static unsafe class API
     {
+        #region Basket
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceBasket(
             double maturity,
@@ -111,18 +112,9 @@ namespace PricerDll.CustomTests
             out IntPtr deltasAssets,
             out IntPtr deltasFXRates
         );
+        #endregion
 
-
-
-
-
-
-
-
-
-
-
-
+        #region Multimonde2021 deprecated
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceMultimonde2021(
             int sampleNumber,
@@ -224,10 +216,14 @@ namespace PricerDll.CustomTests
             out IntPtr deltasAssets,
             out IntPtr deltasFXRates
         );
+        #endregion
 
+        #region Utils
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe double call_pnl_cdfnor(double d);
+        #endregion
 
+        #region Quanto
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceQuanto(
             double maturity,
@@ -239,5 +235,21 @@ namespace PricerDll.CustomTests
             double[] correlations,
             double* price,
             double* ic);
+        #endregion
+
+        #region Multimonde 2021 Quanto
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void PriceMultimonde2021Quanto(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations,
+            double* price,
+            double* ic);
+        #endregion
     }
 }

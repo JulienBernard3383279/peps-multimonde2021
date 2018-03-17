@@ -109,7 +109,6 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 			mod_->postInitAssetCustomDates(path,
 			                                  past, t, current,
 			                                  opt_->customDates, opt_->nbTimeSteps, rng_); }
-
 		tempPayoff = opt_->payoff(path);
 
 		mySum += tempPayoff;

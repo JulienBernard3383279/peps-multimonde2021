@@ -6,6 +6,7 @@
 #define PRICERDLL_API __declspec(dllimport)
 #endif
 
+#pragma region Basket
 extern "C" PRICERDLL_API void PriceBasket(
 	double maturity,
 	int optionSize,
@@ -102,16 +103,9 @@ extern "C" PRICERDLL_API void DeltasSingleCurrencyBasketAnyTime(
 	double** deltasAssets,
 	double** deltasFXRates
 );
+#pragma endregion
 
-
-
-
-
-
-
-
-
-
+#pragma region Multimonde 2021 (deprecated)
 extern "C" PRICERDLL_API void PriceMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -204,8 +198,9 @@ extern "C" PRICERDLL_API void ConvertDeltas(
 	double FXRates[],
 	double** deltasAssets,
 	double** deltasFXRates);
+#pragma endregion
 
-
+#pragma region Quanto
 extern "C" PRICERDLL_API void PriceQuanto(
 	double maturity,
 	double strike,
@@ -216,8 +211,22 @@ extern "C" PRICERDLL_API void PriceQuanto(
 	double correlations[],
 	double* price,
 	double* ic);
+#pragma endregion
 
+#pragma region Multimonde 2021 Quanto
+extern "C" PRICERDLL_API void PriceMultimonde2021Quanto(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double* price,
+	double* ic);
+#pragma endregion
 
-// FONCTIONS PNL EXPORTEES
-
+#pragma region Utils
 extern "C" PRICERDLL_API double call_pnl_cdfnor(double x);
+#pragma endregion

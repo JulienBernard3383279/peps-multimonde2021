@@ -25,14 +25,16 @@ static double VolAminusB(double corrAB, double volA, double volB) {
 * Computes the volatility of A+B with C assuming A, B and C follow normal laws
 */
 static double CorrAplusBwithC(double corrAB, double corrAC, double corrBC, double volA, double volB) {
-	return (corrAC*volA + corrBC * volB) / VolAplusB(corrAB, volA, volB);
+	return VolAplusB(corrAB, volA, volB)==0 ? 0 :
+		(corrAC*volA + corrBC * volB) / VolAplusB(corrAB, volA, volB);
 }
 
 /*
 * Computes the volatility of A-B with C assuming A, B and C follow normal laws
 */
 static double CorrAminusBwithC(double corrAB, double corrAC, double corrBC, double volA, double volB) {
-	return (corrAC*volA - corrBC * volB) / VolAminusB(corrAB, volA, volB);
+	return VolAminusB(corrAB, volA, volB) == 0 ? 0 :
+		(corrAC*volA - corrBC * volB) / VolAminusB(corrAB, volA, volB);
 }
 
 /*
@@ -40,15 +42,16 @@ static double CorrAminusBwithC(double corrAB, double corrAC, double corrBC, doub
 */
 static double CorrAplusBwithCplusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
 	double volA, double volB, double volC, double volD) {
-	return (
-		volA * volC * corrAC +
-		volA * volD * corrAD +
-		volB * volC * corrBC +
-		volB * volD * corrBD
-		) / (
-			VolAplusB(corrAB, volA, volB) +
-			VolAplusB(corrCD, volC, volD)
-			);
+	return VolAplusB(corrAB, volA, volB)*VolAplusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC +
+			volA * volD * corrAD +
+			volB * volC * corrBC +
+			volB * volD * corrBD
+			) / (
+				VolAplusB(corrAB, volA, volB) +
+				VolAplusB(corrCD, volC, volD)
+				);
 }
 
 /*
@@ -56,15 +59,16 @@ static double CorrAplusBwithCplusD(double corrAB, double corrAC, double corrAD, 
 */
 static double CorrAminusBwithCplusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
 	double volA, double volB, double volC, double volD) {
-	return (
-		volA * volC * corrAC +
-		volA * volD * corrAD -
-		volB * volC * corrBC -
-		volB * volD * corrBD
-		) / (
-			VolAminusB(corrAB, volA, volB) +
-			VolAplusB(corrCD, volC, volD)
-			);
+	return VolAminusB(corrAB, volA, volB)*VolAplusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC +
+			volA * volD * corrAD -
+			volB * volC * corrBC -
+			volB * volD * corrBD
+			) / (
+				VolAminusB(corrAB, volA, volB) +
+				VolAplusB(corrCD, volC, volD)
+				);
 }
 
 /*
@@ -72,15 +76,16 @@ static double CorrAminusBwithCplusD(double corrAB, double corrAC, double corrAD,
 */
 static double CorrAplusBwithCminusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
 	double volA, double volB, double volC, double volD) {
-	return (
-		volA * volC * corrAC -
-		volA * volD * corrAD +
-		volB * volC * corrBC -
-		volB * volD * corrBD
-		) / (
-			VolAplusB(corrAB, volA, volB) +
-			VolAminusB(corrCD, volC, volD)
-			);
+	return VolAplusB(corrAB, volA, volB)*VolAminusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC -
+			volA * volD * corrAD +
+			volB * volC * corrBC -
+			volB * volD * corrBD
+			) / (
+				VolAplusB(corrAB, volA, volB) +
+				VolAminusB(corrCD, volC, volD)
+				);
 }
 
 /*
@@ -88,15 +93,16 @@ static double CorrAplusBwithCminusD(double corrAB, double corrAC, double corrAD,
 */
 static double CorrAminusBwithCminusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
 	double volA, double volB, double volC, double volD) {
-	return (
-		volA * volC * corrAC -
-		volA * volD * corrAD -
-		volB * volC * corrBC +
-		volB * volD * corrBD
-		) / (
-			VolAminusB(corrAB, volA, volB) +
-			VolAminusB(corrCD, volC, volD)
-			);
+	return VolAminusB(corrAB, volA, volB)*VolAminusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC -
+			volA * volD * corrAD -
+			volB * volC * corrBC +
+			volB * volD * corrBD
+			) / (
+				VolAminusB(corrAB, volA, volB) +
+				VolAminusB(corrCD, volC, volD)
+				);
 }
 
 /*
@@ -105,7 +111,8 @@ static double CorrAminusBwithCminusD(double corrAB, double corrAC, double corrAD
  */
 static double CorrAminusBwithB(double corrAB, double volA, double volB)
 {
-	return (corrAB * volA - volB) / sqrt(volA * volA + volB * volB - 2 * corrAB * volA * volB);
+	return VolAminusB(corrAB, volA, volB) == 0 ? 0 :
+		(corrAB * volA - volB) / VolAminusB(corrAB, volA, volB);
 }
 
 /*
@@ -114,7 +121,8 @@ static double CorrAminusBwithB(double corrAB, double volA, double volB)
 */
 static double CorrAplusBwithB(double corrAB, double volA, double volB)
 {
-	return (corrAB * volA + volB) / sqrt(volA * volA + volB * volB + 2 * corrAB * volA * volB);
+	return VolAplusB(corrAB, volA, volB) == 0 ? 0 :
+		(corrAB * volA + volB) / VolAplusB(corrAB, volA, volB);
 }
 #pragma endregion
 

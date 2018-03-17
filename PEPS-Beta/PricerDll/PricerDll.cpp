@@ -1,3 +1,5 @@
+#pragma once
+
 #pragma region Includes
 #include "stdafx.h"
 
@@ -793,6 +795,7 @@ void InitMultimonde2021Quanto(
 	double interestRates[], // Taille 6. Taux d'intérêts. Indice 0 = domestique.
 	double correlations[]) // Taille 11x11. Corrélations entre les actifs dans leurs monnaies et les tdc €/"$".
 {
+
 	// Calcul de la volatilités des actifs en euros
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(11,volatilities);
 	for (int i = 1; i <= 5; i++) {
@@ -817,7 +820,7 @@ void InitMultimonde2021Quanto(
 	for (int i = 6; i <= 10; i++) {
 		LET(trendsVect, i) = interestRates[i-5] - interestRates[0] + volatilities[i-5]*volatilities[i-5];
 	} // trends(tdc €/$) = r$ - r€ + sigma$^2
-	
+
 	// Mises à jour des corrélations
 	PnlMat* correlationsMat = pnl_mat_create_from_zero(11, 11);
 	for (int y = 0; y <= 10; y++) {
@@ -904,6 +907,7 @@ void InitMultimonde2021Quanto(
 	PnlRng *rng = pnl_rng_create(0);
 	pnl_rng_sseed(rng, time(NULL));
 	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
+
 }
 
 PnlMat* Multimonde2021Quanto_BuildFromPast(
@@ -938,12 +942,11 @@ void PriceMultimonde2021Quanto(
 	BlackScholesModel *mod;
 
 	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
-
 	//Gestions paramètres past
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
 	PnlVect* currentVect = pnl_vect_create_from_ptr(11, currentPrices);
-
 	mc->price(pastMat, t, currentVect, price, ic);
+
 }
 #pragma endregion
 #pragma endregion
