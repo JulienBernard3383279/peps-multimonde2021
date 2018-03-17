@@ -38,10 +38,8 @@ namespace PricerDll.CustomTests
             double[] FXRates = new double[optionSize];
             double interestRate;
 
-
-            Console.WriteLine("Interest rate (empty <-> 0) :");
-            string intermediateInterestRate = Console.ReadLine().Replace('.', ',');
-            interestRate = (intermediateInterestRate == "") ? 0 : double.Parse(intermediateInterestRate);
+            
+            interestRate = 0.021;
 
             if (t == 0)
             {
@@ -60,9 +58,11 @@ namespace PricerDll.CustomTests
             double[,] covMat = PricerDll.CustomTests.MathUtils.ComputeCovMatrix(PricerDll.CustomTests.MathUtils.ComputeReturns(data_));
             volatilities = PricerDll.CustomTests.MathUtils.ComputeVolatility(covMat);
 
-            trends = new double[6] { 0, 0, 0, 0, 0, 0 };
+            trends = new double[6] {  0.021, 0.031, 0.024, 0.021, 0.007, 0.045};
+            //trends = new double[6] { 0,0,0,0,0,0};
 
-            FXRates = new double[6] { 1,dataFX[0,dataFX.GetLength(0)], dataFX[1, dataFX.GetLength(0)], dataFX[2, dataFX.GetLength(0)], dataFX[3, dataFX.GetLength(0)], dataFX[4, dataFX.GetLength(0)] };
+
+            FXRates = new double[6] { 1,dataFX[0,248+nb], dataFX[1, 248 + nb], dataFX[2, 248 + nb], dataFX[3, 248 + nb], dataFX[4, 248 + nb] };
             //FXRates = new double[6] { 1, 1, 1, 1, 1, 1 };
 
             double[] correlations = new double[optionSize * optionSize];
@@ -86,7 +86,7 @@ namespace PricerDll.CustomTests
             {
                 nbRows = 1 + (int)(t / (371.0 / 365.25));
                 //string intermediatePast = "";
-                Console.WriteLine("Past (cannot leave empty) :");
+                //Console.WriteLine("Past (cannot leave empty) :");
                 past = new double[5 * nbRows];
                 for (int j = 0; j < nbRows; j++)
                 {
