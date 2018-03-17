@@ -10,6 +10,7 @@ namespace PricerDll.CustomTests
     {
         public static unsafe void PerformPriceTests()
         {
+            #region Certains
             int nbSamples = 100000;
 
             double[] currentPrices = new double[11] {
@@ -50,8 +51,10 @@ namespace PricerDll.CustomTests
                 &ic);
 
             Console.WriteLine("Test du Multimonde 2021 quanto sur monde gelé :");
+            Console.WriteLine("Devrait renvoyer avec certitude 100");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            Console.WriteLine();
 
             past = currentPrices = new double[11] {
                 80.0, 90.0, 100.0, 110.0, 120.0, 130.0,
@@ -68,8 +71,10 @@ namespace PricerDll.CustomTests
                 &price,
                 &ic);
             Console.WriteLine("Spots désormais non égaux à 100 : ");
+            Console.WriteLine("Devrait renvoyer avec certitude 100");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            Console.WriteLine();
 
             past = currentPrices = new double[11] {
                 80.0, 90.0, 100.0, 110.0, 120.0, 130.0,
@@ -86,13 +91,33 @@ namespace PricerDll.CustomTests
                 &price,
                 &ic);
             Console.WriteLine("Taux de change désormais non égaux à 1 : ");
+            Console.WriteLine("Devrait renvoyer avec certitude 100");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
-
-            Console.WriteLine();
-            Console.WriteLine("INDICATIFS");
             Console.WriteLine();
 
+            past = currentPrices = new double[11] {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
+                1.0, 1.0, 1.0, 1.0, 1.0 };
+            interestRates = new double[6] { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
+            API.PriceMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                &price,
+                &ic);
+            Console.WriteLine("Retour au monde gelé basique ; taux d'intérêts tous égaux à 0.01 : ");
+            Console.WriteLine("Devrait renvoyer avec certitude 114,60599991");
+            Console.WriteLine("Prix : " + price);
+            Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            Console.WriteLine();
+            #endregion
+            #region Incertains
             nbSamples = 100000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
@@ -133,25 +158,7 @@ namespace PricerDll.CustomTests
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
 
             Console.WriteLine();
-
-            interestRates = new double[6] {
-                0.02, 0.02, 0.02, 0.02, 0.02, 0.02
-            };
-            API.PriceMultimonde2021Quanto(
-                nbSamples,
-                past,
-                nbRows,
-                t,
-                currentPrices,
-                volatilities,
-                interestRates,
-                correlations,
-                &price,
-                &ic);
-            Console.WriteLine("Monde basique ; taux d'intérêt modifiés à 2%.");
-            Console.WriteLine("Devrait renvoyer nettement moins de 100 (actifs enregistrés après 1~6 ans d'augmentation, mais actualisés sur 6 ans)");
-            Console.WriteLine("Prix : " + price);
-            Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            #endregion
         }
     }
 }
