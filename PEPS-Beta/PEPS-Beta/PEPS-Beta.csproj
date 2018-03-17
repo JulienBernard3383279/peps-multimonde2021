@@ -16,8 +16,7 @@
     <AssemblyName>PEPS-Beta</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress>
-    </Use64BitIISExpress>
+    <Use64BitIISExpress>true</Use64BitIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -106,271 +105,628 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ADOSC\Const_ADOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADOSC\Impl_ADOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADOSC\Int_ADOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADXR\Const_ADXR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADXR\Impl_ADXR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADXR\Int_ADXR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADX\Const_ADX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADX\Impl_ADX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ADX\Int_ADX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AD\Const_AD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AD\Impl_AD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AD\Int_AD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="APO\Const_APO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="APO\Impl_APO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="APO\Int_APO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="App_Start\RouteConfig.cs" ></Compile>
-    <Compile Include="AROONOSC\Const_AROONOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AROONOSC\Impl_AROONOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AROONOSC\Int_AROONOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AROON\Const_AROON.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AROON\Impl_AROON.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AROON\Int_AROON.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ATR\Const_ATR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ATR\Impl_ATR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ATR\Int_ATR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="AvapiConnection.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BATCH_STOCK_QUOTES\Const_BATCH_STOCK_QUOTES.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BATCH_STOCK_QUOTES\Impl_BATCH_STOCK_QUOTES.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BATCH_STOCK_QUOTES\Int_BATCH_STOCK_QUOTES.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BBANDS\Const_BBANDS.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BBANDS\Impl_BBANDS.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BBANDS\Int_BBANDS.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BOP\Const_BOP.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BOP\Impl_BOP.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="BOP\Int_BOP.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CCI\Const_CCI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CCI\Impl_CCI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CCI\Int_CCI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CMO\Const_CMO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CMO\Impl_CMO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CMO\Int_CMO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="Controllers\HomeController.cs" ></Compile>
-    <Compile Include="CURRENCY_EXCHANGE_RATE\Const_CURRENCY_EXCHANGE_RATE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CURRENCY_EXCHANGE_RATE\Impl_CURRENCY_EXCHANGE_RATE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="CURRENCY_EXCHANGE_RATE\Int_CURRENCY_EXCHANGE_RATE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DEMA\Const_DEMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DEMA\Impl_DEMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DEMA\Int_DEMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_DAILY\Const_DIGITAL_CURRENCY_DAILY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_DAILY\Impl_DIGITAL_CURRENCY_DAILY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_DAILY\Int_DIGITAL_CURRENCY_DAILY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_INTRADAY\Const_DIGITAL_CURRENCY_INTRADAY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_INTRADAY\Impl_DIGITAL_CURRENCY_INTRADAY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_INTRADAY\Int_DIGITAL_CURRENCY_INTRADAY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_MONTHLY\Const_DIGITAL_CURRENCY_MONTHLY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_MONTHLY\Impl_DIGITAL_CURRENCY_MONTHLY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_MONTHLY\Int_DIGITAL_CURRENCY_MONTHLY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_WEEKLY\Const_DIGITAL_CURRENCY_WEEKLY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_WEEKLY\Impl_DIGITAL_CURRENCY_WEEKLY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DIGITAL_CURRENCY_WEEKLY\Int_DIGITAL_CURRENCY_WEEKLY.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DX\Const_DX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DX\Impl_DX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="DX\Int_DX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="EMA\Const_EMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="EMA\Impl_EMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="EMA\Int_EMA.cs" ><Visible>false</Visible></Compile>
+    <Compile Include="ADOSC\Const_ADOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADOSC\Impl_ADOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADOSC\Int_ADOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADXR\Const_ADXR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADXR\Impl_ADXR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADXR\Int_ADXR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADX\Const_ADX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADX\Impl_ADX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ADX\Int_ADX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AD\Const_AD.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AD\Impl_AD.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AD\Int_AD.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="APO\Const_APO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="APO\Impl_APO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="APO\Int_APO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="App_Start\RouteConfig.cs">
+    </Compile>
+    <Compile Include="AROONOSC\Const_AROONOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AROONOSC\Impl_AROONOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AROONOSC\Int_AROONOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AROON\Const_AROON.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AROON\Impl_AROON.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AROON\Int_AROON.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ATR\Const_ATR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ATR\Impl_ATR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ATR\Int_ATR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="AvapiConnection.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BATCH_STOCK_QUOTES\Const_BATCH_STOCK_QUOTES.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BATCH_STOCK_QUOTES\Impl_BATCH_STOCK_QUOTES.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BATCH_STOCK_QUOTES\Int_BATCH_STOCK_QUOTES.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BBANDS\Const_BBANDS.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BBANDS\Impl_BBANDS.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BBANDS\Int_BBANDS.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BOP\Const_BOP.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BOP\Impl_BOP.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="BOP\Int_BOP.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CCI\Const_CCI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CCI\Impl_CCI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CCI\Int_CCI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CMO\Const_CMO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CMO\Impl_CMO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CMO\Int_CMO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="Controllers\HomeController.cs">
+    </Compile>
+    <Compile Include="CURRENCY_EXCHANGE_RATE\Const_CURRENCY_EXCHANGE_RATE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CURRENCY_EXCHANGE_RATE\Impl_CURRENCY_EXCHANGE_RATE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="CURRENCY_EXCHANGE_RATE\Int_CURRENCY_EXCHANGE_RATE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DEMA\Const_DEMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DEMA\Impl_DEMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DEMA\Int_DEMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_DAILY\Const_DIGITAL_CURRENCY_DAILY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_DAILY\Impl_DIGITAL_CURRENCY_DAILY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_DAILY\Int_DIGITAL_CURRENCY_DAILY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_INTRADAY\Const_DIGITAL_CURRENCY_INTRADAY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_INTRADAY\Impl_DIGITAL_CURRENCY_INTRADAY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_INTRADAY\Int_DIGITAL_CURRENCY_INTRADAY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_MONTHLY\Const_DIGITAL_CURRENCY_MONTHLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_MONTHLY\Impl_DIGITAL_CURRENCY_MONTHLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_MONTHLY\Int_DIGITAL_CURRENCY_MONTHLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_WEEKLY\Const_DIGITAL_CURRENCY_WEEKLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_WEEKLY\Impl_DIGITAL_CURRENCY_WEEKLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DIGITAL_CURRENCY_WEEKLY\Int_DIGITAL_CURRENCY_WEEKLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DX\Const_DX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DX\Impl_DX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="DX\Int_DX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="EMA\Const_EMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="EMA\Impl_EMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="EMA\Int_EMA.cs">
+      <Visible>false</Visible>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="HT_DCPERIOD\Const_HT_DCPERIOD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_DCPERIOD\Impl_HT_DCPERIOD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_DCPERIOD\Int_HT_DCPERIOD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_DCPHASE\Const_HT_DCPHASE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_DCPHASE\Impl_HT_DCPHASE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_DCPHASE\Int_HT_DCPHASE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_PHASOR\Const_HT_PHASOR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_PHASOR\Impl_HT_PHASOR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_PHASOR\Int_HT_PHASOR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_SINE\Const_HT_SINE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_SINE\Impl_HT_SINE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_SINE\Int_HT_SINE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_TRENDLINE\Const_HT_TRENDLINE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_TRENDLINE\Impl_HT_TRENDLINE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_TRENDLINE\Int_HT_TRENDLINE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_TRENDMODE\Const_HT_TRENDMODE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_TRENDMODE\Impl_HT_TRENDMODE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="HT_TRENDMODE\Int_HT_TRENDMODE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="IAvapiConnection.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="KAMA\Const_KAMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="KAMA\Impl_KAMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="KAMA\Int_KAMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MACDEXT\Const_MACDEXT.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MACDEXT\Impl_MACDEXT.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MACDEXT\Int_MACDEXT.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MACD\Const_MACD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MACD\Impl_MACD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MACD\Int_MACD.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MAMA\Const_MAMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MAMA\Impl_MAMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MAMA\Int_MAMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MFI\Const_MFI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MFI\Impl_MFI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MFI\Int_MFI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MIDPOINT\Const_MIDPOINT.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MIDPOINT\Impl_MIDPOINT.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MIDPOINT\Int_MIDPOINT.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MIDPRICE\Const_MIDPRICE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MIDPRICE\Impl_MIDPRICE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MIDPRICE\Int_MIDPRICE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MINUS_DI\Const_MINUS_DI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MINUS_DI\Impl_MINUS_DI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MINUS_DI\Int_MINUS_DI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MINUS_DM\Const_MINUS_DM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MINUS_DM\Impl_MINUS_DM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MINUS_DM\Int_MINUS_DM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="Models\DataCurrencies.cs" ></Compile>
-    <Compile Include="Models\DataRetriever.cs" ></Compile>
-    <Compile Include="Models\DataStorage.cs" ></Compile>
-    <Compile Include="Models\HtmlDataRetriever.cs" ></Compile>
-    <Compile Include="MOM\Const_MOM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MOM\Impl_MOM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="MOM\Int_MOM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="NATR\Const_NATR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="NATR\Impl_NATR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="NATR\Int_NATR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="OBV\Const_OBV.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="OBV\Impl_OBV.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="OBV\Int_OBV.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PLUS_DI\Const_PLUS_DI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PLUS_DI\Impl_PLUS_DI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PLUS_DI\Int_PLUS_DI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PLUS_DM\Const_PLUS_DM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PLUS_DM\Impl_PLUS_DM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PLUS_DM\Int_PLUS_DM.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PPO\Const_PPO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PPO\Impl_PPO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="PPO\Int_PPO.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" ></Compile>
-    <Compile Include="ROCR\Const_ROCR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ROCR\Impl_ROCR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ROCR\Int_ROCR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ROC\Const_ROC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ROC\Impl_ROC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ROC\Int_ROC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="RSI\Const_RSI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="RSI\Impl_RSI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="RSI\Int_RSI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SAR\Const_SAR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SAR\Impl_SAR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SAR\Int_SAR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SECTOR\Impl_SECTOR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SECTOR\Int_SECTOR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SMA\Const_SMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SMA\Impl_SMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="SMA\Int_SMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCHF\Const_STOCHF.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCHF\Impl_STOCHF.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCHF\Int_STOCHF.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCHRSI\Const_STOCHRSI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCHRSI\Impl_STOCHRSI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCHRSI\Int_STOCHRSI.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCH\Const_STOCH.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCH\Impl_STOCH.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="STOCH\Int_STOCH.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="T3\Const_T3.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="T3\Impl_T3.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="T3\Int_T3.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TEMA\Const_TEMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TEMA\Impl_TEMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TEMA\Int_TEMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TIME_SERIES_DAILY\Const_TIME_SERIES_DAILY.cs" >
+    <Compile Include="HT_DCPERIOD\Const_HT_DCPERIOD.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_DAILY\Impl_TIME_SERIES_DAILY.cs" >
+    </Compile>
+    <Compile Include="HT_DCPERIOD\Impl_HT_DCPERIOD.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_DAILY\Int_TIME_SERIES_DAILY.cs" >
+    </Compile>
+    <Compile Include="HT_DCPERIOD\Int_HT_DCPERIOD.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_DAILY_ADJUSTED\Const_TIME_SERIES_DAILY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="HT_DCPHASE\Const_HT_DCPHASE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_DAILY_ADJUSTED\Impl_TIME_SERIES_DAILY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="HT_DCPHASE\Impl_HT_DCPHASE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_DAILY_ADJUSTED\Int_TIME_SERIES_DAILY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="HT_DCPHASE\Int_HT_DCPHASE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_INTRADAY\Const_TIME_SERIES_INTRADAY.cs" >
+    </Compile>
+    <Compile Include="HT_PHASOR\Const_HT_PHASOR.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_INTRADAY\Impl_TIME_SERIES_INTRADAY.cs" >
+    </Compile>
+    <Compile Include="HT_PHASOR\Impl_HT_PHASOR.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_INTRADAY\Int_TIME_SERIES_INTRADAY.cs" >
+    </Compile>
+    <Compile Include="HT_PHASOR\Int_HT_PHASOR.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_MONTHLY\Const_TIME_SERIES_MONTHLY.cs" >
+    </Compile>
+    <Compile Include="HT_SINE\Const_HT_SINE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_MONTHLY\Impl_TIME_SERIES_MONTHLY.cs" >
+    </Compile>
+    <Compile Include="HT_SINE\Impl_HT_SINE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_MONTHLY\Int_TIME_SERIES_MONTHLY.cs" >
+    </Compile>
+    <Compile Include="HT_SINE\Int_HT_SINE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_MONTHLY_ADJUSTED\Const_TIME_SERIES_MONTHLY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="HT_TRENDLINE\Const_HT_TRENDLINE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_MONTHLY_ADJUSTED\Impl_TIME_SERIES_MONTHLY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="HT_TRENDLINE\Impl_HT_TRENDLINE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_MONTHLY_ADJUSTED\Int_TIME_SERIES_MONTHLY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="HT_TRENDLINE\Int_HT_TRENDLINE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_WEEKLY\Const_TIME_SERIES_WEEKLY.cs" >
+    </Compile>
+    <Compile Include="HT_TRENDMODE\Const_HT_TRENDMODE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_WEEKLY\Impl_TIME_SERIES_WEEKLY.cs" >
+    </Compile>
+    <Compile Include="HT_TRENDMODE\Impl_HT_TRENDMODE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_WEEKLY\Int_TIME_SERIES_WEEKLY.cs" >
+    </Compile>
+    <Compile Include="HT_TRENDMODE\Int_HT_TRENDMODE.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_WEEKLY_ADJUSTED\Const_TIME_SERIES_WEEKLY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="IAvapiConnection.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_WEEKLY_ADJUSTED\Impl_TIME_SERIES_WEEKLY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="KAMA\Const_KAMA.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TIME_SERIES_WEEKLY_ADJUSTED\Int_TIME_SERIES_WEEKLY_ADJUSTED.cs" >
+    </Compile>
+    <Compile Include="KAMA\Impl_KAMA.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TRANGE\Const_TRANGE.cs" >
+    </Compile>
+    <Compile Include="KAMA\Int_KAMA.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TRANGE\Impl_TRANGE.cs" >
+    </Compile>
+    <Compile Include="MACDEXT\Const_MACDEXT.cs">
       <Visible>false</Visible>
-    </Compile> 
-    <Compile Include="TRANGE\Int_TRANGE.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TRIMA\Const_TRIMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TRIMA\Impl_TRIMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TRIMA\Int_TRIMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TRIX\Const_TRIX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TRIX\Impl_TRIX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="TRIX\Int_TRIX.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ULTOSC\Const_ULTOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ULTOSC\Impl_ULTOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="ULTOSC\Int_ULTOSC.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="Utility.cs" ></Compile>
-    <Compile Include="WILLR\Const_WILLR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="WILLR\Impl_WILLR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="WILLR\Int_WILLR.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="WMA\Const_WMA.cs" ><Visible>false</Visible></Compile>
-    <Compile Include="WMA\Impl_WMA.cs" >
+    </Compile>
+    <Compile Include="MACDEXT\Impl_MACDEXT.cs">
       <Visible>false</Visible>
-    </Compile> 
+    </Compile>
+    <Compile Include="MACDEXT\Int_MACDEXT.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MACD\Const_MACD.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MACD\Impl_MACD.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MACD\Int_MACD.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MAMA\Const_MAMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MAMA\Impl_MAMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MAMA\Int_MAMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MFI\Const_MFI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MFI\Impl_MFI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MFI\Int_MFI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MIDPOINT\Const_MIDPOINT.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MIDPOINT\Impl_MIDPOINT.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MIDPOINT\Int_MIDPOINT.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MIDPRICE\Const_MIDPRICE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MIDPRICE\Impl_MIDPRICE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MIDPRICE\Int_MIDPRICE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MINUS_DI\Const_MINUS_DI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MINUS_DI\Impl_MINUS_DI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MINUS_DI\Int_MINUS_DI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MINUS_DM\Const_MINUS_DM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MINUS_DM\Impl_MINUS_DM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MINUS_DM\Int_MINUS_DM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="Models\DataCurrencies.cs">
+    </Compile>
+    <Compile Include="Models\DataRetriever.cs">
+    </Compile>
+    <Compile Include="Models\DataStorage.cs">
+    </Compile>
+    <Compile Include="Models\HtmlDataRetriever.cs">
+    </Compile>
+    <Compile Include="MOM\Const_MOM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MOM\Impl_MOM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="MOM\Int_MOM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="NATR\Const_NATR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="NATR\Impl_NATR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="NATR\Int_NATR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="OBV\Const_OBV.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="OBV\Impl_OBV.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="OBV\Int_OBV.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PLUS_DI\Const_PLUS_DI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PLUS_DI\Impl_PLUS_DI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PLUS_DI\Int_PLUS_DI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PLUS_DM\Const_PLUS_DM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PLUS_DM\Impl_PLUS_DM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PLUS_DM\Int_PLUS_DM.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PPO\Const_PPO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PPO\Impl_PPO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="PPO\Int_PPO.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+    </Compile>
+    <Compile Include="ROCR\Const_ROCR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ROCR\Impl_ROCR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ROCR\Int_ROCR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ROC\Const_ROC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ROC\Impl_ROC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ROC\Int_ROC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="RSI\Const_RSI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="RSI\Impl_RSI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="RSI\Int_RSI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SAR\Const_SAR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SAR\Impl_SAR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SAR\Int_SAR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SECTOR\Impl_SECTOR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SECTOR\Int_SECTOR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SMA\Const_SMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SMA\Impl_SMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="SMA\Int_SMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCHF\Const_STOCHF.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCHF\Impl_STOCHF.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCHF\Int_STOCHF.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCHRSI\Const_STOCHRSI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCHRSI\Impl_STOCHRSI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCHRSI\Int_STOCHRSI.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCH\Const_STOCH.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCH\Impl_STOCH.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="STOCH\Int_STOCH.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="T3\Const_T3.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="T3\Impl_T3.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="T3\Int_T3.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TEMA\Const_TEMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TEMA\Impl_TEMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TEMA\Int_TEMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_DAILY\Const_TIME_SERIES_DAILY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_DAILY\Impl_TIME_SERIES_DAILY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_DAILY\Int_TIME_SERIES_DAILY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_DAILY_ADJUSTED\Const_TIME_SERIES_DAILY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_DAILY_ADJUSTED\Impl_TIME_SERIES_DAILY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_DAILY_ADJUSTED\Int_TIME_SERIES_DAILY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_INTRADAY\Const_TIME_SERIES_INTRADAY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_INTRADAY\Impl_TIME_SERIES_INTRADAY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_INTRADAY\Int_TIME_SERIES_INTRADAY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_MONTHLY\Const_TIME_SERIES_MONTHLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_MONTHLY\Impl_TIME_SERIES_MONTHLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_MONTHLY\Int_TIME_SERIES_MONTHLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_MONTHLY_ADJUSTED\Const_TIME_SERIES_MONTHLY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_MONTHLY_ADJUSTED\Impl_TIME_SERIES_MONTHLY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_MONTHLY_ADJUSTED\Int_TIME_SERIES_MONTHLY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_WEEKLY\Const_TIME_SERIES_WEEKLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_WEEKLY\Impl_TIME_SERIES_WEEKLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_WEEKLY\Int_TIME_SERIES_WEEKLY.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_WEEKLY_ADJUSTED\Const_TIME_SERIES_WEEKLY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_WEEKLY_ADJUSTED\Impl_TIME_SERIES_WEEKLY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TIME_SERIES_WEEKLY_ADJUSTED\Int_TIME_SERIES_WEEKLY_ADJUSTED.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRANGE\Const_TRANGE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRANGE\Impl_TRANGE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRANGE\Int_TRANGE.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRIMA\Const_TRIMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRIMA\Impl_TRIMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRIMA\Int_TRIMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRIX\Const_TRIX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRIX\Impl_TRIX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="TRIX\Int_TRIX.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ULTOSC\Const_ULTOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ULTOSC\Impl_ULTOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="ULTOSC\Int_ULTOSC.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="Utility.cs">
+    </Compile>
+    <Compile Include="WILLR\Const_WILLR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="WILLR\Impl_WILLR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="WILLR\Int_WILLR.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="WMA\Const_WMA.cs">
+      <Visible>false</Visible>
+    </Compile>
+    <Compile Include="WMA\Impl_WMA.cs">
+      <Visible>false</Visible>
+    </Compile>
     <Compile Include="WMA\Int_WMA.cs">
       <Visible>false</Visible>
-    </Compile> 
-      
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
