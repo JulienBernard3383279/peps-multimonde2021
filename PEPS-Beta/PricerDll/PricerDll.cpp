@@ -952,10 +952,54 @@ void PriceMultimonde2021Quanto(
 
 	//Gestions paramètres past
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
-	//ConvertToEuros(pastMat);
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
+
 	mc->price(pastMat, t, currentVect, price, ic);
 
+}
+#pragma endregion
+#pragma region Deltas
+void DeltasSingleCurrencyMultimonde2021AnyTime(
+	int sampleNumber,
+	double past[], // format [,]
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double** deltas)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+
+	//Gestions paramètres past
+	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
+	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
+
+	PnlVect* myDeltas = pnl_vect_create_from_zero(11);
+	mc->deltas(pastMat, t, currentVect, myDeltas);
+
+	// Les 'actifs' manipulés par le modèle sont "[actif en [$]] [$]/€" et "€/[$]"
+	// L'appel doit renvoyer des données directement utilisables pour la couverture, ici
+	// d([$]/€) et d([nombre d'actif])
+
+	double* deltasIntermediate = new double[11];
+	deltasIntermediate[0] = GET(myDeltas, 0);
+	// d($/€) = - ($/€)² d(€/$)
+	for (int i = 6; i <= 10; i++) {
+		deltasIntermediate[i] = -currentPrices[i] * currentPrices[i] * GET(myDeltas, i);
+	}
+	// d(actif) = (€/$) (d(actif*$/€) - actif d($/€))
+	for (int i = 1; i <= 5; i++) {
+		deltasIntermediate[i] = currentPrices[i + 5] * (GET(myDeltas, i) - currentPrices[i] * deltasIntermediate[i + 5]);
+	}
+
+	*deltas = static_cast<double*>(malloc(11 * sizeof(double)));
+	memcpy(*deltas, &(deltasIntermediate[0]), 11 * sizeof(double));
 }
 #pragma endregion
 #pragma endregion

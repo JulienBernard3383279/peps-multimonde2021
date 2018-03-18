@@ -117,6 +117,7 @@ namespace PricerDll.CustomTests
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
             #endregion
+
             #region Incertains
             nbSamples = 100000;
             currentPrices = new double[11] {
@@ -152,12 +153,52 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
-            Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 2%.");
+            Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,02.");
             Console.WriteLine("Devrait renvoyer légèrement plus que 100 (l'exponentielle est convexe)");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
-
             Console.WriteLine();
+
+            volatilities = new double[11] {
+                0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
+                0, 0, 0, 0, 0
+            };
+            API.PriceMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                &price,
+                &ic);
+            Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,04.");
+            Console.WriteLine("Devrait renvoyer plus que précedemment.");
+            Console.WriteLine("Prix : " + price);
+            Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            Console.WriteLine();
+
+            volatilities = new double[11] {
+                1, 1, 1, 1, 1, 1,
+                0, 0, 0, 0, 0
+            };
+            API.PriceMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                &price,
+                &ic);
+            Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 1 (absurdement grandes).");
+            Console.WriteLine("Devrait renvoyer plus que 100, et de beaucoup (consommation des actifs limités positivement prioritaire)");
+            Console.WriteLine("Prix : " + price);
+            Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             #endregion
         }
     }
