@@ -141,6 +141,8 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 		}
 	}
 
+	pnl_vect_free(&temp);
+
 	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
 
 	double step = T / nbTimeSteps;
@@ -187,6 +189,8 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 		}
 	}
 
+	pnl_vect_free(&temp);
+
 	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
 
 
@@ -199,6 +203,7 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 		MLET(path, from, d) = GET(current, d)
 			* exp((GET(trend_, d) - pow(GET(sigma_, d), 2) / 2.) * (step)
 				+ GET(sigma_, d) * sqrt(step) * pnl_vect_scalar_prod(&tempMemSpace1_, &tempMemSpace2_));
+	
 	}
 
 	for (int i = from + 1; i <= nbTimeSteps; ++i) {

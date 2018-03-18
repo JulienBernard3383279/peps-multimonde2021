@@ -116,7 +116,7 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 
 	var = exp(-mod_->r_ * (opt_->T - t )* 2)
 		* (mySquaredSum / nbSamples_ - pow(mySum / nbSamples_, 2));
-	if (var < 0 && var > -0.000001) var = 0;
+	if (var < 0 && var > -0.00001) var = 0;
 	*ic = 2 * 1.96 * sqrt(var) / sqrt(nbSamples_);
 
 	// Free memory
