@@ -1,10 +1,11 @@
+#pragma region Init
 #pragma once
-
 #ifdef PRICERDLL_EXPORTS
 #define PRICERDLL_API __declspec(dllexport)
 #else
 #define PRICERDLL_API __declspec(dllimport)
 #endif
+#pragma endregion
 
 #pragma region Basket
 extern "C" PRICERDLL_API void PriceBasket(
@@ -225,6 +226,29 @@ extern "C" PRICERDLL_API void PriceMultimonde2021Quanto(
 	double correlations[],
 	double* price,
 	double* ic);
+
+extern "C" PRICERDLL_API void DeltasMultimonde2021Quanto(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double** deltas);
+
+extern "C" PRICERDLL_API void DeltasMultimonde2021QuantoDebug(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double** deltas);
+
 #pragma endregion
 
 #pragma region Utils

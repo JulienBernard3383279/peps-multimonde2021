@@ -250,6 +250,30 @@ namespace PricerDll.CustomTests
             double[] correlations,
             double* price,
             double* ic);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void DeltasMultimonde2021Quanto(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations,
+            out IntPtr deltas);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void DeltasMultimonde2021QuantoDebug(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations,
+            out IntPtr deltas);
         #endregion
     }
 }

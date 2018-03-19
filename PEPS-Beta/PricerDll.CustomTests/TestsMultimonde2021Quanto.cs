@@ -322,5 +322,64 @@ namespace PricerDll.CustomTests
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             #endregion
         }
+
+        public static unsafe void PerformDeltaTest()
+        {
+            #region Init
+            int nbSamples;
+            double[] currentPrices;
+            double[] volatilities;
+            double[] interestRates;
+            double[] correlations;
+            double[] past;
+            int nbRows;
+            double t;
+            IntPtr deltasPtr;
+            #endregion
+            #region Certains
+            nbSamples = 100000;
+            currentPrices = new double[11] {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
+                1.0, 1.0, 1.0, 1.0, 1.0
+            };
+            volatilities = new double[11] {
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 0, 0
+            };
+            interestRates = new double[6] {
+                0, 0, 0, 0, 0, 0
+            };
+            correlations = new double[11 * 11];
+            for (int i = 0; i < 11; i++)
+            {
+                for (int j = 0; j < 11; j++)
+                {
+                    correlations[11 * i + j] = i == j ? 1 : 0;
+                }
+            }
+            past = currentPrices;
+            nbRows = 1;
+            t = 0;
+
+            API.DeltasMultimonde2021QuantoDebug(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                out deltasPtr);
+
+            double[] deltas = new double[11];
+            System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 11); //<- deltas contient maintenant les deltas
+
+            Console.WriteLine();
+            for (int i = 0; i < 11; i++) Console.Write(deltas[i] + " ");
+            Console.WriteLine();
+
+            #endregion
+        }
     }
 }
