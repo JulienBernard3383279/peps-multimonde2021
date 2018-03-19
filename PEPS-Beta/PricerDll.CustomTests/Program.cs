@@ -10,8 +10,8 @@ namespace PricerDll.CustomTests
     {
         static void Main(string[] args)
         {
-            TestsCall.PerformPriceTests();
-            //TestsCall.PerformPriceTestsAnyTime();
+            //TestsCall.PerformPriceTests();
+            TestsCall.PerformPriceTestsAnyTime();
             //TestsCall.PerformDeltaTests0();
             //TestsCall.PerformDeltaTestsAnyTime();
 
