@@ -987,6 +987,8 @@ void DeltasMultimonde2021Quanto (
 	// L'appel doit renvoyer des données directement utilisables pour la couverture, ici
 	// d([$]/€) et d([nombre d'actif])
 
+	pnl_vect_print(myDeltas);
+
 	double* deltasIntermediate = new double[11];
 	deltasIntermediate[0] = GET(myDeltas, 0);
 	// Correspond aux calculs d'Alexandra (+ facteur x à dt)

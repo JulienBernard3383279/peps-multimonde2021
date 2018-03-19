@@ -67,8 +67,8 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 		
 		for (int j = 0; j < mod_->size_; j++) {
 			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, 0.01);
-			payoffPlus = opt_->payoff(pathPlus);
-			payoffMinus = opt_->payoff(pathMinus);
+			payoffPlus = opt_->payoff(pathPlus);//std::cout << "payoffPlus :" << payoffPlus << std::endl;
+			payoffMinus = opt_->payoff(pathMinus);//std::cout << "payoffMinus :" << payoffMinus << std::endl;
 			
 			
 			LET(deltas,j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
@@ -150,7 +150,7 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 		int from = 0;
 		if (opt_->custom) {
 
-			while (GET(opt_->customDates, from) < t) {
+			while (GET(opt_->customDates, from) <= t) {
 				from++;
 			}
 		}
@@ -160,8 +160,10 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 
 		for (int j = 0; j < mod_->size_; j++) {
 			mod_->shiftPath(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, 0.01);
-			payoffPlus = opt_->payoff(pathPlus);
-			payoffMinus = opt_->payoff(pathMinus);
+			//pnl_mat_print(pathPlus);
+			payoffPlus = opt_->payoff(pathPlus);//std::cout << "payoffPlus :" << payoffPlus << std::endl;
+			//pnl_mat_print(pathMinus);
+			payoffMinus = opt_->payoff(pathMinus);//std::cout << "payoffMinus :" << payoffMinus << std::endl;
 
 			LET(deltas,j) += (payoffPlus - payoffMinus) / (GET(current, j) * 2 * 0.01);
 		}

@@ -361,7 +361,7 @@ namespace PricerDll.CustomTests
             nbRows = 1;
             t = 0;
 
-            API.DeltasMultimonde2021QuantoDebug(
+            API.DeltasMultimonde2021Quanto(
                 nbSamples,
                 past,
                 nbRows,
