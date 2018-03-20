@@ -118,13 +118,19 @@ namespace PEPS_Beta.Controllers
             ViewData["ic"] = ic;
             return PartialView();
         }
-        /*
         public unsafe ActionResult VoirIndicesParam()
         {
             using (DAL dal = new DAL())
             {
                 return PartialView(dal.GetIndices());
             }
-        }*/
+            //IL FAUT ENSUITE CREER CETTE VUE
+            // RAJOUTER UN CONTROLEUR POUR MODIFIER LES PARAMS DUN INDICE, FAIRE AVEC BINDING DE MODELE
+            // CE CONTROLEUR EST POSTONLY ET RENVOIE LA VUE PARTIELLE DE LA LISTE DES INDICES
+            // QUI EST MODIFIEE PAR LE FORMULAIRE ASSOCIE A CE CONTROLEUR
+
+
+            // IDEM POUR PARAMS MULTIMONDE
+        }
     }
 }
