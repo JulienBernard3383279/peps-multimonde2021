@@ -1,3 +1,6 @@
+#pragma once
+
+#pragma region Includes
 #include "stdafx.h"
 
 #include "time.h"
@@ -11,13 +14,17 @@
 #include "QuantoOption.h"
 #include "BasketOption.h"
 #include "Multimonde2021.h"
+#include "Multimonde2021Quanto.h"
 
 #include "pnl/pnl_vector.h"
 #include "pnl/pnl_cdf.h"
 
 #include "ProfitAndLossUtilities.h"
 #include "MathUtils.cpp"
+#pragma endregion
 
+#pragma region Basket Option
+#pragma region Inits
 void InitBasket(
 	MonteCarlo** mc,
 	Option** opt,
@@ -74,7 +81,8 @@ void InitBasketAnyTime(
 	pnl_rng_sseed(rng, time(NULL));
 	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
 }
-
+#pragma endregion
+#pragma region Price
 void PriceBasket(
 	double maturity,
 	int optionSize,
@@ -125,7 +133,8 @@ void PriceBasketAnyTime(
 
 	mc->price(pastMat, t, currentVect, price, ic);
 }
-
+#pragma endregion
+#pragma region Deltas multi currency
 void DeltasMultiCurrencyBasket(
 	double maturity,
 	int optionSize,
@@ -192,7 +201,8 @@ void DeltasMultiCurrencyBasketAnyTime(
 	*deltas = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltas, &(intermediate[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Deltas single currency
 void DeltasSingleCurrencyBasket(
 	double maturity,
 	int optionSize,
@@ -291,8 +301,11 @@ void DeltasSingleCurrencyBasketAnyTime(
 	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
 }
+#pragma endregion
+#pragma endregion
 
-
+#pragma region Multimonde 2021 (deprecated)
+#pragma region Inits
 void InitMultimonde2021(
 	MonteCarlo** mc,
 	Option** opt,
@@ -345,8 +358,8 @@ void InitMultimonde2021AnyTime(
 	pnl_rng_sseed(rng, time(NULL));
 	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
 }
-
-
+#pragma endregion
+#pragma region Price
 void PriceMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -392,7 +405,8 @@ void PriceMultimonde2021AnyTime(
 
 	mc->price(pastMat, t, currentVect, price, ic);
 }
-
+#pragma endregion
+#pragma region Deltas multi currency
 void DeltasMultiCurrencyMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -461,7 +475,8 @@ void DeltasMultiCurrencyMultimonde2021AnyTime(
 	*deltas = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltas, &(intermediate[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Deltas single currency
 void DeltasSingleCurrencyMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -538,7 +553,8 @@ void DeltasSingleCurrencyMultimonde2021AnyTime(
 	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Convert deltas
 void ConvertDeltas(
 	double deltas[],
 	double prices[],
@@ -560,7 +576,8 @@ void ConvertDeltas(
 	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
 	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
 }
-
+#pragma endregion
+#pragma region Tracking error
 void TrackingErrorMultimonde(
 	int sampleNumber,
 	double spots[],
@@ -700,7 +717,11 @@ void TrackingErrorMultimonde(
 
 
 }
+#pragma endregion
+#pragma endregion
 
+#pragma region Quanto Option
+#pragma region Price
 void PriceQuanto(
 	double maturity,
 	double strike,
@@ -755,7 +776,279 @@ void PriceQuanto(
 
 	mc->price(price, ic);
 }
+#pragma endregion
+#pragma endregion
 
+#pragma region Multimonde 2021 Quanto
+#pragma region Inits
+/*
+ * Initialise le MonteCarlo, l'Option, le BlackScholesModel, en calculant
+ * au préalable les nouvelles volatilités, tendances & corrélations.
+ */
+void InitMultimonde2021Quanto(
+	MonteCarlo** mc,
+	Option** opt,
+	BlackScholesModel** mod,
+	int sampleNumber, // Nombre de tirages ; les taux de changes attendus sont UN EURO EN LA MONNAIE ETRANGERE. (€/$)
+	double currentPrices[], // Taille 11. Prix des actifs dans leurs monnaies / taux de change. Indice 0/6 = domestique. 
+	double volatilities[], // Taille 11 Volatilités des actifs/tdc dans leurs monnaies ; volatilités des taux de change. Indice 0/6 = domestique.
+	double interestRates[], // Taille 6. Taux d'intérêts. Indice 0 = domestique.
+	double correlations[]) // Taille 11x11. Corrélations entre les actifs dans leurs monnaies et les tdc €/"$".
+{
+
+	// Calcul de la volatilités des actifs en euros
+	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(11,volatilities);
+	for (int i = 1; i <= 5; i++) {
+		LET(volatilitiesVect, i) = sqrt(volatilities[5+i] * volatilities[5+i] + volatilities[i] * volatilities[i] - 2 * correlations[11*(i) + (5+i)] * volatilities[i] * volatilities[5+i]);
+	}
+
+	// Calcul des spots des actifs en euros
+	PnlVect* spotsVect = pnl_vect_create_from_zero(11);
+	// Pour des appels au temps t, les spots sont extraits de past.
+	// Le vecteur passé à BlackScholes est donc inutilisé et est purement là pour la compatibilité avec les appels en temps 0 des autres options.
+
+	/*PnlVect* spotsVect = pnl_vect_create_from_ptr(11, currentPrices);
+	for (int i = 1; i <= 5; i++) {
+		LET(spotsVect, i) /= GET(spotsVect, 5+i);
+	}*/
+
+	// Mises des tendances des actifs au taux sans risque domestique ; calcul des tendances des taux de change
+	PnlVect* trendsVect = pnl_vect_create(11);
+	for (int i = 0; i <= 5; i++) {
+		LET(trendsVect, i) = interestRates[0];
+	} // trends(actifs) = r€
+	for (int i = 6; i <= 10; i++) {
+		LET(trendsVect, i) = interestRates[i-5] - interestRates[0] + volatilities[i-5]*volatilities[i-5];
+	} // trends(tdc €/$) = r$ - r€ + sigma$^2
+
+	// Mises à jour des corrélations
+	PnlMat* correlationsMat = pnl_mat_create_from_zero(11, 11);
+	for (int y = 0; y <= 10; y++) {
+		for (int x = 0; x <= 10; x++) {
+			if (x == y) {
+				MLET(correlationsMat, y, x) = 1;
+			}
+			else {
+				if (y == 0) { // Actif européen
+					if (x <= 5) { // Actif non européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (x)+(x + 5)],
+							correlations[11 * (x)+(y)],
+							correlations[11 * (x + 5) + (y)],
+							volatilities[x],
+							volatilities[x + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = actif européen
+					}
+					else { // Taux de change
+						MLET(correlationsMat, y, x) = correlations[11 * (x)+(y)];
+					}
+				} 
+				else if (y <= 5) { // Actif non européen
+					if (x == 0) { // Actif européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (y)+(y + 5)],
+							correlations[11 * (y)+(x)],
+							correlations[11 * (y + 5) + (x)],
+							volatilities[y],
+							volatilities[y + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = actif européen
+					}
+					else if (x <= 5) { // Actif non européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithCminusD(
+							correlations[11 * (y)+(y + 5)],
+							correlations[11 * (y)+(x)],
+							correlations[11 * (y)+(x + 5)],
+							correlations[11 * (y + 5) + (x)],
+							correlations[11 * (y + 5) + (x + 5)],
+							correlations[11 * (x)+(x + 5)],
+							volatilities[y],
+							volatilities[y + 5],
+							volatilities[x],
+							volatilities[x + 5]
+						);
+						//A = actif non européen ; B = taux de change €/$ ; C = actif non européen ; D = taux de change €/$
+					}
+					else { // Taux de change
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (y)+(y + 5)],
+							correlations[11 * (y)+(x)],
+							correlations[11 * (y + 5) + (x)],
+							volatilities[y],
+							volatilities[y + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = taux de change €/$
+					}
+				}
+				else { // Taux de change
+					if (x == 0) { // Actif européen
+						MLET(correlationsMat, y, x) = correlations[11 * (y)+(x)];
+
+					}
+					else if (x <= 5) { // Actif non européen
+						MLET(correlationsMat, y, x) = CorrAminusBwithC(
+							correlations[11 * (x)+(x + 5)],
+							correlations[11 * (x)+(y)],
+							correlations[11 * (x + 5) + (y)],
+							volatilities[x],
+							volatilities[x + 5]);
+						//A = actif non européen ; B = taux de change €/$ ; C = taux de change €/$
+					}
+					else { // Taux de change
+						MLET(correlationsMat, y, x) = correlations[11 * (y)+(x)];
+					}
+				}
+			}
+		}
+	}
+
+	*opt = new Multimonde2021Quanto();
+
+	*mod = new BlackScholesModel(11, interestRates[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
+
+	PnlRng *rng = pnl_rng_create(0);
+	pnl_rng_sseed(rng, time(NULL));
+	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
+
+}
+
+PnlMat* Multimonde2021Quanto_BuildFromPast(
+	int nbRows,
+	double past[]
+) {
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 11, past);
+	for (int y = 0; y < nbRows; y++) {
+		for (int x = 1; x <= 5; x++) {
+			MLET(pastMat, y, x) /= MGET(pastMat, y, x + 5);
+		}
+	}
+	return pastMat;
+}
+PnlVect* Multimonde2021Quanto_BuildFromCurrentPrices(double current[]) {
+	PnlVect* toBeReturned = pnl_vect_create_from_ptr(11, current);
+	for (int i = 1; i <= 5; i++) {
+		LET(toBeReturned, i) /= GET(toBeReturned, i + 5);
+	}
+	return toBeReturned;
+}
+
+#pragma endregion
+#pragma region Price
+void PriceMultimonde2021Quanto(
+	int sampleNumber,
+	double past[], // format [,]
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[], //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+	double* price,
+	double* ic)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+
+	//Gestions paramètres past
+	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
+	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
+
+	mc->price(pastMat, t, currentVect, price, ic);
+
+}
+#pragma endregion
+#pragma region Deltas
+void DeltasMultimonde2021Quanto (
+	int sampleNumber,
+	double past[], // format [,]
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double** deltas)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+
+	//Gestions paramètres past
+	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
+	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
+
+	PnlVect* myDeltas = pnl_vect_create_from_zero(11);
+	mc->deltas(pastMat, t, currentVect, myDeltas);
+
+	// Les 'actifs' manipulés par le modèle sont "[actif en [$]] [$]/€" et "€/[$]"
+	// L'appel doit renvoyer des données directement utilisables pour la couverture, ici
+	// d([$]/€) et d([nombre d'actif])
+
+	double* deltasIntermediate = new double[11];
+	deltasIntermediate[0] = GET(myDeltas, 0);
+	// Correspond aux calculs d'Alexandra (+ facteur x à dt)
+	for (int i = 6; i <= 10; i++) {
+		deltasIntermediate[i] = - currentPrices[i] * currentPrices[i] * GET(myDeltas, i)
+			+ currentPrices[i] * volatilities[i]*volatilities[i]/2.0;
+	}
+	// Correspond aux calculs d'Alexandra
+	for (int i = 1; i <= 5; i++) {
+		deltasIntermediate[i] = -1.0 / currentPrices[i + 5] * (
+			GET(myDeltas, i)
+			- currentPrices[i] * deltasIntermediate[i + 5]
+			- (1.0 / 2.0 * currentPrices[i + 5] * volatilities[i + 5] * volatilities[i + 5]
+				+ 1.0 / 2.0 * currentPrices[i] * volatilities[i] * volatilities[i]
+				+ correlations[11 * (i)+(i + 5)] * currentPrices[i + 5] * volatilities[i] * volatilities[i + 5])
+			);
+	}
+
+	*deltas = static_cast<double*>(malloc(11 * sizeof(double)));
+	memcpy(*deltas, &(deltasIntermediate[0]), 11 * sizeof(double));
+}
+void DeltasMultimonde2021QuantoDebug(
+	int sampleNumber,
+	double past[], // format [,]
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double** deltas)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+
+	//Gestions paramètres past
+	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
+	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
+
+	PnlVect* myDeltas = pnl_vect_create_from_zero(11);
+	mc->deltas(pastMat, t, currentVect, myDeltas);
+
+	// Les 'actifs' manipulés par le modèle sont "[actif en [$]] [$]/€" et "€/[$]"
+	// L'appel doit renvoyer des données directement utilisables pour la couverture, ici
+	// d([$]/€) et d([nombre d'actif])
+
+	double* deltasIntermediate = new double[11];
+	for (int i = 0; i <= 10; i++) {
+		deltasIntermediate[i] = GET(myDeltas, i);
+		std::cout << deltasIntermediate[i] << std::endl;
+	}
+	*deltas = static_cast<double*>(malloc(11 * sizeof(double)));
+	memcpy(*deltas, &(deltasIntermediate[0]), 11 * sizeof(double));
+}
+#pragma endregion
+#pragma endregion
+
+#pragma region Utils
 double call_pnl_cdfnor(double x) {
 	return pnl_cdfnor(x);
 }
+#pragma endregion

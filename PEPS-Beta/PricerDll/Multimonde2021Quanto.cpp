@@ -1,16 +1,15 @@
 #include "stdafx.h"
 #include "Multimonde2021Quanto.h"
-
+#include <iostream>
 
 Multimonde2021Quanto::Multimonde2021Quanto()
 {
-	payoffVectMemSpaceInit_ = pnl_vect_create_from_zero(6);
-	payoffVectMemSpaceCurrent_ = pnl_vect_create_from_zero(6);
+	payoffVectMemSpaceInit_ = pnl_vect_create_from_zero(11);
+	payoffVectMemSpaceCurrent_ = pnl_vect_create_from_zero(11);
 	this->custom = true;
 	double temp = 371.0 / 365.25;
-	pnl_vect_create_from_list(7, 0.0, temp, temp * 2, temp * 3, temp * 4, temp * 5, temp * 6);
-	this->customDates = customDates;
-	this->size = 11; //Actif euro [1] //Actifs étrangers [5] // Taux de change : 1 € en monnaie étrangère
+	this->customDates = pnl_vect_create_from_list(7, 0.0, temp, temp * 2, temp * 3, temp * 4, temp * 5, temp * 6);
+	this->size = 11; //Actif euro [1] //Actifs étrangers [5] // Taux de change [5] : 1 € en monnaie étrangère
 	this->nbTimeSteps = 6;
 	this->T = GET(customDates, 6);
 }
@@ -18,6 +17,9 @@ Multimonde2021Quanto::Multimonde2021Quanto()
 
 Multimonde2021Quanto::~Multimonde2021Quanto()
 {
+	pnl_vect_free(&payoffVectMemSpaceInit_);
+	pnl_vect_free(&payoffVectMemSpaceCurrent_);
+	pnl_vect_free(&(this->customDates));
 }
 
 double Multimonde2021Quanto::payoff(const PnlMat *path) {
@@ -35,13 +37,20 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 	pnl_mat_get_row(payoffVectMemSpaceInit_, path, 0);
 
 	//Mises dans leurs monnaies
-	pnl_vect_mult_vect_term(payoffVectMemSpaceInit_, pnl_vect_create_from_list(6,
+	PnlVect* temp = pnl_vect_create_from_list(11,
 		1.0,
 		MGET(path, 0, 6),
 		MGET(path, 0, 7),
 		MGET(path, 0, 8),
 		MGET(path, 0, 9),
-		MGET(path, 0, 10)));
+		MGET(path, 0, 10),
+		1.0,
+		1.0,
+		1.0,
+		1.0,
+		1.0);
+	pnl_vect_mult_vect_term(payoffVectMemSpaceInit_, temp);
+	pnl_vect_free(&temp);
 
 	//Init
 	double globalPerf = 1.0;
@@ -51,19 +60,26 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 	int maxIndex;
 
 	//Itération sur les actifs
-	for (int i = 1; i <= 6; ++i) {
+	for (int i = 1; i <= 6; ++i) { // i = le temps, itère dans les dates de constation, [1,6] normal
 		max = 0;
 		maxIndex = 0;
 		pnl_mat_get_row(payoffVectMemSpaceCurrent_, path, i);
 		
 		//Remise dans leurs monnaies étrangères (opti : ne simuler que S pour le payoff, et ne faire ça que pour les actifs encore en lice)
-		pnl_vect_mult_vect_term(payoffVectMemSpaceCurrent_, pnl_vect_create_from_list(6,
+		PnlVect* temp = pnl_vect_create_from_list(11,
 			1.0,
 			MGET(path, i, 6),
 			MGET(path, i, 7),
 			MGET(path, i, 8),
 			MGET(path, i, 9),
-			MGET(path, i, 10)));
+			MGET(path, i, 10),
+			1.0,
+			1.0,
+			1.0,
+			1.0,
+			1.0);
+		pnl_vect_mult_vect_term(payoffVectMemSpaceCurrent_, temp);
+		pnl_vect_free(&temp);
 
 		//Division par les valeurs initiales
 		pnl_vect_div_vect_term(payoffVectMemSpaceCurrent_, payoffVectMemSpaceInit_);
@@ -83,6 +99,5 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 		}
 		stillHere[maxIndex] = false;
 	}
-
 	return 100 * globalPerf;
 }
