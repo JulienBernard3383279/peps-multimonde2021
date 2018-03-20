@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PEPS_Beta.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -79,7 +80,7 @@ namespace PEPS_Beta.Controllers
         [HttpPost]
         public unsafe ActionResult Pricer(int nbSamples)
         {
-            int optionSize = 40;
+            int optionSize = 6;
             double[] payoffCoefficients = new double[optionSize];
             double[] spots = new double[optionSize];
             double[] volatilities = new double[optionSize];
@@ -117,5 +118,13 @@ namespace PEPS_Beta.Controllers
             ViewData["ic"] = ic;
             return PartialView();
         }
+        /*
+        public unsafe ActionResult VoirIndicesParam()
+        {
+            using (DAL dal = new DAL())
+            {
+                return PartialView(dal.GetIndices());
+            }
+        }*/
     }
 }

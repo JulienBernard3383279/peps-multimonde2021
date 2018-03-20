@@ -493,6 +493,7 @@
     <Compile Include="Models\DAL.cs" />
     <Compile Include="Models\IDAL.cs" />
     <Compile Include="Models\Indice.cs" />
+    <Compile Include="Models\InitParamEtDonnees.cs" />
     <Compile Include="Models\MultiMondeParam.cs" />
     <Compile Include="Models\DataCurrencies.cs">
     </Compile>
@@ -802,6 +803,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="Scripts\index.d.ts" />
@@ -822,6 +824,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>CS0436</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <DebugSymbols>true</DebugSymbols>
