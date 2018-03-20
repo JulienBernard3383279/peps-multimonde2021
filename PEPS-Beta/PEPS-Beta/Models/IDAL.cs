@@ -10,7 +10,6 @@ namespace PEPS_Beta.Models
     {
         List<Indice> GetIndices();
         MultiMondeParam GetParams();
-
         void Init();
     }
 }

@@ -75,6 +75,7 @@ namespace PEPS_Beta.Controllers
             return View();
         }
 
+        [ChildActionOnly]
         [HttpPost]
         public unsafe ActionResult Pricer(int nbSamples)
         {

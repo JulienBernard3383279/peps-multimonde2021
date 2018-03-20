@@ -10,6 +10,8 @@ namespace PEPS_Beta.Models
     public class MultiMondeParam
     {
         #region attributs
+        public int Id { get; set; }
+
         private int nbIndices;
 
         private readonly DateTime origin; // = new DateTime(01, 10, 2015);
@@ -37,5 +39,11 @@ namespace PEPS_Beta.Models
 
         public virtual List<Indice> Indices { get => indices; set => indices = value; }
         #endregion
+
+        public MultiMondeParam()
+        {
+            this.constatations = new DateTime[6];
+            this.indices = new List<Indice>();
+        }
     }
 }
