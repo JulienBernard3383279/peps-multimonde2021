@@ -996,15 +996,13 @@ void DeltasMultimonde2021Quanto (
 		deltasIntermediate[i] = - currentPrices[i] * currentPrices[i] * GET(myDeltas, i)
 			+ currentPrices[i] * volatilities[i]*volatilities[i]/2.0;
 	}
-	// Correspond aux calculs d'Alexandra
+	//TODO, A FAIRE MATCHER LE DISCORD
 	for (int i = 1; i <= 5; i++) {
-		deltasIntermediate[i] = -1.0 / currentPrices[i + 5] * (
-			GET(myDeltas, i)
-			- currentPrices[i] * deltasIntermediate[i + 5]
-			- (1.0 / 2.0 * currentPrices[i + 5] * volatilities[i + 5] * volatilities[i + 5]
-				+ 1.0 / 2.0 * currentPrices[i] * volatilities[i] * volatilities[i]
-				+ correlations[11 * (i)+(i + 5)] * currentPrices[i + 5] * volatilities[i] * volatilities[i + 5])
-			);
+		deltasIntermediate[i] =
+			-currentPrices[i] / (currentPrices[i + 5] * currentPrices[i + 5]) * deltasIntermediate[i + 5]
+			+ GET(myDeltas, i)
+			+ currentPrices[i] / currentPrices[i + 5] * volatilities[i + 5] * volatilities[i + 5]
+			- currentPrices[i] / currentPrices[i + 5] * volatilities[i] * volatilities[i + 5] * correlations[11 * (i)+(i + 5)];
 	}
 
 	*deltas = static_cast<double*>(malloc(11 * sizeof(double)));
