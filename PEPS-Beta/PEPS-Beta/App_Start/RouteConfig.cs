@@ -36,6 +36,12 @@ namespace PEPS_Beta
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "VoirIndicesParam", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+                name: "IndiceLigne",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "IndiceLigne  ", id = UrlParameter.Optional }
+            );
         }
     }
 }
