@@ -1,4 +1,5 @@
 ﻿using PEPS_Beta.Models;
+using PEPS_Beta.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,7 @@ namespace PEPS_Beta.Controllers
          //   ds.FillDataHtml(500,500);
             //
 
+            /*
             int optionSize = 40;
             double[] payoffCoefficients = new double[optionSize];
             double[] spots = new double[optionSize];
@@ -67,7 +69,9 @@ namespace PEPS_Beta.Controllers
                 &ic);
 
             ViewData["d"] = price;
-            ViewData["ic"] = ic;
+            ViewData["ic"] = ic;*/
+
+
             return View();
         }
 
@@ -125,8 +129,6 @@ namespace PEPS_Beta.Controllers
             }
             // IL FAUT ENSUITE CREER CETTE VUE
             // RAJOUTER UN CONTROLEUR POUR MODIFIER LES PARAMS DUN INDICE, FAIRE AVEC BINDING DE MODELE
-            // CE CONTROLEUR EST POSTONLY ET RENVOIE LA VUE PARTIELLE DE LA LISTE DES INDICES
-            // QUI EST MODIFIEE PAR LE FORMULAIRE ASSOCIE A CE CONTROLEUR
 
 
             // IDEM POUR PARAMS MULTIMONDE
@@ -138,6 +140,19 @@ namespace PEPS_Beta.Controllers
             using (DAL dal = new DAL())
             {
                 dal.modifierIndice(ourInd.Id, ourInd.InterestRateThisArea, ourInd.Vol);
+            }
+        }
+
+        public unsafe ActionResult EstimerParam(EstimationViewModel estim)
+        {
+            using(DAL dal = new DAL())
+            {
+                // Il faut estimer les vol des indices et les correlations
+                // entre les dates estim.DebutEstim et estim.FinEstim
+
+
+                // ne pas toucher au return
+                return PartialView(dal.GetIndices());
             }
         }
     }

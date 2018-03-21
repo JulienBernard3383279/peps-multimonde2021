@@ -1064,7 +1064,7 @@ void PriceSingleMonde(int sampleNumber,
 	int OptionSize = 1;
 	PnlRng *rng = pnl_rng_create(0);
 	pnl_rng_sseed(rng, time(NULL));
-	PnlMat *corr = pnl_mat_create_from_zero(1, 1);
+	PnlMat *corr = pnl_mat_create_from_double(1, 1, 1.0);
 	PnlVect* sigma = pnl_vect_create_from_double(1, volatilities[0]);
 	PnlVect* spot = pnl_vect_create_from_double(1, currentPrices[0]);
 	PnlVect* rate = pnl_vect_create_from_double(1, interestRates[0]);
