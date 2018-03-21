@@ -54,6 +54,9 @@
     <ClInclude Include="Multimonde2021Quanto.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SingleMonde.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

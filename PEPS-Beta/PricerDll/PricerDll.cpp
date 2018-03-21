@@ -976,6 +976,7 @@ void DeltasMultimonde2021Quanto (
 
 	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
 
+
 	//Gestions paramètres past
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
@@ -1048,6 +1049,7 @@ void DeltasMultimonde2021QuantoDebug(
 #pragma endregion
 
 #pragma region Utils
+
 double call_pnl_cdfnor(double x) {
 	return pnl_cdfnor(x);
 }
