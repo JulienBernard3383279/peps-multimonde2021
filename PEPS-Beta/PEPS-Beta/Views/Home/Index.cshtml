@@ -9,10 +9,13 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
+    <script src="@Url.Content("~/Scripts/jquery-3.3.1.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.unobtrusive-ajax.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
+    <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
 </head>
 <body>
-    <div> 
-        Le prix d'une option multimonde avec les spécifications écrites dans ce code C# est : <span style="color:red">@ViewData["d"]</span>. L'intervalle de confiance associé à ce prix est : <span style="color:darkgreen">@ViewData["ic"]</span>
-    </div>
+    @Html.Action("VoirIndicesParam","Home")
+    @Html.Partial("EstimationBouton")
 </body>
 </html>

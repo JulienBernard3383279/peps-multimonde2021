@@ -8,7 +8,7 @@ SingleMonde::SingleMonde(double T) {
 	this->T = T;
 	this->nbTimeSteps = 1;
 	this->size = 1;
-	
+
 }
 
 
@@ -19,22 +19,21 @@ SingleMonde::~SingleMonde() {
 double SingleMonde::payoff(const PnlMat* path) { //path taille 1,1, représentant la liste suivante :
 													/*
 													* 01/10/15
-													
 													*/
-	
 
 	double globalPerf = 1.0;
-	double max ;
-		max = 0.0;
-		
-		if (max >= 0.85 && max <= 1.15) {
-			globalPerf = max - 1.0;
-		}
-		else {
-			globalPerf = (max < 1 ? -0.15 : 0.15);
-		}
-	
-		
+
+	double max;
+	max = 0.0;
+
+	if (max >= 0.85 && max <= 1.15) {
+		globalPerf = max - 1.0;
+	}
+	else {
+		globalPerf = (max < 1 ? -0.15 : 0.15);
+	}
+
+
 	return 100 * globalPerf;
 }
 
@@ -43,21 +42,16 @@ double SingleMonde::verbosePayoff() { //path taille 1,1, représentant la liste s
 														   * 01/10/15
 														   */
 
-	
-
 	double globalPerf = 1.0;
 	double max;
-		
-				max = 0.0;
-			
-		if (max >= 0.85 && max <= 1.15) {
-			globalPerf += max - 1.0;
-		}
-		else {
-			globalPerf += (max < 1 ? -0.15 : 0.15);
-		}
-		
-	
 
+	max = 0.0;
+
+	if (max >= 0.85 && max <= 1.15) {
+		globalPerf = max - 1.0;
+	}
+	else {
+		globalPerf = (max < 1 ? -0.15 : 0.15);
+	}
 	return 100 * globalPerf;
 }

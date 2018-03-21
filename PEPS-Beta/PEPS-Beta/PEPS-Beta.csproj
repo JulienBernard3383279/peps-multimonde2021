@@ -284,6 +284,7 @@
     <Compile Include="CMO\Int_CMO.cs">
       <Visible>false</Visible>
     </Compile>
+    <Compile Include="ViewModels\EstimationViewModel.cs" />
     <Compile Include="Controllers\HomeController.cs">
     </Compile>
     <Compile Include="CURRENCY_EXCHANGE_RATE\Const_CURRENCY_EXCHANGE_RATE.cs">
@@ -766,6 +767,7 @@
       <Visible>false</Visible>
     </Compile>
     <Compile Include="Utility.cs" />
+    <Compile Include="ViewModels\IndexViewModel.cs" />
     <Compile Include="WILLR\Const_WILLR.cs">
       <Visible>false</Visible>
     </Compile>
@@ -806,6 +808,7 @@
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Views\Home\IndiceLigne.cshtml" />
+    <Content Include="Views\Home\EstimationBouton.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -815,7 +818,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
