@@ -756,6 +756,9 @@ void PriceQuanto(
 	mc->price(price, ic);
 }
 
+
+
+
 double call_pnl_cdfnor(double x) {
 	return pnl_cdfnor(x);
 }

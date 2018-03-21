@@ -218,6 +218,18 @@ extern "C" PRICERDLL_API void PriceQuanto(
 	double* ic);
 
 
+//la fonction pour la simulation du single monde 
+extern "C" PRICERDLL_API void PriceSingleMonde(
+	double maturity,
+	double strike,
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate[],
+	double correlations[],
+	double* price,
+	double* ic);
+
 // FONCTIONS PNL EXPORTEES
 
 extern "C" PRICERDLL_API double call_pnl_cdfnor(double x);
