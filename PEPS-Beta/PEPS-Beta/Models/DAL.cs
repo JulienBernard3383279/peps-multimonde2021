@@ -30,6 +30,11 @@ namespace PEPS_Beta.Models
             return bdd.Parametres.ToList()[0];
         }
 
+        public List<TauxDeChange> GetTDC()
+        {
+            return bdd.GetTaux.ToList();
+        }
+
         public void Init()
         {
             if (bdd.Indices.Count()  == 0)
