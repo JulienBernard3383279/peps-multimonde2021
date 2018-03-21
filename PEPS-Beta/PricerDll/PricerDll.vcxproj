@@ -155,6 +155,7 @@
     <ClInclude Include="BlackScholesModel.h" />
     <ClInclude Include="MonteCarlo.h" />
     <ClInclude Include="Multimonde2021.h" />
+    <ClInclude Include="Multimonde2021Quanto.h" />
     <ClInclude Include="Option.h" />
     <ClInclude Include="Param.h" />
     <ClInclude Include="PricerDll.h" />
@@ -171,6 +172,7 @@
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="MonteCarlo.cpp" />
     <ClCompile Include="Multimonde2021.cpp" />
+    <ClCompile Include="Multimonde2021Quanto.cpp" />
     <ClCompile Include="Param.cpp" />
     <ClCompile Include="PricerDll.cpp" />
     <ClCompile Include="ProfitAndLossUtilities.cpp" />
