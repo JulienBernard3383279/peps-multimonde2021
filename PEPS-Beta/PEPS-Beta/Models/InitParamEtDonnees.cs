@@ -13,24 +13,24 @@ namespace PEPS_Beta.Models
         {
             MultiMondeParam newParam = new MultiMondeParam();
             context.Parametres.Add(newParam);
-            Indice asx = new Indice("asx");
-            context.Indices.Add(asx);
-            newParam.Indices.Add(asx);
-            Indice estox = new Indice("estox");
+            Indice estox = new Indice("estox", "eur");
             context.Indices.Add(estox);
             newParam.Indices.Add(estox);
-            Indice ftse = new Indice("ftse");
-            context.Indices.Add(ftse);
-            newParam.Indices.Add(ftse);
-            Indice hang = new Indice("hang");
-            context.Indices.Add(hang);
-            newParam.Indices.Add(hang);
-            Indice n225 = new Indice("n225");
-            context.Indices.Add(n225);
-            newParam.Indices.Add(n225);
-            Indice sp500 = new Indice("sp500");
+            Indice sp500 = new Indice("sp500", "usd");
             context.Indices.Add(sp500);
             newParam.Indices.Add(sp500);
+            Indice n225 = new Indice("n225", "jpy");
+            context.Indices.Add(n225);
+            newParam.Indices.Add(n225);
+            Indice hang = new Indice("hang", "hkd");
+            context.Indices.Add(hang);
+            newParam.Indices.Add(hang);
+            Indice ftse = new Indice("ftse", "gbp");
+            context.Indices.Add(ftse);
+            newParam.Indices.Add(ftse);
+            Indice asx = new Indice("asx", "aud");
+            context.Indices.Add(asx);
+            newParam.Indices.Add(asx);
 
             newParam.NbIndices = 6;
             newParam.NbSamples = 1000;

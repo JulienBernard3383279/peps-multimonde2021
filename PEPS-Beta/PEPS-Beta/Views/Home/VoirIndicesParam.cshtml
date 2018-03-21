@@ -1,0 +1,27 @@
+﻿@model List<PEPS_Beta.Models.Indice>
+
+<table>
+
+    <tr>
+
+        <th>Nom</th>
+        <th>Monnaie correspondante</th>
+        <th>Taux sans rique du marché</th>
+        <th>Volatilité</th>
+
+    </tr>
+
+    @foreach (var ind in Model)
+
+    {
+
+        <tr>
+            <td>@ind.Nom</td>
+            <td>@ind.Money</td>
+            <td>@ind.InterestRateThisArea</td>
+            <td>@ind.Vol</td>
+        </tr>
+
+    }
+
+</table>

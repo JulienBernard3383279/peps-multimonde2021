@@ -30,6 +30,12 @@ namespace PEPS_Beta
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Pricer", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+                name: "VoirIndicesParam",
+                url: "{controller}/{action}/{id}",
+                defaults: new { controller = "Home", action = "VoirIndicesParam", id = UrlParameter.Optional }
+            );
         }
     }
 }

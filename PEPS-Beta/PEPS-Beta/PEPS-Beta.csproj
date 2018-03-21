@@ -793,7 +793,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index2.cshtml" />
     <Content Include="Views\Home\Pricer.cshtml" />
-    <Content Include="Views\Home\ListIndiceView.cshtml" />
+    <Content Include="Views\Home\VoirIndicesParam.cshtml" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Scripts\umd\popper.min.js.map" />
