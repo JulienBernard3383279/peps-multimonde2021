@@ -36,10 +36,10 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 	//Récupération des spots
 	pnl_mat_get_row(payoffVectMemSpaceInit_, path, 0);
 
-	//Mises dans leurs monnaies
+	//Mises dans leurs monnaies (Les actifs sont SX)
 	PnlVect* temp = pnl_vect_create_from_list(11,
 		1.0,
-		MGET(path, 0, 6),
+		MGET(path, 0, 6), // 1/X
 		MGET(path, 0, 7),
 		MGET(path, 0, 8),
 		MGET(path, 0, 9),

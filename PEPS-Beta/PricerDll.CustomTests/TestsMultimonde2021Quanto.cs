@@ -11,6 +11,7 @@ namespace PricerDll.CustomTests
         public static unsafe void PerformPriceTests()
         {
             #region Init
+            Console.WriteLine("Tests prix du multimonde 2021 quanto");
             int nbSamples;
             double[] currentPrices;
             double[] volatilities;
@@ -326,6 +327,7 @@ namespace PricerDll.CustomTests
         public static unsafe void PerformDeltaTest()
         {
             #region Init
+            Console.WriteLine("Tests deltas du multimonde 2021 quanto");
             int nbSamples;
             double[] currentPrices;
             double[] volatilities;
@@ -375,8 +377,9 @@ namespace PricerDll.CustomTests
             double[] deltas = new double[11];
             System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 11); //<- deltas contient maintenant les deltas
 
-            Console.WriteLine();
-            for (int i = 0; i < 11; i++) Console.Write(deltas[i] + " ");
+            Console.WriteLine("Calcul des deltas sur monde gelé basique.");
+            Console.WriteLine("Doit renvoyer avec certitude 1 pour les actifs et 0 pour les taux de change");
+            for (int i = 0; i < 11; i++) Console.WriteLine(String.Format("{0:######0.######}", deltas[i]) + " ");
             Console.WriteLine();
 
             #endregion

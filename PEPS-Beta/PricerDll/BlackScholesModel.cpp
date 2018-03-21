@@ -228,6 +228,25 @@ void BlackScholesModel::shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathP
 	}
 }
 
+void BlackScholesModel::shiftPathMultimonde2021Quanto(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int j, int from, int nbTimeSteps, double h) {
+	pnl_mat_clone(pathMinus, path);
+	pnl_mat_clone(pathPlus, path);
+	if (j <= 5) { //j est un actif (S -> S ; SX ; 1/X ) ; S=actif en $
+		for (int i = from; i < nbTimeSteps + 1; i++) {
+			MLET(pathMinus, i, j) *= (1.0 - h);
+			MLET(pathPlus, i, j) *= (1.0 + h);
+		}
+	}
+	else { //j est un taux de change (X -> S ; SX ; 1/X ) ; X=$/€
+		for (int i = from; i < nbTimeSteps + 1; i++) {
+			MLET(pathMinus, i, j) /= (1.0 - h);
+			MLET(pathPlus, i, j) /= (1.0 + h);
+			MLET(pathMinus, i, j-5) *= (1.0 - h);
+			MLET(pathPlus, i, j-5) *= (1.0 + h);
+
+		}
+	}
+}
 /**
 * Génère une trajectoire du modèle et la stocke dans path
 */

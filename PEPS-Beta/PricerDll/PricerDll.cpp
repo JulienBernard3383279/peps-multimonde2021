@@ -981,16 +981,18 @@ void DeltasMultimonde2021Quanto (
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
 
 	PnlVect* myDeltas = pnl_vect_create_from_zero(11);
-	mc->deltas(pastMat, t, currentVect, myDeltas);
+	mc->deltasMultimonde2021Quanto(pastMat, t, currentVect, myDeltas);
 
 	// Les 'actifs' manipulés par le modèle sont "[actif en [$]] [$]/€" et "€/[$]"
 	// L'appel doit renvoyer des données directement utilisables pour la couverture, ici
 	// d([$]/€) et d([nombre d'actif])
 
-	pnl_vect_print(myDeltas);
-
 	double* deltasIntermediate = new double[11];
-	deltasIntermediate[0] = GET(myDeltas, 0);
+	for (int i = 0; i < 11; i++) {
+		deltasIntermediate[i] = GET(myDeltas, i);
+		//if (deltasIntermediate[i] > -0.00000001 && deltasIntermediate[i] < 0.00000001) deltasIntermediate[i] = 0;
+	}
+	/*deltasIntermediate[0] = GET(myDeltas, 0);
 	// Correspond aux calculs d'Alexandra (+ facteur x à dt)
 	for (int i = 6; i <= 10; i++) {
 		deltasIntermediate[i] = - currentPrices[i] * currentPrices[i] * GET(myDeltas, i)
@@ -1003,7 +1005,7 @@ void DeltasMultimonde2021Quanto (
 			+ GET(myDeltas, i)
 			+ currentPrices[i] / currentPrices[i + 5] * volatilities[i + 5] * volatilities[i + 5]
 			- currentPrices[i] / currentPrices[i + 5] * volatilities[i] * volatilities[i + 5] * correlations[11 * (i)+(i + 5)];
-	}
+	}*/
 
 	*deltas = static_cast<double*>(malloc(11 * sizeof(double)));
 	memcpy(*deltas, &(deltasIntermediate[0]), 11 * sizeof(double));

@@ -54,4 +54,13 @@ public:
 	* @param[out] Vecteur de taille opt->size_ contenant les deltas. Doit être préalablement alloué et ne contenir que des 0.
 	*/
 	void deltas(PnlMat *past, double t, PnlVect* current, PnlVect* deltas);
+
+	/**
+	* Calcule des deltas de S et X au lieu de ceux de S/X et 1/X. A utiliser avec le Multimonde2021Quanto.
+	*
+	* @param[in] past le path jusqu'à présent
+	* @param[in] t la date actuelle
+	* @param[out] Vecteur de taille opt->size_ contenant les deltas. Doit être préalablement alloué et ne contenir que des 0.
+	*/
+	void deltasMultimonde2021Quanto(PnlMat *past, double t, PnlVect* current, PnlVect* deltas);
 };

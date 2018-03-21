@@ -180,3 +180,61 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 
 	return;
 }
+
+//Duplication à l'exception de l'appel à shiftPathMultimonde2021Quanto, idéalement à factoriser quand ça marchera
+void MonteCarlo::deltasMultimonde2021Quanto(PnlMat *past, double t, PnlVect* current, PnlVect* deltas) {
+
+	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
+	PnlMat *pathMinus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
+	PnlMat *pathPlus = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
+
+	double payoffMinus = 0;
+	double payoffPlus = 0;
+
+	mod_->initAsset(opt_->nbTimeSteps);
+
+	for (int i = 0; i < nbSamples_; ++i) {
+		if (!opt_->custom) {
+			mod_->postInitAsset(path,
+				past, t, current,
+				opt_->T, opt_->nbTimeSteps, rng_);
+		}
+		else {
+			mod_->postInitAssetCustomDates(path,
+				past, t, current,
+				opt_->customDates, opt_->nbTimeSteps, rng_);
+		}
+
+		int from = 0;
+		if (opt_->custom) {
+
+			while (GET(opt_->customDates, from) <= t) {
+				from++;
+			}
+		}
+		else {
+			from = (int)(t / (opt_->T / opt_->nbTimeSteps)) + 1;
+		}
+		double h = 0.0001;
+		for (int j = 0; j < mod_->size_; j++) {
+			mod_->shiftPathMultimonde2021Quanto(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, h);
+			//pnl_mat_print(pathPlus);
+			payoffPlus = opt_->payoff(pathPlus);//std::cout << "payoffPlus :" << payoffPlus << std::endl;
+												//pnl_mat_print(pathMinus);
+			payoffMinus = opt_->payoff(pathMinus);//std::cout << "payoffMinus :" << payoffMinus << std::endl;
+
+			LET(deltas, j) += (payoffPlus - payoffMinus) / (GET(current, j) * 2 * h);
+		}
+	}
+
+	for (int j = 0; j < mod_->size_; j++) {
+		LET(deltas, j) /= nbSamples_;
+		LET(deltas, j) *= exp(-mod_->r_ * (opt_->T - t));
+	}
+
+	pnl_mat_free(&path);
+	pnl_mat_free(&pathMinus);
+	pnl_mat_free(&pathPlus);
+
+	return;
+}
