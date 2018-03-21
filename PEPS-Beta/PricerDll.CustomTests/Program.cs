@@ -16,7 +16,7 @@ namespace PricerDll.CustomTests
             //TestsCall.PerformDeltaTestsAnyTime();
             //TestsQuanto.PerformPriceTests();
             //TestHistoricalData.TestHisto();
-            //TestsMultimonde2021Quanto.PerformPriceTests();
+            TestsMultimonde2021Quanto.PerformPriceTests();
             TestsMultimonde2021Quanto.PerformDeltaTest();
             Console.WriteLine("Appuyez sur une touche pour terminer le programme.");
             Console.ReadKey();

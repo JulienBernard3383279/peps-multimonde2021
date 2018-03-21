@@ -1050,6 +1050,48 @@ void DeltasMultimonde2021QuantoDebug(
 	memcpy(*deltas, &(deltasIntermediate[0]), 11 * sizeof(double));
 }
 #pragma endregion
+#pragma region Tracking error
+void TrackingErrorMultimonde2021Quanto(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double FXRates[],
+	double trends[],
+	double* tracking_error) {
+
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+	mc->nbSamples_ = sampleNumber / 10.0; //à appeler quand deltas
+
+	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
+	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
+
+	PnlMat *scenario = pnl_mat_create(opt->nbTimeSteps + 1, mod->size_);
+
+	mod->initAsset(opt->nbTimeSteps);
+	mod->postInitAssetCustomDates(scenario,
+		pastMat, t, currentVect,
+		opt->customDates, opt->nbTimeSteps, mc->rng_);
+
+	double spare = 0;
+	PnlVect* quantities = pnl_vect_create_from_zero(11);
+
+	double advancement = t;
+	double price;
+	double ic;
+	mc->price(scenario, advancement, currentVect, &price, &ic);
+	PnlVect* deltas;
+	mc->deltasMultimonde2021Quanto(scenario, advancement, currentVect, deltas);
+}
+#pragma endregion
 #pragma endregion
 
 #pragma region Utils

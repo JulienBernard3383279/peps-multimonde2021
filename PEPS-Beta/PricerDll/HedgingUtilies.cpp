@@ -13,12 +13,12 @@ static double ComputeValue(PnlVect* quantities, PnlVect* values) {
 }
 
 static void UpdateCurrencyQuantities(double timeGap,
-	double &localQuantity, double localInterestRate,
-	PnlVect* quantities, PnlVect* interestRates) {
-	//Il faudra mapper les valeurs par référence lors de la construction du vecteur quantité 6-10 (wrap ?)
-	localQuantity *= exp(1 + localInterestRate * timeGap); 
-	for (int i = 0; i < quantities->size; i++) {
-		LET(quantities, i) *= exp(1 + GET(interestRates, i)*timeGap);
+	double &localQuantity,// double localInterestRate,
+	int startIndex, PnlVect* quantities, PnlVect* interestRates) {
+	//Seules les quantités 6-10 sont augmentées ( les monnaies )
+	localQuantity *= exp(1 + GET(interestRates,0) * timeGap); 
+	for (int i = startIndex; i < startIndex + quantities->size; i++) {
+		LET(quantities, i) *= exp(1 + GET(interestRates, i-startIndex)*timeGap);
 	}
 }
 

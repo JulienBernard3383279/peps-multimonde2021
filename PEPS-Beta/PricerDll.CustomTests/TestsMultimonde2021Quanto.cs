@@ -281,6 +281,7 @@ namespace PricerDll.CustomTests
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
 
+            //nbSamples = 10000;
             volatilities = new double[11] {
                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
                 0, 0, 0, 0, 0
@@ -378,7 +379,7 @@ namespace PricerDll.CustomTests
             System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 11); //<- deltas contient maintenant les deltas
 
             Console.WriteLine("Calcul des deltas sur monde gelé basique.");
-            Console.WriteLine("Doit renvoyer avec certitude 1 pour les actifs et 0 pour les taux de change");
+            Console.WriteLine("Doit renvoyer avec certitude 1 pour les actifs et -100 pour les taux de change");
             for (int i = 0; i < 11; i++) Console.WriteLine(String.Format("{0:######0.######}", deltas[i]) + " ");
             Console.WriteLine();
 
