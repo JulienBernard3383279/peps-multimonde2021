@@ -23,7 +23,6 @@
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
 </head>
 <body>
->
 
     @using (Ajax.BeginForm("Pricer", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "ourPrice" }))
     {

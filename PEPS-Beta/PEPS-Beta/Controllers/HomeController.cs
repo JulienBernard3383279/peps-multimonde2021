@@ -76,7 +76,6 @@ namespace PEPS_Beta.Controllers
             return View();
         }
 
-        [ChildActionOnly]
         [HttpPost]
         public unsafe ActionResult Pricer(int nbSamples)
         {
@@ -131,6 +130,15 @@ namespace PEPS_Beta.Controllers
 
 
             // IDEM POUR PARAMS MULTIMONDE
+        }
+
+        [HttpPost]
+        public unsafe void IndiceLigne(Indice ourInd)
+        {
+            using (DAL dal = new DAL())
+            {
+                dal.modifierIndice(ourInd.Id, ourInd.InterestRateThisArea, ourInd.Vol);
+            }
         }
     }
 }
