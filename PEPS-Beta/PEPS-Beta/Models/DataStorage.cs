@@ -124,13 +124,56 @@ namespace PEPS_Beta.Models
                 dateFound = (String.Compare(LastUpdate, DR.ASX.TimeSeries[count].DateTime) == 0);
                 count++;
             }
-            double[,] tmpStock = new double[6, this.IndexValues.GetLength(1)];
-            double[,] tmpExchange = new double[5, this.ChangeValues.GetLength(1)];
+            // si le dernier update date de plus 100jours ne rien faire 
+            if (count == 100 && dateFound == false)
+                return;
+
+            int IndexLength = this.IndexValues.GetLength(1);
+            int ChangeLength = this.ChangeValues.GetLength(1);
+
+            double[,] tmpStock = new double[6, IndexLength];
+            double[,] tmpExchange = new double[5, ChangeLength];
             Array.Copy(this.IndexValues, tmpStock, this.IndexValues.Length);
             Array.Copy(this.ChangeValues, tmpExchange, this.ChangeValues.Length);
 
-            //TOEND
+            // Update Length Values
+            IndexLength = IndexLength + count;
+            ChangeLength = ChangeLength + count;
+
+            this.IndexValues = new double[6, IndexLength];
+            this.ChangeValues = new double[5, ChangeLength];
+
+            //CopyData
+            tmpStock.CopyTo(this.IndexValues, 0);
+            tmpExchange.CopyTo(this.ChangeValues, 0);
+            double tmpEURUSD = 0;
+            for (int i = 1; i < count + 1; i++)
+            {
+                // STOCK
+                this.IndexValues[0, IndexLength - i] = Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                this.IndexValues[1, IndexLength - i] = Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                this.IndexValues[2, IndexLength - i] = Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                this.IndexValues[3, IndexLength - i] = Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                this.IndexValues[4, IndexLength - i] = Convert.ToDouble(double.Parse(DR.N225.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                this.IndexValues[5, IndexLength - i] = Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+
+                // EXCHANGE
+
+                tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                // EURAUD = EURUSD / AUDUSD
+                this.ChangeValues[0, ChangeLength - i] = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                this.ChangeValues[1, ChangeLength - i] = tmpEURUSD;
+                this.ChangeValues[2, ChangeLength - i] = Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                this.ChangeValues[3, ChangeLength - i] = Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+
+                // EURHKD = EURUSD * USDHKD
+                this.ChangeValues[4, ChangeLength + i] = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[100-i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+            }
+
         }
+
+
+
 /**
  * 
  * 
