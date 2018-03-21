@@ -33,23 +33,21 @@ namespace PricerDll.CustomTests
     double[] currentPrices,//taille 1, il s'agit juste du spot
     double[] volatilities,//taille 1 pareil
     double[] interestRates,//pour l'instant taille 1
-    double* price,
-    double maturity,
-    double* ic)
+    double maturity)
         {
 
             double price_;
             double ic_;
 
 
-           API.PriceSingleMonde( sampleNumber,
-    //double past[], // format [,]
-     currentPrices,//taille 1, il s'agit juste du spot
-     volatilities,//taille 1 pareil
-     interestRates,//pour l'instant taille 1
-     &price_,
-     maturity,
-     &ic_);
+            API.PriceSingleMonde(sampleNumber,
+      //double past[], // format [,]
+      currentPrices,//taille 1, il s'agit juste du spot
+      volatilities,//taille 1 pareil
+      interestRates,//pour l'instant taille 1
+      &price_,
+      maturity,
+      &ic_);
 
             double date = 0.0;
             //price et ics contiennent prix et intervalle de couverture selon le pricer
@@ -65,7 +63,7 @@ namespace PricerDll.CustomTests
 
             Console.WriteLine("");
             Console.WriteLine("");
-            Console.WriteLine("Prix calculé par Monte-Carlo : " + price_ + " , Intervalle de confiance à 99% : [" + (price - 1.5 * ic / 2) + "," + (price + 1.5 * ic / 2) + "]");
+            Console.WriteLine("Prix calculé par Monte-Carlo : " + price_ + " , Intervalle de confiance à 99% : [" + (price_ - 1.5 * ic_ / 2) + "," + (price_ + 1.5 * ic_ / 2) + "]");
             Console.WriteLine("Prix calculé par formule fermée : " + realPrice);
             if ((realPrice > price_ + 1.5 * ic_ / 2) || (realPrice < price_ - 1.5 * ic_ / 2))
             {
@@ -73,7 +71,28 @@ namespace PricerDll.CustomTests
             }
             Console.WriteLine("");
             Console.WriteLine("");
-        
-    }
+
+        }
+        /*
+        * Lance le test pour certaines combinaisons de valeurs.
+        */
+        public static void PerformPriceSingleMondeTests()
+        {
+            double maturity = 3.0;
+            int nbSamples = 1000000;
+
+            Console.WriteLine("Test sur singlemonde une date, un actif, marché euro");
+            double[] spots = new double[1] { 100.0 };
+            double[] volatilities = new double[1] { 0.05 };
+            double[] interestRates = new double[1] { 0.05 };
+            double[] correlations = new double[1] { 0.0 };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                maturity);
+
+        }
     }
 }
