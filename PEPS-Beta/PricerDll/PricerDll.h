@@ -1,11 +1,13 @@
+#pragma region Init
 #pragma once
-
 #ifdef PRICERDLL_EXPORTS
 #define PRICERDLL_API __declspec(dllexport)
 #else
 #define PRICERDLL_API __declspec(dllimport)
 #endif
+#pragma endregion
 
+#pragma region Basket
 extern "C" PRICERDLL_API void PriceBasket(
 	double maturity,
 	int optionSize,
@@ -102,16 +104,9 @@ extern "C" PRICERDLL_API void DeltasSingleCurrencyBasketAnyTime(
 	double** deltasAssets,
 	double** deltasFXRates
 );
+#pragma endregion
 
-
-
-
-
-
-
-
-
-
+#pragma region Multimonde 2021 (deprecated)
 extern "C" PRICERDLL_API void PriceMultimonde2021(
 	int sampleNumber,
 	double spots[],
@@ -204,8 +199,9 @@ extern "C" PRICERDLL_API void ConvertDeltas(
 	double FXRates[],
 	double** deltasAssets,
 	double** deltasFXRates);
+#pragma endregion
 
-
+#pragma region Quanto
 extern "C" PRICERDLL_API void PriceQuanto(
 	double maturity,
 	double strike,
@@ -216,6 +212,42 @@ extern "C" PRICERDLL_API void PriceQuanto(
 	double correlations[],
 	double* price,
 	double* ic);
+#pragma endregion
+
+#pragma region Multimonde 2021 Quanto
+extern "C" PRICERDLL_API void PriceMultimonde2021Quanto(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double* price,
+	double* ic);
+
+extern "C" PRICERDLL_API void DeltasMultimonde2021Quanto(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double** deltas);
+
+extern "C" PRICERDLL_API void DeltasMultimonde2021QuantoDebug(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double** deltas);
 
 
 //la fonction pour la simulation du single monde 
@@ -232,4 +264,7 @@ extern "C" PRICERDLL_API void PriceSingleMonde(
 
 // FONCTIONS PNL EXPORTEES
 
+
+#pragma region Utils
 extern "C" PRICERDLL_API double call_pnl_cdfnor(double x);
+#pragma endregion

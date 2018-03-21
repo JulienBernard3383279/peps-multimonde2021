@@ -35,7 +35,6 @@ namespace PricerDll.CustomTests
          * Appelle l'API et la formule fermée et compare les résultats.
          * Test actuel : appartenance du résultat à l'intervalle de confiance à 95%.
          * La fonction prend en paramètres les volatilités et covariances de l'actif dans sa monnaie étrangère (S) et du taux de change (X).
-         * Les calculs pour envoyer celles de SX et X à l'API sont faites ici. (Temporaires, pour le debug, à changer !)
          */
         private static void PriceTestQuanto(double maturity,
                double strike,
@@ -48,10 +47,6 @@ namespace PricerDll.CustomTests
 
             double price;
             double ic;
-
-            //DEBUG
-            //double[] correlationsModif = MathUtils.GenCorrAPlusBBFromCorrAB(correlations, volatilities);
-            //double[] testInterestRates = new double[2] { interestRates[1], interestRates[0] };
 
             API.PriceQuanto(
                 maturity, //maturity in years
