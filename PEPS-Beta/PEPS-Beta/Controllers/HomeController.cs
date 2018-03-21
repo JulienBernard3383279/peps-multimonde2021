@@ -1,10 +1,10 @@
-﻿using System;
+﻿using PEPS_Beta.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 
 namespace PEPS_Beta.Controllers
 {
@@ -28,7 +28,7 @@ namespace PEPS_Beta.Controllers
            
 
             // ParseData
-            Models.DataStorage ds = new Models.DataStorage();
+         //   Models.DataStorage ds = new Models.DataStorage();
          //   ds.FillDataHtml(500,500);
             //
 
@@ -68,7 +68,6 @@ namespace PEPS_Beta.Controllers
 
             ViewData["d"] = price;
             ViewData["ic"] = ic;
-            ViewData["date"] = "HELLO";
             return View();
         }
 
@@ -77,10 +76,11 @@ namespace PEPS_Beta.Controllers
             return View();
         }
 
+        [ChildActionOnly]
         [HttpPost]
         public unsafe ActionResult Pricer(int nbSamples)
         {
-            int optionSize = 40;
+            int optionSize = 6;
             double[] payoffCoefficients = new double[optionSize];
             double[] spots = new double[optionSize];
             double[] volatilities = new double[optionSize];
@@ -118,13 +118,19 @@ namespace PEPS_Beta.Controllers
             ViewData["ic"] = ic;
             return PartialView();
         }
-
-        [HttpPost]
-        public ActionResult DisplayDate(string button)
+        public unsafe ActionResult VoirIndicesParam()
         {
-            ViewData["date"] = "MISUMI";
-            return (RedirectToAction("Index"));
-        }
+            using (DAL dal = new DAL())
+            {
+                return PartialView(dal.GetIndices());
+            }
+            //IL FAUT ENSUITE CREER CETTE VUE
+            // RAJOUTER UN CONTROLEUR POUR MODIFIER LES PARAMS DUN INDICE, FAIRE AVEC BINDING DE MODELE
+            // CE CONTROLEUR EST POSTONLY ET RENVOIE LA VUE PARTIELLE DE LA LISTE DES INDICES
+            // QUI EST MODIFIEE PAR LE FORMULAIRE ASSOCIE A CE CONTROLEUR
 
+
+            // IDEM POUR PARAMS MULTIMONDE
+        }
     }
 }
