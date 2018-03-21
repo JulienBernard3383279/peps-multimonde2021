@@ -12,6 +12,8 @@ namespace PEPS_Beta.Models
         public double Vol { get; set; }
         public Dictionary<DateTime, double> Histo { get; set; }
         public Dictionary<Indice, double> CorrelationMat { get; set; }
+        public String Money { get; set; }
+        public double InterestRateThisArea { get; set; }
 
         public Indice()
         {
