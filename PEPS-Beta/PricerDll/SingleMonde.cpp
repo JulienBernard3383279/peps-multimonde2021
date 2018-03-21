@@ -25,7 +25,7 @@ double SingleMonde::payoff(const PnlMat* path) { //path taille 1,1, représentant
 
 	double globalPerf = 1.0;
 	double max ;
-		max = this->payoff;
+		max = 0.0;
 		
 		if (max >= 0.85 && max <= 1.15) {
 			globalPerf = max - 1.0;
@@ -34,11 +34,11 @@ double SingleMonde::payoff(const PnlMat* path) { //path taille 1,1, représentant
 			globalPerf = (max < 1 ? -0.15 : 0.15);
 		}
 	
-		this->payoff = 100 * globalPerf;
+		
 	return 100 * globalPerf;
 }
 
-double SingleMonde::verbosePayoff(const PnlMat* path) { //path taille 1,1, représentant la liste suivante :
+double SingleMonde::verbosePayoff() { //path taille 1,1, représentant la liste suivante :
 														   /*
 														   * 01/10/15
 														   */
@@ -48,7 +48,7 @@ double SingleMonde::verbosePayoff(const PnlMat* path) { //path taille 1,1, repré
 	double globalPerf = 1.0;
 	double max;
 		
-				max = this->payoff;
+				max = 0.0;
 			
 		if (max >= 0.85 && max <= 1.15) {
 			globalPerf += max - 1.0;
