@@ -988,10 +988,13 @@ void DeltasMultimonde2021Quanto (
 	// d([$]/€) et d([nombre d'actif])
 
 	double* deltasIntermediate = new double[11];
-	for (int i = 0; i < 11; i++) {
-		deltasIntermediate[i] = GET(myDeltas, i);
-		//if (deltasIntermediate[i] > -0.00000001 && deltasIntermediate[i] < 0.00000001) deltasIntermediate[i] = 0;
+
+	deltasIntermediate[0] = GET(myDeltas, 0);
+	for (int i = 1; i < 6; i++) {
+		deltasIntermediate[i] = GET(myDeltas, i) * currentPrices[i+5];
+		deltasIntermediate[i+5] = -GET(myDeltas, i) * currentPrices[i] * currentPrices[i+5];
 	}
+
 	/*deltasIntermediate[0] = GET(myDeltas, 0);
 	// Correspond aux calculs d'Alexandra (+ facteur x à dt)
 	for (int i = 6; i <= 10; i++) {

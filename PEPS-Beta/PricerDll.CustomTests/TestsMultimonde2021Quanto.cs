@@ -382,6 +382,26 @@ namespace PricerDll.CustomTests
             for (int i = 0; i < 11; i++) Console.WriteLine(String.Format("{0:######0.######}", deltas[i]) + " ");
             Console.WriteLine();
 
+
+            interestRates = new double[6] {
+                0.01, 0.01, 0.01, 0.01, 0.01, 0.01
+            };
+            API.DeltasMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                out deltasPtr);
+
+            System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 11); //<- deltas contient maintenant les deltas
+
+            Console.WriteLine("Calcul des deltas sur monde gelé avec taux d'intérêt = 1%.");
+            for (int i = 0; i < 11; i++) Console.WriteLine(String.Format("{0:######0.######}", deltas[i]) + " ");
+            Console.WriteLine();
             #endregion
         }
     }

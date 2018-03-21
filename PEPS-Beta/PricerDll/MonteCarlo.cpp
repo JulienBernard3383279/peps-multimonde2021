@@ -181,7 +181,7 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 	return;
 }
 
-//Duplication à l'exception de l'appel à shiftPathMultimonde2021Quanto, idéalement à factoriser quand ça marchera
+//Duplication à l'exception de la limitation de la taille à 6, idéalement à factoriser quand ça marchera
 void MonteCarlo::deltasMultimonde2021Quanto(PnlMat *past, double t, PnlVect* current, PnlVect* deltas) {
 
 	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
@@ -216,8 +216,8 @@ void MonteCarlo::deltasMultimonde2021Quanto(PnlMat *past, double t, PnlVect* cur
 			from = (int)(t / (opt_->T / opt_->nbTimeSteps)) + 1;
 		}
 		double h = 0.0001;
-		for (int j = 0; j < mod_->size_; j++) {
-			mod_->shiftPathMultimonde2021Quanto(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, h);
+		for (int j = 0; j < 6; j++) { //mod_->size_
+			mod_->shiftPath(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, h);
 			//pnl_mat_print(pathPlus);
 			payoffPlus = opt_->payoff(pathPlus);//std::cout << "payoffPlus :" << payoffPlus << std::endl;
 												//pnl_mat_print(pathMinus);
