@@ -1050,8 +1050,6 @@ void DeltasMultimonde2021QuantoDebug(
 #pragma region SingleMonde
 void PriceSingleMonde(int sampleNumber,
 	//double past[], // format [,]
-	int nbRows,
-	double t,
 	double currentPrices[],//taille 1, il s'agit juste du spot
 	double volatilities[],//taille 1 pareil
 	double interestRates[],//pour l'instant taille 1

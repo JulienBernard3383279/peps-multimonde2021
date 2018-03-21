@@ -252,14 +252,13 @@ extern "C" PRICERDLL_API void DeltasMultimonde2021QuantoDebug(
 
 //la fonction pour la simulation du single monde 
 extern "C" PRICERDLL_API void PriceSingleMonde(
-	double maturity,
-	double strike,
 	int sampleNumber,
-	double spots[],
-	double volatilities[],
-	double interestRate[],
-	double correlations[],
+	//double past[], // format [,]
+	double currentPrices[],//taille 1, il s'agit juste du spot
+	double volatilities[],//taille 1 pareil
+	double interestRates[],//pour l'instant taille 1
 	double* price,
+	double T,
 	double* ic);
 
 // FONCTIONS PNL EXPORTEES

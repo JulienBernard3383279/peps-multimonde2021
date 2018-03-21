@@ -98,5 +98,8 @@
     <ClCompile Include="Multimonde2021Quanto.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SingleMonde.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
