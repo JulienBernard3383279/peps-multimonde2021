@@ -11,18 +11,15 @@ namespace PricerDll.CustomTests
         static void Main(string[] args)
         {
             //TestsCall.PerformPriceTests();
-            TestsCall.PerformPriceTestsAnyTime();
+            //TestsCall.PerformPriceTestsAnyTime();
             //TestsCall.PerformDeltaTests0();
             //TestsCall.PerformDeltaTestsAnyTime();
-
-            Console.WriteLine("");
-            Console.WriteLine("Test du prix d'un Quanto en 0 : ");
-            Console.WriteLine("");
-            TestsQuanto.PerformPriceTests();
-            Console.WriteLine("");
-
+            //TestsQuanto.PerformPriceTests();
+            TestsQuanto.PerformDeltaTests0();
+         // TestsQuanto.PerformDeltaTestsAnyTime();
             //TestHistoricalData.TestHisto();
-
+            //TestsMultimonde2021Quanto.PerformPriceTests();
+            //TestsMultimonde2021Quanto.PerformDeltaTest();
             Console.WriteLine("Appuyez sur une touche pour terminer le programme.");
             Console.ReadKey();
         }

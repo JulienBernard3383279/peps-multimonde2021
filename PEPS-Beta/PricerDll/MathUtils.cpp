@@ -4,14 +4,129 @@
 #include <cmath>
 #include "pnl/pnl_matrix.h"
 
+#pragma region Volatility utils
 /*
-* Compute the correlation of A+B with B assuming A and B follow normal laws
+* Computes the volatility of A+B with B assuming A and B follow normal laws
+*/
+static double VolAplusB(double corrAB, double volA, double volB) {
+	return sqrt(volA*volA + volB * volB + 2 * corrAB*volA*volB);
+}
+
+/*
+* Computes the volatility of A-B with B assuming A and B follow normal laws
+*/
+static double VolAminusB(double corrAB, double volA, double volB) {
+	return sqrt(volA*volA + volB * volB - 2 * corrAB*volA*volB);
+}
+#pragma endregion
+
+#pragma region Correlation utils
+/*
+* Computes the volatility of A+B with C assuming A, B and C follow normal laws
+*/
+static double CorrAplusBwithC(double corrAB, double corrAC, double corrBC, double volA, double volB) {
+	return VolAplusB(corrAB, volA, volB)==0 ? 0 :
+		(corrAC*volA + corrBC * volB) / VolAplusB(corrAB, volA, volB);
+}
+
+/*
+* Computes the volatility of A-B with C assuming A, B and C follow normal laws
+*/
+static double CorrAminusBwithC(double corrAB, double corrAC, double corrBC, double volA, double volB) {
+	return VolAminusB(corrAB, volA, volB) == 0 ? 0 :
+		(corrAC*volA - corrBC * volB) / VolAminusB(corrAB, volA, volB);
+}
+
+/*
+* Computes the volatility of A+B with C+D assuming A, B, C and D follow normal laws
+*/
+static double CorrAplusBwithCplusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
+	double volA, double volB, double volC, double volD) {
+	return VolAplusB(corrAB, volA, volB)*VolAplusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC +
+			volA * volD * corrAD +
+			volB * volC * corrBC +
+			volB * volD * corrBD
+			) / (
+				VolAplusB(corrAB, volA, volB) +
+				VolAplusB(corrCD, volC, volD)
+				);
+}
+
+/*
+* Computes the volatility of A-B with C+D assuming A, B, C and D follow normal laws
+*/
+static double CorrAminusBwithCplusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
+	double volA, double volB, double volC, double volD) {
+	return VolAminusB(corrAB, volA, volB)*VolAplusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC +
+			volA * volD * corrAD -
+			volB * volC * corrBC -
+			volB * volD * corrBD
+			) / (
+				VolAminusB(corrAB, volA, volB) +
+				VolAplusB(corrCD, volC, volD)
+				);
+}
+
+/*
+* Computes the volatility of A+B with C-D assuming A, B, C and D follow normal laws
+*/
+static double CorrAplusBwithCminusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
+	double volA, double volB, double volC, double volD) {
+	return VolAplusB(corrAB, volA, volB)*VolAminusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC -
+			volA * volD * corrAD +
+			volB * volC * corrBC -
+			volB * volD * corrBD
+			) / (
+				VolAplusB(corrAB, volA, volB) +
+				VolAminusB(corrCD, volC, volD)
+				);
+}
+
+/*
+* Computes the volatility of A-B with C-D assuming A, B, C and D follow normal laws
+*/
+static double CorrAminusBwithCminusD(double corrAB, double corrAC, double corrAD, double corrBC, double corrBD, double corrCD,
+	double volA, double volB, double volC, double volD) {
+	return VolAminusB(corrAB, volA, volB)*VolAminusB(corrCD, volC, volD) == 0 ? 0 :
+		(
+			volA * volC * corrAC -
+			volA * volD * corrAD -
+			volB * volC * corrBC +
+			volB * volD * corrBD
+			) / (
+				VolAminusB(corrAB, volA, volB) +
+				VolAminusB(corrCD, volC, volD)
+				);
+}
+
+/*
+ * Computes the correlation of A-B with B assuming A and B follow normal laws
+ * For compatibility
+ */
+static double CorrAminusBwithB(double corrAB, double volA, double volB)
+{
+	return VolAminusB(corrAB, volA, volB) == 0 ? 0 :
+		(corrAB * volA - volB) / VolAminusB(corrAB, volA, volB);
+}
+
+/*
+* Computes the correlation of A+B with B assuming A and B follow normal laws
+* For compatibility
 */
 static double CorrAplusBwithB(double corrAB, double volA, double volB)
 {
-	return (corrAB * volA - volB) / sqrt(volA * volA + volB * volB - 2 * corrAB * volA * volB);
+	return VolAplusB(corrAB, volA, volB) == 0 ? 0 :
+		(corrAB * volA + volB) / VolAplusB(corrAB, volA, volB);
 }
+#pragma endregion
 
+#pragma region Quanto option utils
 /*
 * Takes a 2x2 correlation matrix for variables A and B and
 * transforms it into the correlation matrix of variables A+B and B
@@ -19,8 +134,8 @@ static double CorrAplusBwithB(double corrAB, double volA, double volB)
 */
 static void FromCorrABToCorrAPlusBB_old(double* matrix, double volA, double volB)
 {
-	matrix[1] = CorrAplusBwithB(matrix[1], volA, volB);
-	matrix[2] = CorrAplusBwithB(matrix[2], volA, volB);
+	matrix[1] = CorrAminusBwithB(matrix[1], volA, volB);
+	matrix[2] = CorrAminusBwithB(matrix[2], volA, volB);
 }
 
 /*
@@ -48,8 +163,8 @@ static double* GenCorrAPlusBBFromCorrAB_old(double* matrix, double* vol)
 */
 static void FromCorrABToCorrAPlusBB(PnlMat* matrix, double volA, double volB)
 {
-	MLET(matrix, 0, 1) = CorrAplusBwithB(MGET(matrix, 0, 1), volA, volB);
-	MLET(matrix, 1, 0) = CorrAplusBwithB(MGET(matrix, 1, 0), volA, volB);
+	MLET(matrix, 0, 1) = CorrAminusBwithB(MGET(matrix, 0, 1), volA, volB);
+	MLET(matrix, 1, 0) = CorrAminusBwithB(MGET(matrix, 1, 0), volA, volB);
 }
 
 /*
@@ -72,3 +187,4 @@ static PnlMat* GenCorrAPlusBBFromCorrAB(double* matrix, double* vol)
 {
 	return GenCorrAPlusBBFromCorrAB(matrix, vol[0], vol[1]);
 }
+#pragma endregion

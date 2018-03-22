@@ -36,9 +36,7 @@ void MonteCarlo::price(double* prix, double* ic) {
 		else { mod_->postInitAssetCustomDates(path, opt_->customDates, opt_->nbTimeSteps, rng_); }
 
 		double payoff = opt_->payoff(path);
-		if (i % 1000 == 0 || i == nbSamples_ -1) {
-			//std::cout << payoff << std::endl;
-		}
+
 		mySum += payoff;
 		mySquaredSum += payoff * payoff;
 	}
@@ -66,12 +64,11 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 	for (int i = 0; i < nbSamples_; ++i) {
 		if (!opt_->custom) { mod_->postInitAsset(path, opt_->T, opt_->nbTimeSteps, rng_); }
 		else { mod_->postInitAssetCustomDates(path, opt_->customDates, opt_->nbTimeSteps, rng_); }
-		
+
 		for (int j = 0; j < mod_->size_; j++) {
 			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, 0.01);
 			payoffPlus = opt_->payoff(pathPlus);
 			payoffMinus = opt_->payoff(pathMinus);
-			
 			
 			LET(deltas,j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.01);
 		}
@@ -109,18 +106,17 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 			mod_->postInitAssetCustomDates(path,
 			                                  past, t, current,
 			                                  opt_->customDates, opt_->nbTimeSteps, rng_); }
-
 		tempPayoff = opt_->payoff(path);
-
 		mySum += tempPayoff;
 		mySquaredSum += tempPayoff * tempPayoff;
+
 	}
 
 	*prix = mySum / nbSamples_ * exp(-mod_->r_ * (opt_->T - t) );
 
 	var = exp(-mod_->r_ * (opt_->T - t )* 2)
 		* (mySquaredSum / nbSamples_ - pow(mySum / nbSamples_, 2));
-
+	if (var < 0 && var > -0.00001) var = 0;
 	*ic = 2 * 1.96 * sqrt(var) / sqrt(nbSamples_);
 
 	// Free memory
