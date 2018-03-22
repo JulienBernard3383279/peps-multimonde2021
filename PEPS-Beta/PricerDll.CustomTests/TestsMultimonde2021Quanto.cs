@@ -405,5 +405,46 @@ namespace PricerDll.CustomTests
             Console.WriteLine();
             #endregion
         }
+
+        public static unsafe void PerformTrackingErrorTest()
+        {
+            #region Init
+            Console.WriteLine("Tests deltas du multimonde 2021 quanto");
+            int nbSamples;
+            double[] currentPrices;
+            double[] volatilities;
+            double[] interestRates;
+            double[] correlations;
+            double[] past;
+            int nbRows;
+            double t;
+            double tracking_error;
+            #endregion
+            #region Test
+            nbSamples = 100000;
+            currentPrices = new double[11] {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
+                1.0, 1.0, 1.0, 1.0, 1.0
+            };
+            volatilities = new double[11] {
+                0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+                0, 0, 0, 0, 0
+            };
+            interestRates = new double[6] {
+                0, 0, 0, 0, 0, 0
+            };
+            correlations = new double[11 * 11];
+            for (int i = 0; i < 11; i++)
+            {
+                for (int j = 0; j < 11; j++)
+                {
+                    correlations[11 * i + j] = i == j ? 1 : 0;
+                }
+            }
+            past = currentPrices;
+            nbRows = 1;
+            t = 0;
+            #endregion
+        }
     }
 }

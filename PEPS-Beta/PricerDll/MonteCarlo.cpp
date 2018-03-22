@@ -225,6 +225,7 @@ void MonteCarlo::deltasMultimonde2021Quanto(PnlMat *past, double t, PnlVect* cur
 
 			LET(deltas, j) += (payoffPlus - payoffMinus) / (GET(current, j) * 2 * h);
 		}
+		for (int j = 6; j < 11; j++) LET(deltas, j) = 0;
 	}
 
 	for (int j = 0; j < mod_->size_; j++) {

@@ -21,7 +21,15 @@ static void UpdateCurrencyQuantities(double timeGap,
 		LET(quantities, i) *= exp(1 + GET(interestRates, i-startIndex)*timeGap);
 	}
 }
-
+static void UpdateCurrencyQuantities(double timeGap,
+	double &localQuantity,// double localInterestRate,
+	int startIndex, PnlVect* quantities, double interestRates[]) {
+	//Seules les quantités 6-10 sont augmentées ( les monnaies )
+	localQuantity *= exp(1 + interestRates[0]*timeGap);
+	for (int i = startIndex; i < startIndex + quantities->size; i++) {
+		LET(quantities, i) *= exp(1 + interestRates[i - startIndex]*timeGap);
+	}
+}
 static void UpdatePortfolio(PnlVect* quantities, PnlVect* values, PnlVect* deltas, double &spare) {
 	double budget = spare + ComputeValue(quantities, values);
 	double cost = ComputeValue(deltas, values);

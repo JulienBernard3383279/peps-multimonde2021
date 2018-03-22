@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API.cs" />
+    <Compile Include="TestSingleMonde.cs" />
     <Compile Include="DataCurrencies.cs" />
     <Compile Include="DataRetriever.cs" />
     <Compile Include="DataStorage.cs" />
@@ -73,7 +74,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestHistoricalData.cs" />
     <Compile Include="TestsCall.cs" />
-    <Compile Include="TestsMultimonde2021Quanto.cs" />
     <Compile Include="TestsQuanto.cs" />
   </ItemGroup>
   <ItemGroup>

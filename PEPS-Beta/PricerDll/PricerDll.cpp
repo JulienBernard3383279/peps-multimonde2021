@@ -15,12 +15,15 @@
 #include "BasketOption.h"
 #include "Multimonde2021.h"
 #include "Multimonde2021Quanto.h"
+#include "SingleMonde.h"
 
 #include "pnl/pnl_vector.h"
 #include "pnl/pnl_cdf.h"
 
 #include "ProfitAndLossUtilities.h"
 #include "MathUtils.cpp"
+#include "HedgingUtilies.cpp"
+
 #pragma endregion
 
 #pragma region Basket Option
@@ -976,6 +979,7 @@ void DeltasMultimonde2021Quanto (
 
 	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
 
+
 	//Gestions paramètres past
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
@@ -1064,6 +1068,8 @@ void TrackingErrorMultimonde2021Quanto(
 	double trends[],
 	double* tracking_error) {
 
+	//pour l'instant, t est ignoré
+
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
@@ -1077,24 +1083,100 @@ void TrackingErrorMultimonde2021Quanto(
 	PnlMat *scenario = pnl_mat_create(opt->nbTimeSteps + 1, mod->size_);
 
 	mod->initAsset(opt->nbTimeSteps);
+	//dates
+	PnlVect* dates = pnl_vect_create(371 * 6 + 1);
+	for (int i = 0; i < 371 * 6 + 1; i++) {
+		LET(dates, i) = i / 365.25;
+	}
 	mod->postInitAssetCustomDates(scenario,
 		pastMat, t, currentVect,
-		opt->customDates, opt->nbTimeSteps, mc->rng_);
+		dates, opt->nbTimeSteps, mc->rng_);
 
+	double portfolioReturn;
+	double previousValue;
+	double value;
 	double spare = 0;
 	PnlVect* quantities = pnl_vect_create_from_zero(11);
 
-	double advancement = t;
+	double advancement = 0;
+	double productReturn;
+	double previousPrice;
 	double price;
 	double ic;
-	mc->price(scenario, advancement, currentVect, &price, &ic);
-	PnlVect* deltas;
-	mc->deltasMultimonde2021Quanto(scenario, advancement, currentVect, deltas);
+
+	PnlVect* returnsDiff = pnl_vect_create(371 * 6);
+
+	mc->price(scenario, GET(dates,advancement), currentVect, &price, &ic);
+	PnlVect* deltas = pnl_vect_create_from_zero(11);
+	mc->deltasMultimonde2021Quanto(scenario, GET(dates, advancement), currentVect, deltas);
+	UpdatePortfolio(quantities, currentVect, deltas, spare);
+	value = ComputeValue(quantities, currentVect) + spare;
+
+	double step = 1.0 / 365.25;
+	for (int index = 1; index<371*6+1; index++) {
+		// mise à jour des informations
+		std::cout << index;
+		advancement += step;
+		pnl_mat_get_row(currentVect, scenario, index);
+		// calcul du rendement du portefeuille
+		UpdateCurrencyQuantities(step, spare, 6, quantities, interestRates);
+		previousValue = value;
+		value = ComputeValue(quantities, currentVect) + spare;
+		portfolioReturn = value / previousValue;
+		// calcul du rendement du multimonde
+		previousPrice = price;
+		mc->price(scenario, GET(dates, advancement), currentVect, &price, &ic);
+		productReturn = price / previousPrice;
+		// calcul de la différence
+		LET(returnsDiff, index - 1) = portfolioReturn - productReturn;
+		//mise à jour de la composition du portefeuille
+		mc->deltasMultimonde2021Quanto(scenario, GET(dates, advancement), currentVect, deltas);
+		UpdatePortfolio(quantities, currentVect, deltas, spare);
+		//check stabilité des valeurs [DEBUG]
+		std::cout << "; " << value << " ; " << ComputeValue(quantities, currentVect) + spare << std::endl;
+	}
+	// calcul de la tracking error
+	double sum = 0;
+	double squaredSum = 0;
+	for (int i = 0; i < 371 * 6; i++) {
+		sum += GET(returnsDiff, i);
+		squaredSum += GET(returnsDiff, i)*GET(returnsDiff, i);
+	}
+	*tracking_error = sqrt(squaredSum - sum);
 }
 #pragma endregion
 #pragma endregion
 
+#pragma region SingleMonde
+void PriceSingleMonde(int sampleNumber,
+	//double past[], // format [,]
+	double currentPrices[],//taille 1, il s'agit juste du spot
+	double volatilities[],//taille 1 pareil
+	double interestRates[],//pour l'instant taille 1
+	double* price,
+	double T,
+	double* ic)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+	opt = new SingleMonde(T);
+	int OptionSize = 1;
+	PnlRng *rng = pnl_rng_create(0);
+	pnl_rng_sseed(rng, time(NULL));
+	PnlMat *corr = pnl_mat_create_from_double(1, 1, 1.0);
+	PnlVect* sigma = pnl_vect_create_from_double(1, volatilities[0]);
+	PnlVect* spot = pnl_vect_create_from_double(1, currentPrices[0]);
+	PnlVect* rate = pnl_vect_create_from_double(1, interestRates[0]);
+	mod = new BlackScholesModel(OptionSize, interestRates[0], corr, sigma, spot, rate);
+	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
+	mc->price(price, ic);
+
+}
+#pragma endregion
+
 #pragma region Utils
+
 double call_pnl_cdfnor(double x) {
 	return pnl_cdfnor(x);
 }
