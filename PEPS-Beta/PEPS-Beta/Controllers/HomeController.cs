@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PEPS_Beta.Models;
+using PEPS_Beta.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -31,6 +33,7 @@ namespace PEPS_Beta.Controllers
          //   ds.FillDataHtml(500,500);
             //
 
+            /*
             int optionSize = 40;
             double[] payoffCoefficients = new double[optionSize];
             double[] spots = new double[optionSize];
@@ -66,7 +69,9 @@ namespace PEPS_Beta.Controllers
                 &ic);
 
             ViewData["d"] = price;
-            ViewData["ic"] = ic;
+            ViewData["ic"] = ic;*/
+
+
             return View();
         }
 
@@ -78,7 +83,7 @@ namespace PEPS_Beta.Controllers
         [HttpPost]
         public unsafe ActionResult Pricer(int nbSamples)
         {
-            int optionSize = 40;
+            int optionSize = 6;
             double[] payoffCoefficients = new double[optionSize];
             double[] spots = new double[optionSize];
             double[] volatilities = new double[optionSize];
@@ -115,6 +120,40 @@ namespace PEPS_Beta.Controllers
             ViewData["price"] = price;
             ViewData["ic"] = ic;
             return PartialView();
+        }
+        public unsafe ActionResult VoirIndicesParam()
+        {
+            using (DAL dal = new DAL())
+            {
+                return PartialView(dal.GetIndices());
+            }
+            // IL FAUT ENSUITE CREER CETTE VUE
+            // RAJOUTER UN CONTROLEUR POUR MODIFIER LES PARAMS DUN INDICE, FAIRE AVEC BINDING DE MODELE
+
+
+            // IDEM POUR PARAMS MULTIMONDE
+        }
+
+        [HttpPost]
+        public unsafe void IndiceLigne(Indice ourInd)
+        {
+            using (DAL dal = new DAL())
+            {
+                dal.modifierIndice(ourInd.Id, ourInd.InterestRateThisArea, ourInd.Vol);
+            }
+        }
+
+        public unsafe ActionResult EstimerParam(EstimationViewModel estim)
+        {
+            using(DAL dal = new DAL())
+            {
+                // Il faut estimer les vol des indices et les correlations
+                // entre les dates estim.DebutEstim et estim.FinEstim
+
+
+                // ne pas toucher au return
+                return PartialView(dal.GetIndices());
+            }
         }
     }
 }
