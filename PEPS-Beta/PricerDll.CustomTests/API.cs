@@ -274,7 +274,20 @@ namespace PricerDll.CustomTests
             double[] interestRates,
             double[] correlations,
             out IntPtr deltas);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void TrackingErrorMultimonde2021Quanto(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations,
+            double* tracking_error);
         #endregion
+
         #region SingleMonde
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceSingleMonde(int sampleNumber,

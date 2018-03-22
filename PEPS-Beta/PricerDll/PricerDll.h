@@ -270,8 +270,6 @@ extern "C" PRICERDLL_API void TrackingErrorMultimonde2021Quanto(
 	double volatilities[],
 	double interestRates[],
 	double correlations[],
-	double FXRates[],
-	double trends[],
 	double* tracking_error);
 
 // FONCTIONS PNL EXPORTEES

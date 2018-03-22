@@ -444,6 +444,19 @@ namespace PricerDll.CustomTests
             past = currentPrices;
             nbRows = 1;
             t = 0;
+
+            API.TrackingErrorMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                &tracking_error);
+
+            Console.WriteLine(tracking_error);
             #endregion
         }
     }
