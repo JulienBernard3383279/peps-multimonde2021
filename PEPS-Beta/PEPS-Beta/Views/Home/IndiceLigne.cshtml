@@ -1,0 +1,29 @@
+﻿@model PEPS_Beta.Models.Indice
+
+<tr>
+    <div id=@Model.Nom>
+        <td>@Model.Nom</td>
+        <td>@Model.Money</td>
+        @*@using (Html.BeginForm("IndiceLigne", "Home", Model))*@
+        @using (Ajax.BeginForm("IndiceLigne", "Home", new AjaxOptions { HttpMethod = "POST"}))
+        {
+            @Html.HiddenFor(ourInd => Model.Id)
+            <td>
+                <div>
+                    @Html.TextBoxFor(ourInd => Model.InterestRateThisArea)
+                </div>
+            </td>
+            <td>
+                <div>
+                    @Html.TextBoxFor(ourInd => Model.Vol)
+                </div>
+            </td>
+            <td>
+                <div>
+                    @*<label>&nbsp;</label>*@
+                    <input type="submit" value="Modifier Indice" class="submit" />
+                </div>
+            </td>
+        }
+    </div>
+</tr>

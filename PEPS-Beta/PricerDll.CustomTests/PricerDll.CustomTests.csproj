@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API.cs" />
+    <Compile Include="TestSingleMonde.cs" />
     <Compile Include="DataCurrencies.cs" />
     <Compile Include="DataRetriever.cs" />
     <Compile Include="DataStorage.cs" />

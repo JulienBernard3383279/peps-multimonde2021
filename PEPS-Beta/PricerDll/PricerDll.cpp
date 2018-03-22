@@ -15,6 +15,7 @@
 #include "BasketOption.h"
 #include "Multimonde2021.h"
 #include "Multimonde2021Quanto.h"
+#include "SingleMonde.h"
 
 #include "pnl/pnl_vector.h"
 #include "pnl/pnl_cdf.h"
@@ -976,6 +977,7 @@ void DeltasMultimonde2021Quanto (
 
 	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
 
+
 	//Gestions paramètres past
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
@@ -1044,10 +1046,39 @@ void DeltasMultimonde2021QuantoDebug(
 	*deltas = static_cast<double*>(malloc(11 * sizeof(double)));
 	memcpy(*deltas, &(deltasIntermediate[0]), 11 * sizeof(double));
 }
+
+#pragma region SingleMonde
+void PriceSingleMonde(int sampleNumber,
+	//double past[], // format [,]
+	double currentPrices[],//taille 1, il s'agit juste du spot
+	double volatilities[],//taille 1 pareil
+	double interestRates[],//pour l'instant taille 1
+	double* price,
+	double T,
+	double* ic)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+	opt = new SingleMonde(T);
+	int OptionSize = 1;
+	PnlRng *rng = pnl_rng_create(0);
+	pnl_rng_sseed(rng, time(NULL));
+	PnlMat *corr = pnl_mat_create_from_double(1, 1, 1.0);
+	PnlVect* sigma = pnl_vect_create_from_double(1, volatilities[0]);
+	PnlVect* spot = pnl_vect_create_from_double(1, currentPrices[0]);
+	PnlVect* rate = pnl_vect_create_from_double(1, interestRates[0]);
+	mod = new BlackScholesModel(OptionSize, interestRates[0], corr, sigma,spot,rate);
+	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
+	mc->price(price, ic);
+
+}
+#pragma endregion
 #pragma endregion
 #pragma endregion
 
 #pragma region Utils
+
 double call_pnl_cdfnor(double x) {
 	return pnl_cdfnor(x);
 }
