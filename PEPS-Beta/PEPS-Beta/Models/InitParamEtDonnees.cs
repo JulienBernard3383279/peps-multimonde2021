@@ -13,6 +13,9 @@ namespace PEPS_Beta.Models
         {
             MultiMondeParam newParam = new MultiMondeParam();
             context.Parametres.Add(newParam);
+
+            DataStorage DS = new DataStorage();
+            DS.FillDataHtml("full", 2000, 2000);
             Indice asx = new Indice("asx");
             context.Indices.Add(asx);
             newParam.Indices.Add(asx);
