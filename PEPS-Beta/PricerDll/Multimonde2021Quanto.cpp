@@ -60,12 +60,12 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 	int maxIndex;
 
 	//Itération sur les actifs
-	for (int i = 1; i <= 6; ++i) { // i = le temps, itère dans les dates de constation, [1,6] normal
+	for (int i = 1; i <= 6; ++i) { // i = le temps, itère dans les dates de constatation, [1,6] normal
 		max = 0;
 		maxIndex = 0;
 		pnl_mat_get_row(payoffVectMemSpaceCurrent_, path, i);
 		
-		//Remise dans leurs monnaies étrangères (opti : ne simuler que S pour le payoff, et ne faire ça que pour les actifs encore en lice)
+		//Remise dans leurs monnaies+ étrangères (opti : ne simuler que S pour le payoff, et ne faire ça que pour les actifs encore en lice)
 		PnlVect* temp = pnl_vect_create_from_list(11,
 			1.0,
 			MGET(path, i, 6),

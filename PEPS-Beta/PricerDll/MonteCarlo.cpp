@@ -85,6 +85,7 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 
 void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, double* ic) {
 
+	//for (int i = 0; i < 500; i++) { std::cout << "mc-> price 1" << std::endl; }
 	double mySum = 0;
 	double mySquaredSum = 0;
 	double theirSum = 0;
@@ -95,6 +96,7 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 	mod_->initAsset(opt_->nbTimeSteps);
 
 	double tempPayoff = 0;
+	//for (int i = 0; i < 500; i++) { std::cout << "mc-> price 2" << std::endl; }
 
 	for (int i = 0; i < nbSamples_; ++i) {
 
@@ -104,6 +106,8 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 				opt_->T, opt_->nbTimeSteps, rng_);
 		}
 		else {
+			//for (int i = 0; i < 500; i++) { std::cout << "mc-> price 3" << std::endl; }
+
 			mod_->postInitAssetCustomDates(path,
 			                                  past, t, current,
 			                                  opt_->customDates, opt_->nbTimeSteps, rng_); }
@@ -111,6 +115,7 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 		mySum += tempPayoff;
 		mySquaredSum += tempPayoff * tempPayoff;
 	}
+	//for (int i = 0; i < 500; i++) { std::cout << "mc-> price 4" << std::endl; }
 
 	*prix = mySum / nbSamples_ * exp(-mod_->r_ * (opt_->T - t) );
 

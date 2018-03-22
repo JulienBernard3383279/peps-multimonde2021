@@ -1067,21 +1067,21 @@ void TrackingErrorMultimonde2021Quanto(
 	double* tracking_error) {
 
 	//pour l'instant, t est ignoré
-	std::cout << "Tracking error > 1" << std::endl;
+	//std::cout << "Tracking error > 1" << std::endl;
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
-	std::cout << "Tracking error > 2" << std::endl;
+	//std::cout << "Tracking error > 2" << std::endl;
 
 	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
 	mc->nbSamples_ = sampleNumber / 10.0; //à appeler quand deltas
-	std::cout << "Tracking error > 3" << std::endl;
+	//std::cout << "Tracking error > 3" << std::endl;
 
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past);
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices);
 
 	PnlMat *scenario = pnl_mat_create(opt->nbTimeSteps + 1, mod->size_);
-	std::cout << "Tracking error > 4" << std::endl;
+	//std::cout << "Tracking error > 4" << std::endl;
 
 	mod->initAsset(opt->nbTimeSteps);
 	//dates
@@ -1089,12 +1089,12 @@ void TrackingErrorMultimonde2021Quanto(
 	for (int i = 0; i < 371 * 6 + 1; i++) {
 		LET(dates, i) = i / 365.25;
 	}
-	std::cout << "Tracking error > 5" << std::endl;
+	//std::cout << "Tracking error > 5" << std::endl;
 
 	mod->postInitAssetCustomDates(scenario,
 		pastMat, t, currentVect,
 		dates, opt->nbTimeSteps, mc->rng_);
-	std::cout << "Tracking error > 6" << std::endl;
+	//std::cout << "Tracking error > 6" << std::endl;
 
 	double portfolioReturn;
 	double previousValue;
@@ -1107,30 +1107,22 @@ void TrackingErrorMultimonde2021Quanto(
 	double previousPrice;
 	double price;
 	double ic;
-	for (int j = 0 ; j < 1000; j++) std::cout << "Tracking error > 7" << std::endl;
-
+	 
 	PnlVect* returnsDiff = pnl_vect_create(371 * 6);
-	for (int j = 0; j < 1000; j++)	pnl_vect_print(currentVect);
 
 	mc->price(scenario, GET(dates,advancement), currentVect, &price, &ic); // le problème est ici
-	for (int j = 0; j < 1000; j++) std::cout << "Tracking error > 9" << std::endl;
 	PnlVect* deltas = pnl_vect_create_from_zero(11);
-	for (int j = 0; j < 1000; j++) std::cout << "Tracking error > 10" << std::endl;
 	mc->deltasMultimonde2021Quanto(scenario, GET(dates, advancement), currentVect, deltas);
-	for (int j = 0; j < 1000; j++) std::cout << "Tracking error > 11" << std::endl;
 	UpdatePortfolio(quantities, currentVect, deltas, spare);
-	for (int j = 0; j < 1000; j++) std::cout << "Tracking error > 12" << std::endl;
 	value = ComputeValue(quantities, currentVect) + spare;
-	for (int j = 0; j < 1000; j++) std::cout << "Tracking error > 13" << std::endl;
-
 	double step = 1.0 / 365.25;
 	for (int index = 1; index<371*6+1; index++) {
 		// mise à jour des informations
-		std::cout << index;
+		std::cout << "Index : " << index << std::endl;
 		advancement += step;
 		pnl_mat_get_row(currentVect, scenario, index);
 		// calcul du rendement du portefeuille
-		UpdateCurrencyQuantities(step, spare, 6, quantities, interestRates);
+		UpdateCurrencyQuantities(step, &spare, 6, quantities, interestRates);
 		previousValue = value;
 		value = ComputeValue(quantities, currentVect) + spare;
 		portfolioReturn = value / previousValue;
@@ -1141,10 +1133,10 @@ void TrackingErrorMultimonde2021Quanto(
 		// calcul de la différence
 		LET(returnsDiff, index - 1) = portfolioReturn - productReturn;
 		//mise à jour de la composition du portefeuille
-		mc->deltasMultimonde2021Quanto(scenario, GET(dates, advancement), currentVect, deltas);
 		UpdatePortfolio(quantities, currentVect, deltas, spare);
-		//check stabilité des valeurs [DEBUG]
+		
 		std::cout << "; " << value << " ; " << ComputeValue(quantities, currentVect) + spare << std::endl;
+		std::cin.ignore();
 	}
 	// calcul de la tracking error
 	double sum = 0;
