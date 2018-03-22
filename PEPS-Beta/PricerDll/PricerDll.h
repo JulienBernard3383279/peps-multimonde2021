@@ -212,6 +212,20 @@ extern "C" PRICERDLL_API void PriceQuanto(
 	double correlations[],
 	double* price,
 	double* ic);
+
+extern "C" PRICERDLL_API void SimulDeltasQuanto(
+	double maturity,
+	double strike,
+	int sampleNumber,
+	double spots[],
+	double payoffCoefficients[],
+	double volatilities[],
+	double interestRate[],
+	double correlations[],
+	double currentFXRates[],
+	double trends[],
+	double** deltasAssets,
+	double** deltasFXRates);
 #pragma endregion
 
 #pragma region Multimonde 2021 Quanto
