@@ -19,13 +19,13 @@ namespace PEPS_Beta.Models
         {
         }
 
-        public Indice(String name, String mon)
+        public Indice(String name, String mon, Dictionary<DateTime, double> histo)
         {
             this.Nom = name;
             this.Money = mon;
             this.Vol = 0.02;
             this.InterestRateThisArea = 0.01;
-            this.Histo = new Dictionary<DateTime, double>();
+            this.Histo = new Dictionary<DateTime, double>(histo);
             this.CorrelationMat = new Dictionary<Indice, double>();
         }
     }

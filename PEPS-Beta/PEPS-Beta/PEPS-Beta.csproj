@@ -786,6 +786,8 @@
     <Compile Include="AVAPI\WMA\Int_WMA.cs">
       <Visible>false</Visible>
     </Compile>
+    <Compile Include="ViewModels\EstimationViewModel.cs" />
+    <Compile Include="ViewModels\IndexViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -819,7 +821,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

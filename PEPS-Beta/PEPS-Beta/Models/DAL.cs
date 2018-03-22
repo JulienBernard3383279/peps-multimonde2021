@@ -36,7 +36,7 @@ namespace PEPS_Beta.Models
         }
 
         public void Init()
-        {
+        {/*
             if (bdd.Indices.Count()  == 0)
             {
                 MultiMondeParam newParam = new MultiMondeParam();
@@ -64,7 +64,7 @@ namespace PEPS_Beta.Models
                 newParam.NbSamples = 1000;
 
                 bdd.SaveChanges();
-            }
+            }*/
         }
 
         internal void modifierIndice(int id, double interestRateThisArea, double vol)

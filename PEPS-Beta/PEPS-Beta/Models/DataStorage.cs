@@ -10,19 +10,20 @@ namespace PEPS_Beta.Models
     public class DataStorage
     {
         // Index Markets
-        private Dictionary<DateTime, double> asx;
-        private Dictionary<DateTime, double> estox;
-        private Dictionary<DateTime, double> ftse;
-        private Dictionary<DateTime, double> hang;
-        private Dictionary<DateTime, double> n225;
-        private Dictionary<DateTime, double> sp500;
+        // violation regle nommage, a changer plus tard
+        public Dictionary<DateTime, double> asx { get; private set; }
+        public Dictionary<DateTime, double> estox { get; private set; }
+        public Dictionary<DateTime, double> ftse { get; private set; }
+        public Dictionary<DateTime, double> hang { get; private set; }
+        public Dictionary<DateTime, double> n225 { get; private set; }
+        public Dictionary<DateTime, double> sp500 { get; private set; }
 
         // Currencies : EUR, USD, AUD, GBP, JPY, HKD
-        private Dictionary<DateTime, double> EurUsd;
-        private Dictionary<DateTime, double> EurAud;
-        private Dictionary<DateTime, double> EurGbp;
-        private Dictionary<DateTime, double> EurJpy;
-        private Dictionary<DateTime, double> EurHkd;
+        public Dictionary<DateTime, double> EurUsd { get; private set; }
+        public Dictionary<DateTime, double> EurAud { get; private set; }
+        public Dictionary<DateTime, double> EurGbp { get; private set; }
+        public Dictionary<DateTime, double> EurJpy { get; private set; }
+        public Dictionary<DateTime, double> EurHkd { get; private set; }
         public String LastUpdate { get; private set; }
 
         public DataStorage()
