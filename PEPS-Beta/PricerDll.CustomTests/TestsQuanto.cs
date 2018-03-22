@@ -189,9 +189,9 @@ namespace PricerDll.CustomTests
                 double[] FXRates,//une seule
                 double date)
         {
-            double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0])) / (volatilities[0] * Math.Sqrt(maturity));
+            double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0])* maturity) / (volatilities[0] * Math.Sqrt(maturity));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity);
-            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[1]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
+            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
         private static double[] RealDeltaQuantoAnyTime(
@@ -204,10 +204,9 @@ namespace PricerDll.CustomTests
                 double[] FXRates,//une seule
                 double date)
         {
-            // d1 = (ln(s(t)/K) + (r$ +rho*sigma(s)*sigma(y) +1/2*var(s))/sigma(s)*(T-t)
-            double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0])) / (volatilities[0] * Math.Sqrt(maturity - date));
+            double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
-            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[1]), Math.Exp(interestRates[0] * (maturity - date)) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
+            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * (maturity - date) ) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date) ) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
 
@@ -229,18 +228,17 @@ namespace PricerDll.CustomTests
 
 
             //call quanto = une seule monnaie pour l'actif (un actif quoi), elle est etrangère
-            API.DeltasSingleCurrencyBasket(
+            API.SimulDeltasQuanto(
                 maturity,
-                optionSize,
                 strike,
-                payoffCoefficients,
-                nbSamples,
+                optionSize,
                 spots,
+                payoffCoefficients,
                 volatilities,
-                interestRates[0],
+                interestRates,
                 correlations,
-                trends,
                 FXRates,
+                trends,
                 out IntPtr deltasAssets,
                 out IntPtr deltasFXRates);
 
@@ -255,14 +253,31 @@ namespace PricerDll.CustomTests
                 correlations,
                 FXRates,
                 date);
-            double[] deltas = new double[6];
-            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 6);
+            double[] deltas = new double[2];
+            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 2);
 
             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
                 Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
+                Console.WriteLine("Deltas formule fermée:");
+                Console.WriteLine(realDelta[0]);
+                Console.WriteLine(realDelta[1]);
+                Console.WriteLine("Deltas simulés");
+                Console.WriteLine(deltas[0]);
+                Console.WriteLine(deltas[1]);
             }
+            else
+            {
+                Console.WriteLine("Deltas formule fermée:");
+                Console.WriteLine(realDelta[0]);
+                Console.WriteLine(realDelta[1]);
+                Console.WriteLine("Deltas simulés");
+                Console.WriteLine(deltas[0]);
+                Console.WriteLine(deltas[1]);
+
+            }
+
         }
 
         private static void DeltaTestAnyTime(double maturity,
@@ -271,6 +286,10 @@ namespace PricerDll.CustomTests
               double[] payoffCoefficients,
               int nbSamples,
               double[] spots,
+              double[] past, 
+              int nbRows,
+              double date,
+              double[] current,
               double[] volatilities,
               double[] interestRates,
               double[] correlations,
@@ -281,13 +300,17 @@ namespace PricerDll.CustomTests
 
 
             //call quanto = une seule monnaie pour l'actif (un actif quoi), elle est etrangère
-            API.DeltasSingleCurrencyBasket(
+
+            API.DeltasSingleCurrencyBasketAnyTime(
                 maturity,
                 optionSize,
                 strike,
                 payoffCoefficients,
                 nbSamples,
-                spots,
+                past,
+                nbRows,
+                date,
+                current,
                 volatilities,
                 interestRates[0],
                 correlations,
@@ -296,10 +319,7 @@ namespace PricerDll.CustomTests
                 out IntPtr deltasAssets,
                 out IntPtr deltasFXRates);
 
-            double date = 0.0;
-            //price et ics contiennent prix et intervalle de couverture selon le pricer
-
-            double[] realDelta = RealDeltaQuantoAnyTime(maturity,
+                double[] realDelta = RealDeltaQuantoAnyTime(maturity,
                 strike,
                 spots,
                 volatilities,
@@ -310,11 +330,22 @@ namespace PricerDll.CustomTests
             double[] deltas = new double[6];
             System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 6);
 
-            if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
-            {
-                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
-                Console.WriteLine("problème de deltas pour l'option quanto en t>0!");
-            }
+            
+
+                if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
+                {
+                    // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
+                    Console.WriteLine("problème de deltas pour l'option quanto en t>0!");
+                
+                }
+                else
+                {
+                    Console.WriteLine("Deltas formule fermée:");
+                    Console.WriteLine(realDelta[0]);
+                    Console.WriteLine("Deltas simulés");
+                    Console.WriteLine(deltas[0]);
+
+                }
         }
 
         public static void PerformDeltaTests0()
@@ -325,7 +356,7 @@ namespace PricerDll.CustomTests
             double[] payoffCoefficients = new double[1] { 1.0 };
             int nbSamples = 100000;
             double[] spots = new double[1] { 1.0 };
-            double[] volatilities = new double[1] { 1.0 };
+            double[] volatilities = new double[2] { 1.0 , 1.0 };
             double[] interestRates = new double[2] { 0.05, 0.0 };
             double[] correlations = new double[1] { 1.0 };
             int timestepNumber = 1;
@@ -353,12 +384,16 @@ namespace PricerDll.CustomTests
             double[] payoffCoefficients = new double[1] { 1.0 };
             int nbSamples = 100000;
             double[] spots = new double[1] { 1.0 };
-            double[] volatilities = new double[1] { 1.0 };
+            double[] volatilities = new double[2] { 1.0, 1.0 };
             double[] interestRates = new double[2] { 0.05, 0.0 };
             double[] correlations = new double[1] { 1.0 };
             int timestepNumber = 1;
             double[] trends = new double[1] { 1.0 };
             double[] FXRates = new double[1] { 0.85 };
+            double[] past = new double[1] { 100.0};
+            int nbRows = 1;
+            double date = 0.0;
+            double[] current = new double[1] {100.0 };
 
             DeltaTestAnyTime(maturity,
                 optionSize,
@@ -366,6 +401,10 @@ namespace PricerDll.CustomTests
                 payoffCoefficients,
                 nbSamples,
                 spots,
+                past,
+                nbRows,
+                date,
+                current,
                 volatilities,
                 interestRates,
                 correlations,
