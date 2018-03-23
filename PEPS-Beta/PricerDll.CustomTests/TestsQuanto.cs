@@ -192,6 +192,8 @@ namespace PricerDll.CustomTests
             double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]) * maturity) / (volatilities[0] * Math.Sqrt(maturity));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity);
             //double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
+            // delta à acheter en zero coupon EURO en 0:  currents[0] * Math.Exp( interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };
+            //delta à acheter en zero coupon DOLLARS (etranger quoi)  en 0:  currents[0] * Math.Exp(-(interestRates[0] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1)  };
             double[] deltas = new double[2] { API.call_pnl_cdfnor(d1) * FXRates[0], - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
@@ -205,8 +207,14 @@ namespace PricerDll.CustomTests
                 double[] FXRates,//une seule
                 double date)
         {
+
             double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
+
+            // delta à acheter en zero coupon EURO en 0:  currents[0] * Math.Exp( interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]) * (maturity-date)) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };
+            //delta à acheter en zero coupon DOLLARS (etranger quoi)  en 0:  currents[0] * Math.Exp(-(interestRates[0] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity-date)) * API.call_pnl_cdfnor(d1)  };
+
+
             double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * (maturity - date)) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
