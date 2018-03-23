@@ -419,9 +419,10 @@ namespace PricerDll.CustomTests
             int nbRows;
             double t;
             double tracking_error;
+            int nbUpdates;
             #endregion
             #region Test
-            nbSamples = 10000;
+            nbSamples = 100000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0
@@ -444,6 +445,7 @@ namespace PricerDll.CustomTests
             past = currentPrices;
             nbRows = 1;
             t = 0;
+            nbUpdates = 30;
 
             API.TrackingErrorMultimonde2021Quanto(
                 nbSamples,
@@ -454,9 +456,20 @@ namespace PricerDll.CustomTests
                 volatilities,
                 interestRates,
                 correlations,
-                &tracking_error);
+                nbUpdates,
+                &tracking_error,
+                out IntPtr portfolioReturnsPtr,
+                out IntPtr productReturnsPtr);
+
+            double[] portfolioReturns = new double[nbUpdates];
+            System.Runtime.InteropServices.Marshal.Copy(portfolioReturnsPtr, portfolioReturns, 0, 11); //<- deltas contient maintenant les deltas
+
+            double[] productReturns = new double[nbUpdates];
+            System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, 11); //<- deltas contient maintenant les deltas
 
             Console.WriteLine("Tracking error : " + tracking_error);
+
+
             #endregion
         }
     }

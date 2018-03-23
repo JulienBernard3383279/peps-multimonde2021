@@ -284,7 +284,10 @@ extern "C" PRICERDLL_API void TrackingErrorMultimonde2021Quanto(
 	double volatilities[],
 	double interestRates[],
 	double correlations[],
-	double* tracking_error);
+	int nbUpdates,
+	double* tracking_error,
+	double** portfolioReturns,
+	double ** productReturns);
 
 // FONCTIONS PNL EXPORTEES
 #pragma region Utils
