@@ -23,7 +23,7 @@ namespace PEPS_Beta.Tests
                 List<Indice> indices = dal.GetIndices();
                 Assert.IsNotNull(indices);
                 Assert.AreEqual(6, indices.Count);
-                Assert.AreEqual("asx", indices[0].Nom);
+                //Assert.AreEqual("asx", indices[0].Nom);
                 MultiMondeParam param = dal.GetParams();
                 Assert.AreEqual(1000, param.NbSamples);
             }

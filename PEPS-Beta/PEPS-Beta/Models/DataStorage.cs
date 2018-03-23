@@ -4,6 +4,9 @@ using System.Linq;
 using System.Web;
 using System.IO;
 
+/// BUG
+/// Ne renvoit pas les résultats souhaités SI le jour d'actualisation certaines données sont manquantes
+/// BUG
 namespace PEPS_Beta.Models
 {
 #pragma warning disable CS0436
@@ -75,11 +78,7 @@ namespace PEPS_Beta.Models
             // Fill indexValue with dateCheck for missing values
             // Init outside loop
 
-            asx.Add(DateTime.Parse(DR.ASX.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-
-
-            previousDT[0] = DateTime.Parse(DR.ASX.TimeSeries[0].DateTime);
-
+            asx.Add(DateTime.Parse(DR.ASX.TimeSeries[0].DateTime).AddDays(1), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
             estox.Add(DateTime.Parse(DR.ESTOX.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
             ftse.Add(DateTime.Parse(DR.FTSE.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
             sp500.Add(DateTime.Parse(DR.SP500.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
@@ -87,49 +86,56 @@ namespace PEPS_Beta.Models
             hang.Add(DateTime.Parse(DR.HANG.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
             previousDT[0] = DateTime.Parse(DR.ASX.TimeSeries[0].DateTime);
-            for (int i = 0; i < nbValueStock; i++)
+            previousDT[1] = DateTime.Parse(DR.ESTOX.TimeSeries[0].DateTime);
+            previousDT[2] = DateTime.Parse(DR.FTSE.TimeSeries[0].DateTime);
+            previousDT[3] = DateTime.Parse(DR.SP500.TimeSeries[0].DateTime);
+            previousDT[4] = DateTime.Parse(DR.N225.TimeSeries[0].DateTime);
+            previousDT[5] = DateTime.Parse(DR.HANG.TimeSeries[0].DateTime);
+
+            for (int i = 1; i < nbValueStock; i++)
             {
                 ////// ASX //////
+                // Add 1 day to all date because Australian + DayOfWeek.Sunday
                 currentDT[0] = DateTime.Parse(DR.ASX.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousDT[0], currentDT[0])-1;
+                businessDays = GetBusinessDays(currentDT[0], previousDT[0]) - 1;
                 if (businessDays == 1)
-                    asx.Add(DateTime.Parse(DR.ASX.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
+                    asx.Add(DateTime.Parse(DR.ASX.TimeSeries[i].DateTime).AddDays(1), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
                 else
                 {
-                    for (int j =0; j<businessDays - 1; j++)
+                    for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousDT[0].DayOfWeek == DayOfWeek.Friday)
+                        if (previousDT[0].DayOfWeek == DayOfWeek.Sunday || previousDT[0].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousDT[0] = previousDT[0].AddDays(3);
-                            asx.Add(previousDT[0], asx.Values.Last());
+                            previousDT[0] = previousDT[0].AddDays(-3);
+                            asx.Add(previousDT[0].AddDays(1), asx.Values.Last());
                         } else
                         {
-                            previousDT[0] = previousDT[0].AddDays(1);
-                            asx.Add(previousDT[0], asx.Values.Last());
+                            previousDT[0] = previousDT[0].AddDays(-1);
+                            asx.Add(previousDT[0].AddDays(1), asx.Values.Last());
                         }
-                   
+
                     }
-                    asx.Add(DateTime.Parse(DR.ASX.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
+                    asx.Add(DateTime.Parse(DR.ASX.TimeSeries[i].DateTime).AddDays(1), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
                 }
                 previousDT[0] = DateTime.Parse(DR.ASX.TimeSeries[i].DateTime);
 
                 ////// ESTOX /////
                 currentDT[1] = DateTime.Parse(DR.ESTOX.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousDT[1], currentDT[1])-1;
+                businessDays = GetBusinessDays(currentDT[1], previousDT[1]) - 1;
                 if (businessDays == 1)
                     estox.Add(DateTime.Parse(DR.ESTOX.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
                 else
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousDT[1].DayOfWeek == DayOfWeek.Friday)
+                        if (previousDT[1].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousDT[1] = previousDT[1].AddDays(3);
+                            previousDT[1] = previousDT[1].AddDays(-3);
                             estox.Add(previousDT[1], estox.Values.Last());
                         }
                         else
                         {
-                            previousDT[1] = previousDT[1].AddDays(1);
+                            previousDT[1] = previousDT[1].AddDays(-1);
                             estox.Add(previousDT[1], estox.Values.Last());
                         }
 
@@ -140,21 +146,21 @@ namespace PEPS_Beta.Models
 
                 ///// FTSE //////
                 currentDT[2] = DateTime.Parse(DR.FTSE.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousDT[2], currentDT[2])-1;
+                businessDays = GetBusinessDays(currentDT[2], previousDT[2]) - 1;
                 if (businessDays == 1)
                     ftse.Add(DateTime.Parse(DR.FTSE.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
                 else
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousDT[2].DayOfWeek == DayOfWeek.Friday)
+                        if (previousDT[2].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousDT[2] = previousDT[2].AddDays(3);
+                            previousDT[2] = previousDT[2].AddDays(-3);
                             ftse.Add(previousDT[2], ftse.Values.Last());
                         }
                         else
                         {
-                            previousDT[2] = previousDT[2].AddDays(1);
+                            previousDT[2] = previousDT[2].AddDays(-1);
                             ftse.Add(previousDT[2], ftse.Values.Last());
                         }
 
@@ -165,21 +171,21 @@ namespace PEPS_Beta.Models
 
                 ///// sp500 ////////
                 currentDT[3] = DateTime.Parse(DR.SP500.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousDT[3], currentDT[3])-1;
+                businessDays = GetBusinessDays(currentDT[3], previousDT[3]) - 1;
                 if (businessDays == 1)
                     sp500.Add(DateTime.Parse(DR.SP500.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
                 else
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousDT[3].DayOfWeek == DayOfWeek.Friday)
+                        if (previousDT[3].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousDT[3] = previousDT[3].AddDays(3);
+                            previousDT[3] = previousDT[3].AddDays(-3);
                             sp500.Add(previousDT[3], sp500.Values.Last());
                         }
                         else
                         {
-                            previousDT[3] = previousDT[3].AddDays(1);
+                            previousDT[3] = previousDT[3].AddDays(-1);
                             sp500.Add(previousDT[3], sp500.Values.Last());
                         }
 
@@ -190,21 +196,21 @@ namespace PEPS_Beta.Models
 
                 ///// N225 //////
                 currentDT[4] = DateTime.Parse(DR.N225.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousDT[4], currentDT[4])-1;
+                businessDays = GetBusinessDays(currentDT[4], previousDT[4]) - 1;
                 if (businessDays == 1)
                     n225.Add(DateTime.Parse(DR.N225.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.N225.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
                 else
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousDT[4].DayOfWeek == DayOfWeek.Friday)
+                        if (previousDT[4].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousDT[4] = previousDT[4].AddDays(3);
+                            previousDT[4] = previousDT[4].AddDays(-3);
                             n225.Add(previousDT[4], n225.Values.Last());
                         }
                         else
                         {
-                            previousDT[4] = previousDT[4].AddDays(1);
+                            previousDT[4] = previousDT[4].AddDays(-1);
                             n225.Add(previousDT[4], n225.Values.Last());
                         }
 
@@ -214,21 +220,21 @@ namespace PEPS_Beta.Models
                 previousDT[4] = DateTime.Parse(DR.N225.TimeSeries[i].DateTime);
                 ///// HANG /////
                 currentDT[5] = DateTime.Parse(DR.HANG.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousDT[5], currentDT[5])-1;
+                businessDays = GetBusinessDays(currentDT[5], previousDT[5]) - 1;
                 if (businessDays == 1)
                     hang.Add(DateTime.Parse(DR.HANG.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
                 else
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousDT[5].DayOfWeek == DayOfWeek.Friday)
+                        if (previousDT[5].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousDT[5] = previousDT[5].AddDays(3);
+                            previousDT[5] = previousDT[5].AddDays(-3);
                             hang.Add(previousDT[5], hang.Values.Last());
                         }
                         else
                         {
-                            previousDT[5] = previousDT[5].AddDays(1);
+                            previousDT[5] = previousDT[5].AddDays(-1);
                             hang.Add(previousDT[5], hang.Values.Last());
                         }
 
@@ -237,6 +243,7 @@ namespace PEPS_Beta.Models
                 }
                 previousDT[5] = DateTime.Parse(DR.HANG.TimeSeries[i].DateTime);
             }
+
 
             // Fill ChangeValues
             /*
@@ -253,12 +260,27 @@ namespace PEPS_Beta.Models
             double tmpEURHKD = 0;
             DateTime[] previousCDT = new DateTime[5];
             DateTime[] currentCDT = new DateTime[5];
+            //Init fill
+            tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+            EurUsd.Add(DateTime.Parse(DR.EURUSD.TimeSeries[0].DateTime), tmpEURUSD);
+            tmpEURAUD = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+            EurAud.Add(DateTime.Parse(DR.AUDUSD.TimeSeries[0].DateTime), tmpEURAUD);
+            EurGbp.Add(DateTime.Parse(DR.EURGBP.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
+            EurJpy.Add(DateTime.Parse(DR.EURJPY.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
+            tmpEURHKD = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+            EurHkd.Add(DateTime.Parse(DR.USDHKD.TimeSeries[0].DateTime), tmpEURHKD);
 
-            for (int i = 0; i < nbValueExchange; i++)
+            previousCDT[0] = DateTime.Parse(DR.EURUSD.TimeSeries[0].DateTime);
+            previousCDT[1] = DateTime.Parse(DR.AUDUSD.TimeSeries[0].DateTime);
+            previousCDT[2] = DateTime.Parse(DR.EURGBP.TimeSeries[0].DateTime);
+            previousCDT[3] = DateTime.Parse(DR.EURJPY.TimeSeries[0].DateTime);
+            previousCDT[4] = DateTime.Parse(DR.USDHKD.TimeSeries[0].DateTime);
+
+            for (int i = 1; i < nbValueExchange; i++)
             {
                 //////// EURUSD ////////
                 currentCDT[0] = DateTime.Parse(DR.EURUSD.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousCDT[0], currentCDT[0])-1;
+                businessDays = GetBusinessDays( currentCDT[0], previousCDT[0]) -1;
                 if (businessDays == 1)
                 {
                     tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
@@ -268,14 +290,14 @@ namespace PEPS_Beta.Models
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousCDT[0].DayOfWeek == DayOfWeek.Friday)
+                        if (previousCDT[0].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousCDT[0] = previousCDT[0].AddDays(3);
+                            previousCDT[0] = previousCDT[0].AddDays(-3);
                             EurUsd.Add(previousCDT[0], EurUsd.Values.Last());
                         }
                         else
                         {
-                            previousCDT[0] = previousCDT[0].AddDays(1);
+                            previousCDT[0] = previousCDT[0].AddDays(-1);
                             EurUsd.Add(previousCDT[0], EurUsd.Values.Last());
                         }
 
@@ -290,7 +312,7 @@ namespace PEPS_Beta.Models
                 // EURAUD = EURUSD / AUDUSD
                 
                 currentCDT[1] = DateTime.Parse(DR.AUDUSD.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousCDT[1], currentCDT[1])-1;
+                businessDays = GetBusinessDays( currentCDT[1], previousCDT[1]) -1;
                 if (businessDays == 1)
                 {
                     tmpEURAUD = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
@@ -300,14 +322,14 @@ namespace PEPS_Beta.Models
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousCDT[1].DayOfWeek == DayOfWeek.Friday)
+                        if (previousCDT[1].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousCDT[1] = previousCDT[1].AddDays(3);
+                            previousCDT[1] = previousCDT[1].AddDays(-3);
                             EurAud.Add(previousCDT[1], EurAud.Values.Last());
                         }
                         else
                         {
-                            previousCDT[1] = previousCDT[1].AddDays(1);
+                            previousCDT[1] = previousCDT[1].AddDays(-1);
                             EurAud.Add(previousCDT[1], EurAud.Values.Last());
                         }
 
@@ -319,7 +341,7 @@ namespace PEPS_Beta.Models
 
                 ///////// EURGBP /////////
                 currentCDT[2] = DateTime.Parse(DR.EURGBP.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousCDT[2], currentCDT[2])-1;
+                businessDays = GetBusinessDays(currentCDT[2], previousCDT[2]) -1;
                 if (businessDays == 1)
                 {
                     EurGbp.Add(DateTime.Parse(DR.EURGBP.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
@@ -328,14 +350,14 @@ namespace PEPS_Beta.Models
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousCDT[2].DayOfWeek == DayOfWeek.Friday)
+                        if (previousCDT[2].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousCDT[2] = previousCDT[2].AddDays(3);
+                            previousCDT[2] = previousCDT[2].AddDays(-3);
                             EurGbp.Add(previousCDT[2], EurGbp.Values.Last());
                         }
                         else
                         {
-                            previousCDT[2] = previousCDT[2].AddDays(1);
+                            previousCDT[2] = previousCDT[2].AddDays(-1);
                             EurGbp.Add(previousCDT[2], EurGbp.Values.Last());
                         }
 
@@ -347,7 +369,7 @@ namespace PEPS_Beta.Models
 
                 //////// EUR JPY /////////
                 currentCDT[3] = DateTime.Parse(DR.EURJPY.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousCDT[3], currentCDT[3])-1;
+                businessDays = GetBusinessDays(currentCDT[3], previousCDT[3]) -1;
                 if (businessDays == 1)
                 {
                     EurJpy.Add(DateTime.Parse(DR.EURJPY.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
@@ -356,14 +378,14 @@ namespace PEPS_Beta.Models
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousCDT[3].DayOfWeek == DayOfWeek.Friday)
+                        if (previousCDT[3].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousCDT[3] = previousCDT[3].AddDays(3);
+                            previousCDT[3] = previousCDT[3].AddDays(-3);
                             EurJpy.Add(previousCDT[3], EurJpy.Values.Last());
                         }
                         else
                         {
-                            previousCDT[3] = previousCDT[3].AddDays(1);
+                            previousCDT[3] = previousCDT[3].AddDays(-1);
                             EurJpy.Add(previousCDT[3], EurJpy.Values.Last());
                         }
 
@@ -376,7 +398,7 @@ namespace PEPS_Beta.Models
                 /////// EURHKD ////////
                 // EURHKD = EURUSD * USDHKD
                 currentCDT[4] = DateTime.Parse(DR.USDHKD.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(previousCDT[4], currentCDT[4])-1;
+                businessDays = GetBusinessDays( currentCDT[4], previousCDT[4]) -1;
                 if (businessDays == 1)
                 {
                     tmpEURHKD = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
@@ -386,14 +408,14 @@ namespace PEPS_Beta.Models
                 {
                     for (int j = 0; j < businessDays - 1; j++)
                     {
-                        if (previousCDT[4].DayOfWeek == DayOfWeek.Friday)
+                        if (previousCDT[4].DayOfWeek == DayOfWeek.Monday)
                         {
-                            previousCDT[4] = previousCDT[4].AddDays(3);
+                            previousCDT[4] = previousCDT[4].AddDays(-3);
                             EurHkd.Add(previousCDT[4], EurHkd.Values.Last());
                         }
                         else
                         {
-                            previousCDT[4] = previousCDT[4].AddDays(1);
+                            previousCDT[4] = previousCDT[4].AddDays(-1);
                             EurHkd.Add(previousCDT[4], EurHkd.Values.Last());
                         }
 

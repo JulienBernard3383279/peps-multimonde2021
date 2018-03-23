@@ -67,9 +67,9 @@ namespace PEPS_Beta.Models
             }*/
         }
 
-        internal void modifierIndice(int id, double interestRateThisArea, double vol)
+        internal void modifierIndice(DateTime date, double interestRateThisArea, double vol)
         {
-            Indice indAmodifier = bdd.Indices.FirstOrDefault(indice => indice.Id == id);
+            Indice indAmodifier = bdd.Indices.FirstOrDefault(indice => indice.Date == date);
             if (indAmodifier!=null)
             {
                 indAmodifier.InterestRateThisArea = interestRateThisArea;
