@@ -21,8 +21,8 @@ namespace PricerDll.CustomTests
             double d2 = ((Math.Log(currents[0] / 0.85 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
 
 
-            return ( * API.call_pnl_cdfnor(d1) * (1.15 * S0 + currents[0]) + (0.85) * S0 - currents[0] +
-                (currents[0] - (0.85) * S0) * API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
+            return 0;// ( * API.call_pnl_cdfnor(d1) * (1.15 * S0 + currents[0]) + (0.85) * S0 - currents[0] +
+               // (currents[0] - (0.85) * S0) * API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
 
         }
 
@@ -122,7 +122,7 @@ namespace PricerDll.CustomTests
                double[] FXRates,
                double[] trends)
         {
-
+/*
 
             //singlemonde = une seule monnaie pour l'actif
             API.DeltasSingleCurrencyBasket(
@@ -156,7 +156,7 @@ namespace PricerDll.CustomTests
             {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
                 Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
-            }
+            }*/
         }
     }
 }
