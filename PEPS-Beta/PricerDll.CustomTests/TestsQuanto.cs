@@ -191,7 +191,6 @@ namespace PricerDll.CustomTests
         {
             double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]) * maturity) / (volatilities[0] * Math.Sqrt(maturity));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity);
-            //double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
@@ -253,6 +252,10 @@ namespace PricerDll.CustomTests
             deltas[0] = tmp[0];
             System.Runtime.InteropServices.Marshal.Copy(deltasFXRates, tmp, 0, 1);
             deltas[1] = tmp[0];
+            double realPrice = RealPriceQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
+            double tmpD = realPrice - deltas[0] * spots[0]*currFXRate - deltas[1] * Math.Exp(-interestRates[0] * maturity);
+            tmpD /= spots[1];
+            deltas[1] = tmpD;
 
             
             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
