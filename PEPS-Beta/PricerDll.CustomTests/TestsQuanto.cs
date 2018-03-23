@@ -23,8 +23,8 @@ namespace PricerDll.CustomTests
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
 
             return currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity - date))
-                * API.call_pnl_cdfnor(d1) 
-                - strike * Math.Exp(-interestRates[0] * (maturity - date)) 
+                * API.call_pnl_cdfnor(d1)
+                - strike * Math.Exp(-interestRates[0] * (maturity - date))
                 * API.call_pnl_cdfnor(d2);
 
         }
@@ -74,7 +74,7 @@ namespace PricerDll.CustomTests
             Console.WriteLine("");
             Console.WriteLine("Prix calculé par Monte-Carlo : " + price + " , Intervalle de confiance à 99% : [" + (price - 1.5 * ic / 2) + "," + (price + 1.5 * ic / 2) + "]");
             Console.WriteLine("Prix calculé par formule fermée : " + realPrice);
-            if ((realPrice > price + 1.5*ic / 2) || (realPrice < price - 1.5 * ic / 2))
+            if ((realPrice > price + 1.5 * ic / 2) || (realPrice < price - 1.5 * ic / 2))
             {
                 Console.WriteLine("Vrai prix en dehors de l'intervalle de confiance !");
             }
@@ -189,9 +189,10 @@ namespace PricerDll.CustomTests
                 double[] FXRates,//une seule
                 double date)
         {
-            double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0])* maturity) / (volatilities[0] * Math.Sqrt(maturity));
+            double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]) * maturity) / (volatilities[0] * Math.Sqrt(maturity));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity);
-            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
+            //double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
+            double[] deltas = new double[2] { API.call_pnl_cdfnor(d1) * FXRates[0], - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
         private static double[] RealDeltaQuantoAnyTime(
@@ -206,39 +207,30 @@ namespace PricerDll.CustomTests
         {
             double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[0] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
-            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * (maturity - date) ) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date) ) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
+            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * (maturity - date)) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[0] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
 
 
 
         private static void DeltaTest0(double maturity,
-               int optionSize,
                double strike,
-               double[] payoffCoefficients,
                int nbSamples,
                double[] spots,
                double[] volatilities,
                double[] interestRates,
                double[] correlations,
-               int timestepNumber,
-               double[] FXRates,
-               double[] trends)
+               double currFXRate)
         {
-
-
             //call quanto = une seule monnaie pour l'actif (un actif quoi), elle est etrangère
             API.SimulDeltasQuanto(
                 maturity,
                 strike,
-                optionSize,
+                nbSamples,
                 spots,
-                payoffCoefficients,
                 volatilities,
                 interestRates,
                 correlations,
-                FXRates,
-                trends,
                 out IntPtr deltasAssets,
                 out IntPtr deltasFXRates);
 
@@ -249,12 +241,18 @@ namespace PricerDll.CustomTests
                 strike,
                 spots,
                 volatilities,
-               interestRates,
+                interestRates,
                 correlations,
-                FXRates,
+                new double[1] { currFXRate },
                 date);
+
             double[] deltas = new double[2];
-            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 2);
+            double[] tmp = new double[1];
+
+            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, tmp, 0, 1);
+            deltas[0] = tmp[0];
+            System.Runtime.InteropServices.Marshal.Copy(deltasFXRates, tmp, 0, 1);
+            deltas[1] = tmp[0];
 
             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
@@ -275,9 +273,7 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("Deltas simulés");
                 Console.WriteLine(deltas[0]);
                 Console.WriteLine(deltas[1]);
-
             }
-
         }
 
         private static void DeltaTestAnyTime(double maturity,
@@ -351,38 +347,31 @@ namespace PricerDll.CustomTests
         public static void PerformDeltaTests0()
         {
             double maturity = 3.0;
-            int optionSize = 1;
             double strike = 100.0;
-            double[] payoffCoefficients = new double[1] { 1.0 };
-            int nbSamples = 100000;
-            double[] spots = new double[1] { 1.0 };
-            double[] volatilities = new double[2] { 1.0 , 1.0 };
-            double[] interestRates = new double[2] { 0.05, 0.0 };
-            double[] correlations = new double[1] { 1.0 };
-            int timestepNumber = 1;
-            double[] trends = new double[1] { 1.0 };
-            double[] FXRates = new double[1] { 0.85 };
+            int nbSamples = 10000000;
+            double currFXRate = 1.3;
+            double[] interestRates = new double[2] { 0.03, 0.035 };
+            double[] spots = new double[2] { 100.0, currFXRate };
+            //double[] spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
+            double[] volatilities = new double[2] { 0.05, 0.01 };
+            double[] correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
 
             DeltaTest0(maturity,
-                optionSize,
                 strike,
-                payoffCoefficients,
                 nbSamples,
                 spots,
                 volatilities,
                 interestRates,
                 correlations,
-                timestepNumber,
-                FXRates,
-                trends);
+                currFXRate);
         }
         public static void PerformDeltaTestsAnyTime()
         {
             double maturity = 3.0;
             int optionSize = 1;
-            double strike = 100.0;
+            double strike = 90.0;
             double[] payoffCoefficients = new double[1] { 1.0 };
-            int nbSamples = 100000;
+            int nbSamples = 1000000;
             double[] spots = new double[1] { 1.0 };
             double[] volatilities = new double[2] { 1.0, 1.0 };
             double[] interestRates = new double[2] { 0.05, 0.0 };

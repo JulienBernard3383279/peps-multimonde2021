@@ -218,12 +218,9 @@ extern "C" PRICERDLL_API void SimulDeltasQuanto(
 	double strike,
 	int sampleNumber,
 	double spots[],
-	double payoffCoefficients[],
 	double volatilities[],
 	double interestRate[],
 	double correlations[],
-	double currentFXRates[],
-	double trends[],
 	double** deltasAssets,
 	double** deltasFXRates);
 #pragma endregion
@@ -263,7 +260,7 @@ extern "C" PRICERDLL_API void DeltasMultimonde2021QuantoDebug(
 	double correlations[],
 	double** deltas);
 
-
+#pragma region SingleMonde
 //la fonction pour la simulation du single monde 
 extern "C" PRICERDLL_API void PriceSingleMonde(
 	int sampleNumber,
@@ -274,7 +271,7 @@ extern "C" PRICERDLL_API void PriceSingleMonde(
 	double* price,
 	double T,
 	double* ic);
-
+#pragma endregion
 // FONCTIONS PNL EXPORTEES
 
 
