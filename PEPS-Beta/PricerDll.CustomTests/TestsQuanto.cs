@@ -193,12 +193,13 @@ namespace PricerDll.CustomTests
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity);
 
             double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       // double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), currents[0] * Math.Exp(-(interestRates[0] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) };//1/FXRates c'est le prix d'un euro en dollars  
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       // delta à acheter en zero coupon EURO en 0:  currents[0] * Math.Exp( interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };
-                                                                                                                                                                                                                                                                                                                                                                                                                                                       //delta à acheter en zero coupon DOLLARS (etranger quoi)  en 0 corrigé : currents[0]*Math.Exp(interestRates[0]+ correlations[1] * volatilities[0] * volatilities[1])*(maturity)*API.call_pnl_cdfnor(d1) + (currents[0]*Math.Exp(-(interestRates[0]-interestRates[1] correlations[1] * volatilities[0] * volatilities[1])*maturity )- strike*Math.Exp( -interestRates[0]*maturity )*( 1/Math.sqrt(2*Math.pi))*Math.exp(-0.5*(interestRates[1]+correlations[1]*volatilities[1]*volatilities[0])*(volatilities[1]*maturity)/(Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]+0.5*volatilities[1]*volatilities[1])) 
+                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+            // double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), currents[0] * Math.Exp(-(interestRates[0] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) };//1/FXRates c'est le prix d'un euro en dollars  
+            // delta à acheter en zero coupon EURO en 0:  currents[0] * Math.Exp( interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };
+            //delta à acheter en zero coupon DOLLARS (etranger quoi)  en 0 corrigé : currents[0]*Math.Exp(interestRates[0]+ correlations[1] * volatilities[0] * volatilities[1])*(maturity)*API.call_pnl_cdfnor(d1) + (currents[0]*Math.Exp(-(interestRates[0]-interestRates[1] correlations[1] * volatilities[0] * volatilities[1])*maturity)- strike*Math.Exp(-interestRates[0]*maturity )*( 1/Math.sqrt(2*Math.pi))*Math.exp(-0.5*(interestRates[1]+correlations[1]*volatilities[1]*volatilities[0])*(volatilities[1]*maturity)/(Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]+0.5*volatilities[1]*volatilities[1])) 
             return deltas;
         }
-        private static double[] RealDeltaQuantoAnyTime( 
+        private static double[] RealDeltaQuantoAnyTime(
 
                 double maturity,
                 double strike,
@@ -298,7 +299,7 @@ namespace PricerDll.CustomTests
               double[] payoffCoefficients,
               int nbSamples,
               double[] spots,
-              double[] past, 
+              double[] past,
               int nbRows,
               double date,
               double[] current,
@@ -331,33 +332,33 @@ namespace PricerDll.CustomTests
                 out IntPtr deltasAssets,
                 out IntPtr deltasFXRates);
 
-                double[] realDelta = RealDeltaQuantoAnyTime(maturity,
-                strike,
-                spots,
-                volatilities,
-               interestRates,
-                correlations,
-                FXRates,
-                date);
+            double[] realDelta = RealDeltaQuantoAnyTime(maturity,
+            strike,
+            spots,
+            volatilities,
+           interestRates,
+            correlations,
+            FXRates,
+            date);
             double[] deltas = new double[6];
             System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 6);
 
-            
 
-                if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
-                {
-                    // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
-                    Console.WriteLine("problème de deltas pour l'option quanto en t>0!");
-                
-                }
-                else
-                {
-                    Console.WriteLine("Deltas formule fermée:");
-                    Console.WriteLine(realDelta[0]);
-                    Console.WriteLine("Deltas simulés");
-                    Console.WriteLine(deltas[0]);
 
-                }
+            if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
+            {
+                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
+                Console.WriteLine("problème de deltas pour l'option quanto en t>0!");
+
+            }
+            else
+            {
+                Console.WriteLine("Deltas formule fermée:");
+                Console.WriteLine(realDelta[0]);
+                Console.WriteLine("Deltas simulés");
+                Console.WriteLine(deltas[0]);
+
+            }
         }
 
         public static void PerformDeltaTests0()
@@ -397,10 +398,10 @@ namespace PricerDll.CustomTests
             int timestepNumber = 1;
             double[] trends = new double[1] { 1.0 };
             double[] FXRates = new double[1] { 0.85 };
-            double[] past = new double[1] { 100.0};
+            double[] past = new double[1] { 100.0 };
             int nbRows = 1;
             double date = 0.0;
-            double[] current = new double[1] {100.0 };
+            double[] current = new double[1] { 100.0 };
 
             DeltaTestAnyTime(maturity,
                 optionSize,
