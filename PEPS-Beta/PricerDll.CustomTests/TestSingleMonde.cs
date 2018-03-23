@@ -8,6 +8,7 @@ namespace PricerDll.CustomTests
 {
     public static unsafe class TestSingleMonde
     {
+
         private static double RealPriceSingleMonde(
             double maturity,
             double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
@@ -21,7 +22,7 @@ namespace PricerDll.CustomTests
             double d2 = ((Math.Log(currents[0] / 0.85 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
 
 
-            return (  API.call_pnl_cdfnor(d1) * (1.15 * S0 + currents[0]) + (0.85) * S0 - currents[0] +
+            return (API.call_pnl_cdfnor(d1) * (1.15 * S0 + currents[0]) + (0.85) * S0 - currents[0] +
                 (currents[0] - (0.85) * S0) * API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
 
         }
@@ -108,7 +109,7 @@ namespace PricerDll.CustomTests
             double d2 = ((Math.Log(currents[0] / 0.85 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
 
 
-            return ( API.call_pnl_cdfnor(d1)  + -1 + API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
+            return (API.call_pnl_cdfnor(d1) + -1 + API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
 
         }
 
@@ -125,38 +126,39 @@ namespace PricerDll.CustomTests
 
 
             //singlemonde = une seule monnaie pour l'actif
-           /* API.DeltasSingleCurrencyBasket(
-                maturity,
-                1,
-                0.0,
-                payoffCoefficients,
-                nbSamples,
-                spots,
-                volatilities,
-                interestRates[0],
-                correlations,
-                trends,
-                FXRates,
-                out IntPtr deltasAssets,
-                out IntPtr deltasFXRates);
+            /* API.DeltasSingleCurrencyBasket(
+                 maturity,
+                 1,
+                 0.0,
+                 payoffCoefficients,
+                 nbSamples,
+                 spots,
+                 volatilities,
+                 interestRates[0],
+                 correlations,
+                 trends,
+                 FXRates,
+                 out IntPtr deltasAssets,
+                 out IntPtr deltasFXRates);
 
-            double date = 0.0;
-            //price et ics contiennent prix et intervalle de couverture selon le pricer
+             double date = 0.0;
+             //price et ics contiennent prix et intervalle de couverture selon le pricer
 
-            double[] realDelta = RealDeltaSingleMonde(maturity,
-                spots,
-                volatilities,
-               interestRates,
-                correlations,
-                date);
-            double[] deltas = new double[1];
-            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 1);
+             double[] realDelta = RealDeltaSingleMonde(maturity,
+                 spots,
+                 volatilities,
+                interestRates,
+                 correlations,
+                 date);
+             double[] deltas = new double[1];
+             System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 1);
 
-            if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
-            {
-                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
-                Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
-            }*/
+             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
+             {
+                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
+                 Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
+             }*/
         }
     }
+    
 }

@@ -236,6 +236,19 @@ namespace PricerDll.CustomTests
             double* price,
             double* ic);
         #endregion
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+
+        public static extern unsafe void SimulDeltasQuanto(
+            double maturity,
+            double strike,
+            int sampleNumber,
+            double[] spots,
+            double[] volatilities,
+            double[] interestRate,
+            double[] correlations,
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates);
+
 
         #region Multimonde 2021 Quanto
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
