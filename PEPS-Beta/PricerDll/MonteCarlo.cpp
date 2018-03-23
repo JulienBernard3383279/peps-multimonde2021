@@ -220,7 +220,7 @@ void MonteCarlo::deltasMultimonde2021Quanto(PnlMat *past, double t, PnlVect* cur
 		else {
 			from = (int)(t / (opt_->T / opt_->nbTimeSteps)) + 1;
 		}
-		double h = 0.0001;
+		double h = 0.005;
 		for (int j = 0; j < 6; j++) { //mod_->size_
 			mod_->shiftPath(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, h);
 			//pnl_mat_print(pathPlus);

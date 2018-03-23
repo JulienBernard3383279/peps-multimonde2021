@@ -421,7 +421,7 @@ namespace PricerDll.CustomTests
             double tracking_error;
             #endregion
             #region Test
-            nbSamples = 100000;
+            nbSamples = 10000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0
@@ -456,7 +456,7 @@ namespace PricerDll.CustomTests
                 correlations,
                 &tracking_error);
 
-            Console.WriteLine(tracking_error);
+            Console.WriteLine("Tracking error : " + tracking_error);
             #endregion
         }
     }
