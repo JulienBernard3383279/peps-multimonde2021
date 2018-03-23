@@ -462,10 +462,10 @@ namespace PricerDll.CustomTests
                 out IntPtr productReturnsPtr);
 
             double[] portfolioReturns = new double[nbUpdates];
-            System.Runtime.InteropServices.Marshal.Copy(portfolioReturnsPtr, portfolioReturns, 0, 11); //<- deltas contient maintenant les deltas
+            System.Runtime.InteropServices.Marshal.Copy(portfolioReturnsPtr, portfolioReturns, 0, nbUpdates); //<- deltas contient maintenant les deltas
 
             double[] productReturns = new double[nbUpdates];
-            System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, 11); //<- deltas contient maintenant les deltas
+            System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, nbUpdates); //<- deltas contient maintenant les deltas
 
             Console.WriteLine("Tracking error : " + tracking_error);
 

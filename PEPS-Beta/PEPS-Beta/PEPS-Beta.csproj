@@ -766,6 +766,8 @@
       <Visible>false</Visible>
     </Compile>
     <Compile Include="Utility.cs" />
+    <Compile Include="ViewModels\EstimationViewModel.cs" />
+    <Compile Include="ViewModels\IndexViewModel.cs" />
     <Compile Include="WILLR\Const_WILLR.cs">
       <Visible>false</Visible>
     </Compile>
@@ -817,7 +819,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

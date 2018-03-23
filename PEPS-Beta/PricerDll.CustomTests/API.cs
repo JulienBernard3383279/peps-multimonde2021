@@ -242,12 +242,9 @@ namespace PricerDll.CustomTests
             double strike,
             int sampleNumber,
             double[] spots,
-            double[] payoffCoefficients,
             double[] volatilities,
             double[] interestRate,
             double[] correlations,
-            double[] currentFXRates,
-            double[] trends,
             out IntPtr deltasAssets,
             out IntPtr deltasFXRates);
         #endregion
