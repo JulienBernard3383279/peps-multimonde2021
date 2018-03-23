@@ -796,6 +796,7 @@ void SimulDeltasQuanto(
 	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
 	LET(volatilitiesVect, 0) = sqrt(volatilities[1] * volatilities[1] + volatilities[0] * volatilities[0] - 2 * correlations[1] * volatilities[0] * volatilities[1]);
+	LET(volatilitiesVect, 1) *= -1;
 
 	// Calcul de la cor de S-X et X
 	PnlMat* correlationsMat = GenCorrAPlusBBFromCorrAB(correlations, volatilities);
@@ -803,13 +804,14 @@ void SimulDeltasQuanto(
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) /= GET(spotsVect, 1);
-	//LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+	//LET(spotsVect, 0) /= GET(spotsVect, 1);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
 
 	// On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];
-	LET(trendsVect, 1) = interestRate[1] - interestRate[0] +volatilities[1] * volatilities[1];
+	//LET(trendsVect, 1) = interestRate[1] - interestRate[0] +volatilities[1] * volatilities[1];
+	LET(trendsVect, 1) = interestRate[0];
 
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
@@ -823,14 +825,20 @@ void SimulDeltasQuanto(
 	PnlVect* deltasQuanto = pnl_vect_create_from_zero(2);
 	mc->deltas(deltasQuanto);
 
-	std::cout << "deltasQuanto apres appel a mc->deltas:" << std::endl;
-	pnl_vect_print(deltasQuanto);
+	//std::cout << "deltasQuanto apres appel a mc->deltas:" << std::endl;
+	//pnl_vect_print(deltasQuanto);
 
 	double* myDeltasAssets = new double[1];
 	double* myDeltasFXRates = new double[1];
 
 	myDeltasAssets[0] = GET(deltasQuanto, 0);
-	myDeltasFXRates[0] = -GET(deltasQuanto, 1) * GET(spotsVect, 1);// / (exp(-interestRate[1] * maturity));
+	myDeltasFXRates[0] = -GET(deltasQuanto, 1);// *GET(spotsVect, 1);// / (exp(-interestRate[1] * maturity));
+
+	double price;
+	double ic;
+	mc->price(&price, &ic);
+	std::cout << "Prix simule : " << price << std::endl;
+	std::cout << "ic : " << ic << std::endl;
 
 	*deltasAssets = static_cast<double*>(malloc(2 * sizeof(double)));
 	memcpy(*deltasAssets, &(myDeltasAssets[0]), 2 * sizeof(double));

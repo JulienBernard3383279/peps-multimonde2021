@@ -192,7 +192,7 @@ namespace PricerDll.CustomTests
             double d1 = (Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0]) * maturity) / (volatilities[0] * Math.Sqrt(maturity));
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity);
             //double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
-            double[] deltas = new double[2] { API.call_pnl_cdfnor(d1) * FXRates[0], - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
+            double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * maturity) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             return deltas;
         }
         private static double[] RealDeltaQuantoAnyTime(
@@ -254,6 +254,7 @@ namespace PricerDll.CustomTests
             System.Runtime.InteropServices.Marshal.Copy(deltasFXRates, tmp, 0, 1);
             deltas[1] = tmp[0];
 
+            
             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
@@ -348,14 +349,16 @@ namespace PricerDll.CustomTests
         {
             double maturity = 3.0;
             double strike = 100.0;
-            int nbSamples = 10000000;
-            double currFXRate = 1.3;
-            double[] interestRates = new double[2] { 0.03, 0.035 };
-            double[] spots = new double[2] { 100.0, currFXRate };
-            //double[] spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
-            double[] volatilities = new double[2] { 0.05, 0.01 };
-            double[] correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            int nbSamples = 10000;
+            double currFXRate = 1.2;
+            double[] interestRates = new double[2] { 0.02, 0.05 }; ;
+            //double[] spots = new double[2] { 100.0, currFXRate };
+            double[] spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
+            double[] volatilities = new double[2] { 0.01, 0.01 };
+            double[] correlations = new double[4] { 1.0, 0.05, 0.05, 1.0 };
 
+            double realPrice = RealPriceQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
+            Console.WriteLine("Prix fermé " + realPrice);
             DeltaTest0(maturity,
                 strike,
                 nbSamples,
