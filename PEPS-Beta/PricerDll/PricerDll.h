@@ -218,12 +218,9 @@ extern "C" PRICERDLL_API void SimulDeltasQuanto(
 	double strike,
 	int sampleNumber,
 	double spots[],
-	double payoffCoefficients[],
 	double volatilities[],
 	double interestRate[],
 	double correlations[],
-	double currentFXRates[],
-	double trends[],
 	double** deltasAssets,
 	double** deltasFXRates);
 #pragma endregion

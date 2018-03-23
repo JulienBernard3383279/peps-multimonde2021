@@ -8,7 +8,7 @@ namespace PricerDll.CustomTests
 {
     public static unsafe class TestsCall
     {
-        private static double RealPrice(
+        public static double RealPrice(
             double maturity,
             double strike,
             double[] currents,
