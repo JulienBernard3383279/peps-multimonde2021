@@ -832,7 +832,7 @@ void SimulDeltasQuanto(
 	double* myDeltasFXRates = new double[1];
 
 	myDeltasAssets[0] = GET(deltasQuanto, 0);
-	myDeltasFXRates[0] = GET(deltasQuanto, 1);// *GET(spotsVect, 1);// / (exp(-interestRate[1] * maturity));
+	myDeltasFXRates[0] = GET(deltasQuanto, 1);
 
 	double price;
 	double ic;
