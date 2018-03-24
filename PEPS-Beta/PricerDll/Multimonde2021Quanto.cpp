@@ -34,13 +34,16 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 		* 05/11/21
 		*/
 
+	//std::cout << std::endl;
+	//pnl_mat_print(path);
+
 	//Récupération des spots
 	pnl_mat_get_row(payoffVectMemSpaceInit_, path, 0);
 
 	//Mises dans leurs monnaies (Les actifs sont SX)
 	PnlVect* temp = pnl_vect_create_from_list(11,
 		1.0,
-		MGET(path, 0, 6)*exp(interestRates[1]*(this->T)), // Multiplication par le taux de change
+		MGET(path, 0, 6)*exp(interestRates[1] * (this->T)), // Multiplication par le taux de change
 		MGET(path, 0, 7)*exp(interestRates[2] * (this->T)), // Taux de change = zéro-coupon actualisé à T
 		MGET(path, 0, 8)*exp(interestRates[3] * (this->T)),
 		MGET(path, 0, 9)*exp(interestRates[4] * (this->T)),
@@ -50,7 +53,7 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 		1.0,
 		1.0,
 		1.0);
-	pnl_vect_mult_vect_term(payoffVectMemSpaceInit_, temp);
+	pnl_vect_div_vect_term(payoffVectMemSpaceInit_, temp);
 	pnl_vect_free(&temp);
 
 	//Init
@@ -70,16 +73,16 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 		PnlVect* temp = pnl_vect_create_from_list(11,
 			1.0,
 			MGET(path, i, 6)*exp(interestRates[1] * (this->T - GET(customDates,i))),
-			MGET(path, i, 7)*exp(interestRates[2] * (this->T) - GET(customDates, i)),
-			MGET(path, i, 8)*exp(interestRates[3] * (this->T) - GET(customDates, i)),
-			MGET(path, i, 9)*exp(interestRates[4] * (this->T) - GET(customDates, i)),
-			MGET(path, i, 10)*exp(interestRates[5] * (this->T) - GET(customDates, i)),
+			MGET(path, i, 7)*exp(interestRates[2] * (this->T - GET(customDates, i))),
+			MGET(path, i, 8)*exp(interestRates[3] * (this->T - GET(customDates, i))),
+			MGET(path, i, 9)*exp(interestRates[4] * (this->T - GET(customDates, i))),
+			MGET(path, i, 10)*exp(interestRates[5] * (this->T - GET(customDates, i))),
 			1.0,
 			1.0,
 			1.0,
 			1.0,
 			1.0);
-		pnl_vect_mult_vect_term(payoffVectMemSpaceCurrent_, temp);
+		pnl_vect_div_vect_term(payoffVectMemSpaceCurrent_, temp);
 		pnl_vect_free(&temp);
 
 		//Division par les valeurs initiales

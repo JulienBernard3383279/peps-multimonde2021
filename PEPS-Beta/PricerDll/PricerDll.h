@@ -249,17 +249,6 @@ extern "C" PRICERDLL_API void DeltasMultimonde2021Quanto(
 	double correlations[],
 	double** deltas);
 
-extern "C" PRICERDLL_API void DeltasMultimonde2021QuantoDebug(
-	int sampleNumber,
-	double past[],
-	int nbRows,
-	double t,
-	double currentPrices[],
-	double volatilities[],
-	double interestRates[],
-	double correlations[],
-	double** deltas);
-
 extern "C" PRICERDLL_API void TrackingErrorMultimonde2021Quanto(
 	int sampleNumber,
 	double past[],
@@ -288,7 +277,7 @@ extern "C" PRICERDLL_API void PriceSingleMonde(
 	double* ic);
 #pragma endregion
 
-// FONCTIONS PNL EXPORTEES
 #pragma region Utils
+// FONCTIONS PNL EXPORTEES
 extern "C" PRICERDLL_API double call_pnl_cdfnor(double x);
 #pragma endregion
