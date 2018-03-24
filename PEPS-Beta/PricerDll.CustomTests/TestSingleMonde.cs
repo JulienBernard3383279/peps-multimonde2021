@@ -8,7 +8,6 @@ namespace PricerDll.CustomTests
 {
     public static unsafe class TestSingleMonde
     {
-
         private static double RealPriceSingleMonde(
             double maturity,
             double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
@@ -108,7 +107,9 @@ namespace PricerDll.CustomTests
             double d2 = ((Math.Log(currents[0] / 0.85 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
 
 
+
             return (API.call_pnl_cdfnor(d1) + -1 + API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
+
 
         }
 
@@ -122,7 +123,6 @@ namespace PricerDll.CustomTests
                double[] FXRates,
                double[] trends)
         {
-            /*
 
             //singlemonde = une seule monnaie pour l'actif
             /* API.DeltasSingleCurrencyBasket(
