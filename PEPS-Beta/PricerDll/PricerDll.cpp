@@ -726,6 +726,8 @@ void PriceQuanto(
 	double volatilities[],
 	double interestRate[],
 	double correlations[],
+	double date,
+	double currents[],
 	double* price,
 	double* ic)
 {
@@ -736,32 +738,31 @@ void PriceQuanto(
 
 	opt = new QuantoOption(maturity, strike);
 
-	// LE POINT QUI CLOCHE EST ICI JE PENSE [yoann]
-
 	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
 	LET(volatilitiesVect, 0) = sqrt(volatilities[1] * volatilities[1] + volatilities[0] * volatilities[0] - 2 * correlations[1] * volatilities[0] * volatilities[1]);
-	std::cout << "Volatilities" << std::endl;
-	pnl_vect_print_asrow(volatilitiesVect);
+	LET(volatilitiesVect, 1) *= -1;
 
 	// Calcul de la cor de S-X et X
 	PnlMat* correlationsMat = GenCorrAPlusBBFromCorrAB(correlations, volatilities);
-	std::cout << "Correlations" << std::endl;
 
-	pnl_mat_print(correlationsMat);
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) /= GET(spotsVect, 1);
-	std::cout << "Spots en euros" << std::endl;
-	pnl_vect_print_asrow(spotsVect);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+
+	PnlMat* past = pnl_mat_create_from_zero(1, 2);
+	pnl_mat_set_row(past, spotsVect, 0);
+
+
+	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
+	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity-date));
 
 	// On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];
-	LET(trendsVect, 1) = interestRate[1] - interestRate[0] + volatilities[1] * volatilities[1];
-	std::cout << "Trends de la simulation" << std::endl;
-	pnl_vect_print_asrow(trendsVect);
+	LET(trendsVect, 1) = interestRate[0];
+
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
 
@@ -770,8 +771,9 @@ void PriceQuanto(
 
 	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
 
-	mc->price(price, ic);
+	mc->price(past, date, currVect, price, ic);
 }
+
 #pragma endregion
 #pragma simulDeltas
 void SimulDeltasQuanto(
@@ -782,6 +784,8 @@ void SimulDeltasQuanto(
 	double volatilities[],
 	double interestRate[],
 	double correlations[],
+	double date,
+	double currents[],
 	double** deltasAssets,
 	double** deltasFXRates)
 {
@@ -792,10 +796,10 @@ void SimulDeltasQuanto(
 
 	opt = new QuantoOption(maturity, strike);
 
-
 	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
 	LET(volatilitiesVect, 0) = sqrt(volatilities[1] * volatilities[1] + volatilities[0] * volatilities[0] - 2 * correlations[1] * volatilities[0] * volatilities[1]);
+	LET(volatilitiesVect, 1) *= -1;
 
 	// Calcul de la cor de S-X et X
 	PnlMat* correlationsMat = GenCorrAPlusBBFromCorrAB(correlations, volatilities);
@@ -803,13 +807,18 @@ void SimulDeltasQuanto(
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) /= GET(spotsVect, 1);
-	//LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+	PnlMat* past = pnl_mat_create_from_zero(1, 2);
+	pnl_mat_set_row(past, spotsVect, 0);
+
+
+	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
+	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity-date));
 
 	// On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];
-	LET(trendsVect, 1) = interestRate[1] - interestRate[0] +volatilities[1] * volatilities[1];
+	LET(trendsVect, 1) = interestRate[0];
 
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
@@ -817,20 +826,23 @@ void SimulDeltasQuanto(
 	PnlRng *rng = pnl_rng_create(0);
 	pnl_rng_sseed(rng, time(NULL));
 
-
 	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
 
-	PnlVect* deltasQuanto = pnl_vect_create_from_zero(2);
-	mc->deltas(deltasQuanto);
+	double price;
+	double ic;
+	mc->price(past, date, currVect, &price, &ic);
 
-	std::cout << "deltasQuanto apres appel a mc->deltas:" << std::endl;
-	pnl_vect_print(deltasQuanto);
+	PnlVect* deltasQuanto = pnl_vect_create_from_zero(2);
+	mc->deltas(past, date, currVect, deltasQuanto);
 
 	double* myDeltasAssets = new double[1];
 	double* myDeltasFXRates = new double[1];
 
 	myDeltasAssets[0] = GET(deltasQuanto, 0);
-	myDeltasFXRates[0] = -GET(deltasQuanto, 1) * GET(spotsVect, 1);// / (exp(-interestRate[1] * maturity));
+	myDeltasFXRates[0] = GET(deltasQuanto, 1);
+
+	std::cout << "Prix simule : " << price << std::endl;
+	std::cout << "ic : " << ic << std::endl;
 
 	*deltasAssets = static_cast<double*>(malloc(2 * sizeof(double)));
 	memcpy(*deltasAssets, &(myDeltasAssets[0]), 2 * sizeof(double));

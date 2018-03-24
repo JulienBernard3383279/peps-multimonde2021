@@ -42,6 +42,12 @@ namespace PEPS_Beta
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "IndiceLigne  ", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+            name: "EstimerParam",
+            url: "{controller}/{action}/{id}",
+            defaults: new { controller = "Home", action = "EstimerParam", id = UrlParameter.Optional }
+            );
         }
     }
 }
