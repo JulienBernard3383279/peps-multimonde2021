@@ -16,7 +16,6 @@ namespace PricerDll.CustomTests
             //TestsCall.PerformDeltaTestsAnyTime();
             //TestsQuanto.PerformPriceTests();
             TestsQuanto.PerformDeltaTests0();
-            //TestsQuanto.PerformDeltaTestsAnyTime();
             //TestHistoricalData.TestHisto();
             //TestsMultimonde2021Quanto.PerformPriceTests();
             //TestsMultimonde2021Quanto.PerformDeltaTest();
