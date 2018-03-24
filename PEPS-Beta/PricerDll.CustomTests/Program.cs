@@ -14,14 +14,17 @@ namespace PricerDll.CustomTests
             //TestsCall.PerformPriceTestsAnyTime();
             //TestsCall.PerformDeltaTests0();
             //TestsCall.PerformDeltaTestsAnyTime();
-            //TestsQuanto.PerformPriceTests();
+
+            TestsQuanto.PerformPriceTests();
             //TestsQuanto.PerformDeltaTests0();
             //TestsQuanto.PerformDeltaTestsAnyTime();
+
             //TestHistoricalData.TestHisto();
 
             //TestsMultimonde2021Quanto.PerformPriceTests();
             //TestsMultimonde2021Quanto.PerformDeltaTest();
-            TestsMultimonde2021Quanto.PerformTrackingErrorTest();
+            //TestsMultimonde2021Quanto.PerformTrackingErrorTest();
+
             Console.WriteLine("Appuyez sur une touche pour terminer le programme.");
             Console.ReadKey();
         }

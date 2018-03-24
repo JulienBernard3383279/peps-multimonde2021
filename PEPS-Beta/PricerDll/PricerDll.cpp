@@ -738,8 +738,6 @@ void PriceQuanto(
 
 	opt = new QuantoOption(maturity, strike);
 
-	// LE POINT QUI CLOCHE EST ICI JE PENSE [yoann]
-
 	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
 	LET(volatilitiesVect, 0) = sqrt(volatilities[1] * volatilities[1] + volatilities[0] * volatilities[0] - 2 * correlations[1] * volatilities[0] * volatilities[1]);
