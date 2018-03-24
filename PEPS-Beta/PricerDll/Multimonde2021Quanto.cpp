@@ -2,7 +2,7 @@
 #include "Multimonde2021Quanto.h"
 #include <iostream>
 
-Multimonde2021Quanto::Multimonde2021Quanto()
+Multimonde2021Quanto::Multimonde2021Quanto(double interestRates[6])
 {
 	payoffVectMemSpaceInit_ = pnl_vect_create_from_zero(11);
 	payoffVectMemSpaceCurrent_ = pnl_vect_create_from_zero(11);
@@ -12,6 +12,7 @@ Multimonde2021Quanto::Multimonde2021Quanto()
 	this->size = 11; //Actif euro [1] //Actifs étrangers [5] // Taux de change [5] : 1 € en monnaie étrangère
 	this->nbTimeSteps = 6;
 	this->T = GET(customDates, 6);
+	this->interestRates = interestRates;
 }
 
 
@@ -39,11 +40,11 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 	//Mises dans leurs monnaies (Les actifs sont SX)
 	PnlVect* temp = pnl_vect_create_from_list(11,
 		1.0,
-		MGET(path, 0, 6), // 1/X
-		MGET(path, 0, 7),
-		MGET(path, 0, 8),
-		MGET(path, 0, 9),
-		MGET(path, 0, 10),
+		MGET(path, 0, 6)*exp(interestRates[1]*(this->T)), // Multiplication par le taux de change
+		MGET(path, 0, 7)*exp(interestRates[2] * (this->T)), // Taux de change = zéro-coupon actualisé à T
+		MGET(path, 0, 8)*exp(interestRates[3] * (this->T)),
+		MGET(path, 0, 9)*exp(interestRates[4] * (this->T)),
+		MGET(path, 0, 10)*exp(interestRates[5] * (this->T)),
 		1.0,
 		1.0,
 		1.0,
@@ -68,11 +69,11 @@ double Multimonde2021Quanto::payoff(const PnlMat *path) {
 		//Remise dans leurs monnaies+ étrangères (opti : ne simuler que S pour le payoff, et ne faire ça que pour les actifs encore en lice)
 		PnlVect* temp = pnl_vect_create_from_list(11,
 			1.0,
-			MGET(path, i, 6),
-			MGET(path, i, 7),
-			MGET(path, i, 8),
-			MGET(path, i, 9),
-			MGET(path, i, 10),
+			MGET(path, i, 6)*exp(interestRates[1] * (this->T - GET(customDates,i))),
+			MGET(path, i, 7)*exp(interestRates[2] * (this->T) - GET(customDates, i)),
+			MGET(path, i, 8)*exp(interestRates[3] * (this->T) - GET(customDates, i)),
+			MGET(path, i, 9)*exp(interestRates[4] * (this->T) - GET(customDates, i)),
+			MGET(path, i, 10)*exp(interestRates[5] * (this->T) - GET(customDates, i)),
 			1.0,
 			1.0,
 			1.0,
