@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.IO;
+using System.Data.SqlClient;
 
 /// BUG
 /// Ne renvoit pas les résultats souhaités SI le jour d'actualisation certaines données sont manquantes
@@ -70,178 +71,44 @@ namespace PEPS_Beta.Models
 
         public void FillDataHtml(string dataLength, int nbValueStock, int nbValueExchange)
         {
+            using (SqlConnection conn = new SqlConnection())
+            {
+                 conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                conn.Open();
+                SqlCommand command = new SqlCommand("SELECT ASX FROM  IndexesAtDates",conn);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ;
+                    }
+                }
+            }
             HtmlDataRetriever DR = new HtmlDataRetriever();
             DR.RetrieveData(dataLength);
-            DateTime[] previousDT = new DateTime[6];
-            DateTime[] currentDT = new DateTime[6];
-            double businessDays = 0;
-            // Fill indexValue with dateCheck for missing values
-            // Init outside loop
-
-            asx.Add(DateTime.Parse(DR.ASX.TimeSeries[0].DateTime).AddDays(1), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-            estox.Add(DateTime.Parse(DR.ESTOX.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-            ftse.Add(DateTime.Parse(DR.FTSE.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-            sp500.Add(DateTime.Parse(DR.SP500.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-            n225.Add(DateTime.Parse(DR.N225.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.N225.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-            hang.Add(DateTime.Parse(DR.HANG.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-
-            previousDT[0] = DateTime.Parse(DR.ASX.TimeSeries[0].DateTime);
-            previousDT[1] = DateTime.Parse(DR.ESTOX.TimeSeries[0].DateTime);
-            previousDT[2] = DateTime.Parse(DR.FTSE.TimeSeries[0].DateTime);
-            previousDT[3] = DateTime.Parse(DR.SP500.TimeSeries[0].DateTime);
-            previousDT[4] = DateTime.Parse(DR.N225.TimeSeries[0].DateTime);
-            previousDT[5] = DateTime.Parse(DR.HANG.TimeSeries[0].DateTime);
-
-            for (int i = 1; i < nbValueStock; i++)
+            for (int i = 0; i < nbValueStock; i++)
             {
                 ////// ASX //////
-                // Add 1 day to all date because Australian + DayOfWeek.Sunday
-                currentDT[0] = DateTime.Parse(DR.ASX.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentDT[0], previousDT[0]) - 1;
-                if (businessDays == 1)
-                    asx.Add(DateTime.Parse(DR.ASX.TimeSeries[i].DateTime).AddDays(1), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousDT[0].DayOfWeek == DayOfWeek.Sunday || previousDT[0].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousDT[0] = previousDT[0].AddDays(-3);
-                            asx.Add(previousDT[0].AddDays(1), asx.Values.Last());
-                        } else
-                        {
-                            previousDT[0] = previousDT[0].AddDays(-1);
-                            asx.Add(previousDT[0].AddDays(1), asx.Values.Last());
-                        }
-
-                    }
-                    asx.Add(DateTime.Parse(DR.ASX.TimeSeries[i].DateTime).AddDays(1), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                }
-                previousDT[0] = DateTime.Parse(DR.ASX.TimeSeries[i].DateTime);
+                asx.Add(DateTime.Parse(DR.ASX.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
                 ////// ESTOX /////
-                currentDT[1] = DateTime.Parse(DR.ESTOX.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentDT[1], previousDT[1]) - 1;
-                if (businessDays == 1)
-                    estox.Add(DateTime.Parse(DR.ESTOX.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousDT[1].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousDT[1] = previousDT[1].AddDays(-3);
-                            estox.Add(previousDT[1], estox.Values.Last());
-                        }
-                        else
-                        {
-                            previousDT[1] = previousDT[1].AddDays(-1);
-                            estox.Add(previousDT[1], estox.Values.Last());
-                        }
-
-                    }
-                    estox.Add(DateTime.Parse(DR.ESTOX.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                }
-                previousDT[1] = DateTime.Parse(DR.ESTOX.TimeSeries[i].DateTime);
+                estox.Add(DateTime.Parse(DR.ESTOX.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
                 ///// FTSE //////
-                currentDT[2] = DateTime.Parse(DR.FTSE.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentDT[2], previousDT[2]) - 1;
-                if (businessDays == 1)
-                    ftse.Add(DateTime.Parse(DR.FTSE.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousDT[2].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousDT[2] = previousDT[2].AddDays(-3);
-                            ftse.Add(previousDT[2], ftse.Values.Last());
-                        }
-                        else
-                        {
-                            previousDT[2] = previousDT[2].AddDays(-1);
-                            ftse.Add(previousDT[2], ftse.Values.Last());
-                        }
+                ftse.Add(DateTime.Parse(DR.FTSE.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
-                    }
-                    ftse.Add(DateTime.Parse(DR.FTSE.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                }
-                previousDT[2] = DateTime.Parse(DR.FTSE.TimeSeries[i].DateTime);
 
                 ///// sp500 ////////
-                currentDT[3] = DateTime.Parse(DR.SP500.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentDT[3], previousDT[3]) - 1;
-                if (businessDays == 1)
-                    sp500.Add(DateTime.Parse(DR.SP500.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousDT[3].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousDT[3] = previousDT[3].AddDays(-3);
-                            sp500.Add(previousDT[3], sp500.Values.Last());
-                        }
-                        else
-                        {
-                            previousDT[3] = previousDT[3].AddDays(-1);
-                            sp500.Add(previousDT[3], sp500.Values.Last());
-                        }
+                sp500.Add(DateTime.Parse(DR.SP500.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
-                    }
-                    sp500.Add(DateTime.Parse(DR.SP500.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                }
-                previousDT[3] = DateTime.Parse(DR.SP500.TimeSeries[i].DateTime);
 
                 ///// N225 //////
-                currentDT[4] = DateTime.Parse(DR.N225.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentDT[4], previousDT[4]) - 1;
-                if (businessDays == 1)
-                    n225.Add(DateTime.Parse(DR.N225.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.N225.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousDT[4].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousDT[4] = previousDT[4].AddDays(-3);
-                            n225.Add(previousDT[4], n225.Values.Last());
-                        }
-                        else
-                        {
-                            previousDT[4] = previousDT[4].AddDays(-1);
-                            n225.Add(previousDT[4], n225.Values.Last());
-                        }
+                n225.Add(DateTime.Parse(DR.N225.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.N225.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
-                    }
-                    n225.Add(DateTime.Parse(DR.N225.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.N225.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                }
-                previousDT[4] = DateTime.Parse(DR.N225.TimeSeries[i].DateTime);
                 ///// HANG /////
-                currentDT[5] = DateTime.Parse(DR.HANG.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentDT[5], previousDT[5]) - 1;
-                if (businessDays == 1)
-                    hang.Add(DateTime.Parse(DR.HANG.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousDT[5].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousDT[5] = previousDT[5].AddDays(-3);
-                            hang.Add(previousDT[5], hang.Values.Last());
-                        }
-                        else
-                        {
-                            previousDT[5] = previousDT[5].AddDays(-1);
-                            hang.Add(previousDT[5], hang.Values.Last());
-                        }
+                hang.Add(DateTime.Parse(DR.HANG.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
-                    }
-                    hang.Add(DateTime.Parse(DR.HANG.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                }
-                previousDT[5] = DateTime.Parse(DR.HANG.TimeSeries[i].DateTime);
             }
 
 
@@ -258,224 +125,116 @@ namespace PEPS_Beta.Models
             double tmpEURUSD = 0;
             double tmpEURAUD = 0;
             double tmpEURHKD = 0;
-            DateTime[] previousCDT = new DateTime[5];
-            DateTime[] currentCDT = new DateTime[5];
-            //Init fill
-            tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-            EurUsd.Add(DateTime.Parse(DR.EURUSD.TimeSeries[0].DateTime), tmpEURUSD);
-            tmpEURAUD = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-            EurAud.Add(DateTime.Parse(DR.AUDUSD.TimeSeries[0].DateTime), tmpEURAUD);
-            EurGbp.Add(DateTime.Parse(DR.EURGBP.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-            EurJpy.Add(DateTime.Parse(DR.EURJPY.TimeSeries[0].DateTime), Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-            tmpEURHKD = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[0].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-            EurHkd.Add(DateTime.Parse(DR.USDHKD.TimeSeries[0].DateTime), tmpEURHKD);
 
-            previousCDT[0] = DateTime.Parse(DR.EURUSD.TimeSeries[0].DateTime);
-            previousCDT[1] = DateTime.Parse(DR.AUDUSD.TimeSeries[0].DateTime);
-            previousCDT[2] = DateTime.Parse(DR.EURGBP.TimeSeries[0].DateTime);
-            previousCDT[3] = DateTime.Parse(DR.EURJPY.TimeSeries[0].DateTime);
-            previousCDT[4] = DateTime.Parse(DR.USDHKD.TimeSeries[0].DateTime);
 
-            for (int i = 1; i < nbValueExchange; i++)
+            for (int i = 0; i < nbValueExchange; i++)
             {
                 //////// EURUSD ////////
-                currentCDT[0] = DateTime.Parse(DR.EURUSD.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays( currentCDT[0], previousCDT[0]) -1;
-                if (businessDays == 1)
-                {
-                    tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                    EurUsd.Add(DateTime.Parse(DR.EURUSD.TimeSeries[i].DateTime), tmpEURUSD);
-                }
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousCDT[0].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousCDT[0] = previousCDT[0].AddDays(-3);
-                            EurUsd.Add(previousCDT[0], EurUsd.Values.Last());
-                        }
-                        else
-                        {
-                            previousCDT[0] = previousCDT[0].AddDays(-1);
-                            EurUsd.Add(previousCDT[0], EurUsd.Values.Last());
-                        }
 
-                    }
-                    tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                    EurUsd.Add(DateTime.Parse(DR.EURUSD.TimeSeries[i].DateTime), tmpEURUSD);
-
-                }
-                previousCDT[0] = DateTime.Parse(DR.EURUSD.TimeSeries[i].DateTime);
+                tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                EurUsd.Add(DateTime.Parse(DR.EURUSD.TimeSeries[i].DateTime), tmpEURUSD);
 
                 ///////// EURAUD //////////
                 // EURAUD = EURUSD / AUDUSD
-                
-                currentCDT[1] = DateTime.Parse(DR.AUDUSD.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays( currentCDT[1], previousCDT[1]) -1;
-                if (businessDays == 1)
-                {
-                    tmpEURAUD = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                    EurAud.Add(DateTime.Parse(DR.AUDUSD.TimeSeries[i].DateTime), tmpEURAUD);
-                }
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousCDT[1].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousCDT[1] = previousCDT[1].AddDays(-3);
-                            EurAud.Add(previousCDT[1], EurAud.Values.Last());
-                        }
-                        else
-                        {
-                            previousCDT[1] = previousCDT[1].AddDays(-1);
-                            EurAud.Add(previousCDT[1], EurAud.Values.Last());
-                        }
 
-                    }
-                    tmpEURAUD = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                    EurAud.Add(DateTime.Parse(DR.AUDUSD.TimeSeries[i].DateTime), tmpEURAUD);
-                }
-                previousCDT[1] = DateTime.Parse(DR.AUDUSD.TimeSeries[i].DateTime);
 
                 ///////// EURGBP /////////
-                currentCDT[2] = DateTime.Parse(DR.EURGBP.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentCDT[2], previousCDT[2]) -1;
-                if (businessDays == 1)
-                {
-                    EurGbp.Add(DateTime.Parse(DR.EURGBP.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-                }
-                else
-                {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousCDT[2].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousCDT[2] = previousCDT[2].AddDays(-3);
-                            EurGbp.Add(previousCDT[2], EurGbp.Values.Last());
-                        }
-                        else
-                        {
-                            previousCDT[2] = previousCDT[2].AddDays(-1);
-                            EurGbp.Add(previousCDT[2], EurGbp.Values.Last());
-                        }
-
-                    }
-                    EurGbp.Add(DateTime.Parse(DR.EURGBP.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-
-                }
-                previousCDT[2] = DateTime.Parse(DR.EURGBP.TimeSeries[i].DateTime);
+                EurGbp.Add(DateTime.Parse(DR.EURGBP.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
 
                 //////// EUR JPY /////////
-                currentCDT[3] = DateTime.Parse(DR.EURJPY.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays(currentCDT[3], previousCDT[3]) -1;
-                if (businessDays == 1)
+                EurJpy.Add(DateTime.Parse(DR.EURJPY.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
+
+
+            }
+            DateTime dateAUDUSD;
+            DateTime dateUSDHKD;
+            double tmpAUDUSD;
+            double tmpUSDHKD;
+
+            // 2nd loop to fill data needing an operation
+            for (int i = 0; i < nbValueExchange; i++)
+            {
+                dateAUDUSD = DateTime.Parse(DR.AUDUSD.TimeSeries[i].DateTime);
+                if (EurUsd.ContainsKey(dateAUDUSD))
                 {
-                    EurJpy.Add(DateTime.Parse(DR.EURJPY.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
+                    tmpAUDUSD = Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                    if (tmpAUDUSD != 0)
+                    {
+                        tmpEURAUD = EurUsd[dateAUDUSD] / tmpAUDUSD;
+                        EurAud.Add(dateAUDUSD, tmpEURAUD);
+                    }
                 }
                 else
                 {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousCDT[3].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousCDT[3] = previousCDT[3].AddDays(-3);
-                            EurJpy.Add(previousCDT[3], EurJpy.Values.Last());
-                        }
-                        else
-                        {
-                            previousCDT[3] = previousCDT[3].AddDays(-1);
-                            EurJpy.Add(previousCDT[3], EurJpy.Values.Last());
-                        }
-
-                    }
-                    EurJpy.Add(DateTime.Parse(DR.EURJPY.TimeSeries[i].DateTime), Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture)));
-
+                    EurAud.Add(dateAUDUSD, -1);
                 }
-                previousCDT[3] = DateTime.Parse(DR.EURJPY.TimeSeries[i].DateTime);
-
-                /////// EURHKD ////////
-                // EURHKD = EURUSD * USDHKD
-                currentCDT[4] = DateTime.Parse(DR.USDHKD.TimeSeries[i].DateTime);
-                businessDays = GetBusinessDays( currentCDT[4], previousCDT[4]) -1;
-                if (businessDays == 1)
+                dateUSDHKD = DateTime.Parse(DR.USDHKD.TimeSeries[i].DateTime);
+                if (EurUsd.ContainsKey(dateAUDUSD))
                 {
-                    tmpEURHKD = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                    EurHkd.Add(DateTime.Parse(DR.USDHKD.TimeSeries[i].DateTime), tmpEURHKD);
+                    tmpUSDHKD = Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                    if (tmpUSDHKD != 0)
+                    {
+                        tmpEURHKD = EurUsd[dateUSDHKD] * tmpUSDHKD;
+                        EurHkd.Add(dateUSDHKD, tmpEURHKD);
+                    }
                 }
                 else
                 {
-                    for (int j = 0; j < businessDays - 1; j++)
-                    {
-                        if (previousCDT[4].DayOfWeek == DayOfWeek.Monday)
-                        {
-                            previousCDT[4] = previousCDT[4].AddDays(-3);
-                            EurHkd.Add(previousCDT[4], EurHkd.Values.Last());
-                        }
-                        else
-                        {
-                            previousCDT[4] = previousCDT[4].AddDays(-1);
-                            EurHkd.Add(previousCDT[4], EurHkd.Values.Last());
-                        }
-
-                    }
-                    tmpEURHKD = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                    EurHkd.Add(DateTime.Parse(DR.USDHKD.TimeSeries[i].DateTime), tmpEURHKD);
+                    EurHkd.Add(dateUSDHKD, -1);
                 }
-                previousCDT[4] = DateTime.Parse(DR.USDHKD.TimeSeries[i].DateTime);  
+
             }
             LastUpdate = DR.ASX.TimeSeries[0].DateTime;
         }
 
 
-/*
-        // if more than 100 days separe 2 updates full data needs to be reloaded
-        public void Update()
-        {
-            HtmlDataRetriever DR = new HtmlDataRetriever();
-            DR.RetrieveData("compact"); // load 100 last data
-            //Determine amount of data to add
-            //Can be optimized
-            int count = 0;
-            bool dateFound = false;
-            while (count < 100 && dateFound == false)
-            {
-                dateFound = (String.Compare(LastUpdate, DR.ASX.TimeSeries[count].DateTime) == 0);
-                count++;
-            }
-            // si le dernier update date de plus 100jours ne rien faire 
-            if (count == 100 && dateFound == false)
-                return;
+        /*
+                // if more than 100 days separe 2 updates full data needs to be reloaded
+                public void Update()
+                {
+                    HtmlDataRetriever DR = new HtmlDataRetriever();
+                    DR.RetrieveData("compact"); // load 100 last data
+                    //Determine amount of data to add
+                    //Can be optimized
+                    int count = 0;
+                    bool dateFound = false;
+                    while (count < 100 && dateFound == false)
+                    {
+                        dateFound = (String.Compare(LastUpdate, DR.ASX.TimeSeries[count].DateTime) == 0);
+                        count++;
+                    }
+                    // si le dernier update date de plus 100jours ne rien faire 
+                    if (count == 100 && dateFound == false)
+                        return;
 
-            //Add data 
+                    //Add data 
 
-            double tmpEURUSD = 0;
-            for (int i = 1; i < count + 1; i++)
-            {
-                // STOCK
-                this.IndexValues[0, IndexLength - i] = Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                this.IndexValues[1, IndexLength - i] = Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                this.IndexValues[2, IndexLength - i] = Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                this.IndexValues[3, IndexLength - i] = Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                this.IndexValues[4, IndexLength - i] = Convert.ToDouble(double.Parse(DR.N225.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                this.IndexValues[5, IndexLength - i] = Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                    double tmpEURUSD = 0;
+                    for (int i = 1; i < count + 1; i++)
+                    {
+                        // STOCK
+                        this.IndexValues[0, IndexLength - i] = Convert.ToDouble(double.Parse(DR.ASX.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        this.IndexValues[1, IndexLength - i] = Convert.ToDouble(double.Parse(DR.ESTOX.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        this.IndexValues[2, IndexLength - i] = Convert.ToDouble(double.Parse(DR.FTSE.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        this.IndexValues[3, IndexLength - i] = Convert.ToDouble(double.Parse(DR.SP500.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        this.IndexValues[4, IndexLength - i] = Convert.ToDouble(double.Parse(DR.N225.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        this.IndexValues[5, IndexLength - i] = Convert.ToDouble(double.Parse(DR.HANG.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
 
-                // EXCHANGE
+                        // EXCHANGE
 
-                tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                // EURAUD = EURUSD / AUDUSD
-                this.ChangeValues[0, ChangeLength - i] = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                this.ChangeValues[1, ChangeLength - i] = tmpEURUSD;
-                this.ChangeValues[2, ChangeLength - i] = Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-                this.ChangeValues[3, ChangeLength - i] = Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        tmpEURUSD = Convert.ToDouble(double.Parse(DR.EURUSD.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        // EURAUD = EURUSD / AUDUSD
+                        this.ChangeValues[0, ChangeLength - i] = tmpEURUSD / Convert.ToDouble(double.Parse(DR.AUDUSD.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        this.ChangeValues[1, ChangeLength - i] = tmpEURUSD;
+                        this.ChangeValues[2, ChangeLength - i] = Convert.ToDouble(double.Parse(DR.EURGBP.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                        this.ChangeValues[3, ChangeLength - i] = Convert.ToDouble(double.Parse(DR.EURJPY.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
 
-                // EURHKD = EURUSD * USDHKD
-                this.ChangeValues[4, ChangeLength + i] = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
-            }
+                        // EURHKD = EURUSD * USDHKD
+                        this.ChangeValues[4, ChangeLength + i] = tmpEURUSD * Convert.ToDouble(double.Parse(DR.USDHKD.TimeSeries[100 - i].adjustedclose, System.Globalization.CultureInfo.InvariantCulture));
+                    }
 
-        }
-        */
+                }
+                */
 
 
         /**

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,11 +17,25 @@ namespace PEPS_Beta
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
+            // try connecting to database if failure reinit
+            try
+            {
+                using (SqlConnection conn = new SqlConnection())
+                {
+                    conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                    conn.Open();
+                }
+            }
+            catch (Exception)
+            {
 
-            Database.SetInitializer(init);
+                IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
 
-            init.InitializeDatabase(new BddContext());
+                Database.SetInitializer(init);
+
+                init.InitializeDatabase(new BddContext());
+
+            }
         }
     }
 }

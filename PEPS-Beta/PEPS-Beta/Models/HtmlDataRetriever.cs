@@ -130,7 +130,7 @@ namespace PEPS_Beta.Models
 
             IAvapiResponse_TIME_SERIES_DAILY_ADJUSTED EURJPYResponse =
                 TSD.QueryPrimitive(
-                "EURUSD=X",
+                "EURJPY=X",
                 dataSize
                 );
 

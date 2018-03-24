@@ -503,6 +503,7 @@
     <Compile Include="Models\BddContext.cs" />
     <Compile Include="Models\DAL.cs" />
     <Compile Include="Models\IDAL.cs" />
+    <Compile Include="Models\IndexesAtDate.cs" />
     <Compile Include="Models\Indice.cs" />
     <Compile Include="Models\InitParamEtDonnees.cs" />
     <Compile Include="Models\MultiMondeParam.cs" />

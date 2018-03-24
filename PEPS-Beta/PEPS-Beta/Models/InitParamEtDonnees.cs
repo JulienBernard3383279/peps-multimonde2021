@@ -15,15 +15,14 @@ namespace PEPS_Beta.Models
             context.Parametres.Add(newParam);
 
             DataStorage ds = new DataStorage();
-            ds.FillDataHtml("full",2000,2000);
-            Indice fillIndexDataBase;
+            ds.FillDataHtml("full",200,200);
+            IndexesAtDate fillIndexDataBase;
             TauxDeChange fillChangeDataBase;
-            double[] index = new double[5];
+            double[] index = new double[6];
             double[] change = new double[5];
-            // fill database with as much data as there is in ASX
-            foreach (KeyValuePair<DateTime, double> kvp in ds.asx)
+            var allIndexKeys = ds.asx.Keys.Union(ds.estox.Keys).Union(ds.ftse.Keys).Union(ds.hang.Keys).Union(ds.n225.Keys).Union(ds.sp500.Keys);
+            foreach( DateTime key in allIndexKeys)
             {
-                DateTime key = kvp.Key;
                 #region keyCheckIndex
                 try
                 {
@@ -63,8 +62,24 @@ namespace PEPS_Beta.Models
                 {
                     index[4] = -1;
                 }
+                try
+                {
+                    index[5] = ds.asx[key];
+                } 
+                catch (KeyNotFoundException)
+                {
+                    index[5] = -1;
+                }
                 #endregion keyCheck
-                fillIndexDataBase = new Indice(key, kvp.Value, index[0], index[1], index[2], index[3], index[4]);
+                fillIndexDataBase = new IndexesAtDate(key, index[5], index[0], index[1], index[2], index[3], index[4]);
+               
+
+                context.IndexesValue.Add(fillIndexDataBase);
+                //newParam.IndexesValue.Add(fillIndexDataBase);
+            }
+            var allChangeKeys = ds.EurAud.Keys.Union(ds.EurGbp.Keys).Union(ds.EurHkd.Keys).Union(ds.EurJpy.Keys).Union(ds.EurUsd.Keys);
+            foreach(DateTime key in allChangeKeys)
+            {
                 #region keyCheckChange
                 try
                 {
@@ -108,12 +123,9 @@ namespace PEPS_Beta.Models
                 }
                 #endregion keyCheckChange
                 fillChangeDataBase = new TauxDeChange(key, change[0], change[1], change[2], change[3], change[4]);
-
-                context.Indices.Add(fillIndexDataBase);
-                newParam.Indices.Add(fillIndexDataBase);
                 context.GetTaux.Add(fillChangeDataBase);
-            }
 
+            }
             newParam.NbIndices = 6;
             newParam.NbSamples = 1000;
             base.Seed(context);
