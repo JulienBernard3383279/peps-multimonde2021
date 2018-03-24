@@ -151,16 +151,25 @@ namespace PEPS_Beta.Controllers
             {
                 // Il faut estimer les vol des indices et les correlations
                 // entre les dates estim.DebutEstim et estim.FinEstim
-                dal.Init();
+                //dal.Init();
 
                 List<Indice> indices = dal.GetIndices();
                 List<TauxDeChange> tauxDC = dal.GetTDC();
 
                 Models.DataStorage ds = new Models.DataStorage();
-                ds.FillDataHtml(500,500);
-                //ds.DataToArray();
+                //ds.FillDataHtml(500,500);
+                ds.FillData();
+                ds.DataToArray();
                 double[,] dataAssets = ds.IndexValues;
                 double[,] dataFX = ds.ChangeValues;
+
+                /*for (int k = 0; k < dataAssets.GetLength(1); k++)
+                {
+                    for (int i=0; i < dataAssets.GetLength(0); i++)
+                    {
+                        if(dataAssets[i,k]
+                    }
+                }*/
 
                 int optionSize = dataAssets.GetLength(0) + dataFX.GetLength(0);
                 double[,] data_ = new double[optionSize, dataAssets.GetLength(1)];
@@ -194,7 +203,10 @@ namespace PEPS_Beta.Controllers
                 volatilities = PricerDll.CustomTests.MathUtils.ComputeVolatility(covMat);
                 foreach (Indice i in indices)
                 {
-                    i.Vol = volatilities[indices.IndexOf(i)];
+                    dal.modifierIndice(i.Id, i.InterestRateThisArea, volatilities[indices.IndexOf(i)]);
+                    //dal.modifierIndice(i.Id, i.InterestRateThisArea, 15.0);
+                    
+                    //i.Vol = volatilities[indices.IndexOf(i)];
                 }
                 double[,] corrMat = PricerDll.CustomTests.MathUtils.ComputeCorrMatrix(covMat);
                 foreach (Indice i in indices)
