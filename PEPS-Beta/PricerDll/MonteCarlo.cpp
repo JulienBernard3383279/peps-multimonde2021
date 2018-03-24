@@ -66,22 +66,9 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 		else { mod_->postInitAssetCustomDates(path, opt_->customDates, opt_->nbTimeSteps, rng_); }
 
 		for (int j = 0; j < mod_->size_; j++) {
-			//std::cout << "Couverture sur j " << j << std::endl;
 			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, 0.001);
-			//if (j == 1) {
-			//	PnlMat *pathMinusDebug = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
-			//	PnlMat *pathPlusDebug = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
-			//	mod_->shiftPath(pathPlus, pathMinusDebug, pathPlusDebug, 0, 1, opt_->nbTimeSteps, 0.01);
-			//	payoffPlus = opt_->payoff(pathPlusDebug);
-			//	mod_->shiftPath(pathMinus, pathMinusDebug, pathPlusDebug, 0, 1, opt_->nbTimeSteps, 0.01);
-			//	payoffMinus = opt_->payoff(pathMinusDebug);
-			//}
-			//else {
 			payoffPlus = opt_->payoff(pathPlus);
 			payoffMinus = opt_->payoff(pathMinus);
-			//}
-			//std::cout << payoffPlus << std::endl;
-			//std::cout << payoffMinus << std::endl;
 
 			LET(deltas, j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * 0.001);
 		}
