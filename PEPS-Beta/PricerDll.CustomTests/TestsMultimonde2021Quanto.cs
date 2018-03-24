@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -304,7 +305,7 @@ namespace PricerDll.CustomTests
             Console.WriteLine();
 
             volatilities = new double[11] {
-                1, 1, 1, 1, 1, 1,
+                0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
                 0, 0, 0, 0, 0
             };
             API.PriceMultimonde2021Quanto(
@@ -318,8 +319,8 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
-            Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 1 (absurdement grandes).");
-            Console.WriteLine("Devrait renvoyer plus que 100, et de beaucoup (consommation des actifs limités positivement prioritaire)");
+            Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,1.");
+            Console.WriteLine("Devrait renvoyer plus que 100");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             #endregion

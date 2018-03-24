@@ -58,6 +58,12 @@ namespace PricerDll.CustomTests
             double[,] covMat = PricerDll.CustomTests.MathUtils.ComputeCovMatrix(PricerDll.CustomTests.MathUtils.ComputeReturns(data_));
             volatilities = PricerDll.CustomTests.MathUtils.ComputeVolatility(covMat);
 
+            for (int j = 0; j < optionSize; j++)
+            {
+                Console.WriteLine("volatilities :");
+                Console.WriteLine(volatilities[j]);
+            }
+
             trends = new double[6] {  0.021, 0.031, 0.024, 0.021, 0.007, 0.045};
             //trends = new double[6] { 0,0,0,0,0,0};
 

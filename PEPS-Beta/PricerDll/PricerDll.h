@@ -210,6 +210,8 @@ extern "C" PRICERDLL_API void PriceQuanto(
 	double volatilities[],
 	double interestRate[],
 	double correlations[],
+	double date,
+	double currents[],
 	double* price,
 	double* ic);
 
@@ -221,6 +223,8 @@ extern "C" PRICERDLL_API void SimulDeltasQuanto(
 	double volatilities[],
 	double interestRate[],
 	double correlations[],
+	double date,
+	double currents[],
 	double** deltasAssets,
 	double** deltasFXRates);
 #pragma endregion
