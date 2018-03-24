@@ -71,20 +71,7 @@ namespace PEPS_Beta.Models
 
         public void FillDataHtml(string dataLength, int nbValueStock, int nbValueExchange)
         {
-            using (SqlConnection conn = new SqlConnection())
-            {
-                 conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-                conn.Open();
-                SqlCommand command = new SqlCommand("SELECT ASX FROM  IndexesAtDates",conn);
 
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        ;
-                    }
-                }
-            }
             HtmlDataRetriever DR = new HtmlDataRetriever();
             DR.RetrieveData(dataLength);
             for (int i = 0; i < nbValueStock; i++)

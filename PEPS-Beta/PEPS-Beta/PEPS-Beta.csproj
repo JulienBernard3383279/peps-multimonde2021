@@ -504,6 +504,7 @@
     </Compile>
     <Compile Include="Models\BddContext.cs" />
     <Compile Include="Models\DAL.cs" />
+    <Compile Include="Models\DBInterface.cs" />
     <Compile Include="Models\IDAL.cs" />
     <Compile Include="Models\IndexesAtDate.cs" />
     <Compile Include="Models\Indice.cs" />

@@ -17,24 +17,24 @@ namespace PEPS_Beta
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            // try connecting to database if failure reinit
-            try
+            // make a request, if request return empty => init
+            using (SqlConnection conn = new SqlConnection())
             {
-                using (SqlConnection conn = new SqlConnection())
+                conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                conn.Open();
+                SqlCommand command = new SqlCommand("SELECT ASX FROM  IndexesAtDates", conn);
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-                    conn.Open();
+                    if (reader.Read() == false)
+                    {
+                        conn.Close();
+                        IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
+
+                        Database.SetInitializer(init);
+
+                        init.InitializeDatabase(new BddContext());
+                    }
                 }
-            }
-            catch (Exception)
-            {
-
-                IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
-
-                Database.SetInitializer(init);
-
-                init.InitializeDatabase(new BddContext());
-
             }
         }
     }
