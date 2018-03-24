@@ -158,5 +158,6 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
             }*/
         }
+
     }
 }
