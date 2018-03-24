@@ -792,15 +792,12 @@ void SimulDeltasQuanto(
 
 	opt = new QuantoOption(maturity, strike);
 
-
-	// Calcul de la vol de S-X
+	// Calcul de la vol de S+X (S = S$ ; X = $/€ ; S€ = SX & ZC ~ X (terme d'actualisation ne change pas la vol ou la corr) )
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
-	LET(volatilitiesVect, 0) = sqrt(volatilities[1] * volatilities[1] + volatilities[0] * volatilities[0] - 2 * correlations[1] * volatilities[0] * volatilities[1]);
-	LET(volatilitiesVect, 1) *= -1;
+	LET(volatilitiesVect, 0) = VolAplusB(correlations[1], volatilities[0], volatilities[1]);
 
-	// Calcul de la cor de S-X et X
+	// Calcul de la cor de S+X et X
 	PnlMat* correlationsMat = GenCorrAPlusBBFromCorrAB(correlations, volatilities);
-
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
@@ -840,11 +837,11 @@ void SimulDeltasQuanto(
 	std::cout << "Prix simule : " << price << std::endl;
 	std::cout << "ic : " << ic << std::endl;
 
-	*deltasAssets = static_cast<double*>(malloc(2 * sizeof(double)));
-	memcpy(*deltasAssets, &(myDeltasAssets[0]), 2 * sizeof(double));
+	*deltasAssets = static_cast<double*>(malloc(1 * sizeof(double)));
+	memcpy(*deltasAssets, &(myDeltasAssets[0]), 1 * sizeof(double));
 
-	*deltasFXRates = static_cast<double*>(malloc(2 * sizeof(double)));
-	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 2 * sizeof(double));
+	*deltasFXRates = static_cast<double*>(malloc(1 * sizeof(double)));
+	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 1 * sizeof(double));
 }
 #pragma endregion
 #pragma endregion
@@ -1297,7 +1294,6 @@ void PriceSingleMonde(int sampleNumber,
 	mod = new BlackScholesModel(OptionSize, interestRates[0], corr, sigma, spot, rate);
 	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
 	mc->price(price, ic);
-
 }
 #pragma endregion
 

@@ -59,6 +59,8 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 
 	double payoffMinus = 0;
 	double payoffPlus = 0;
+	
+	double h = 0.001;
 
 	mod_->initAsset(opt_->nbTimeSteps);
 	for (int i = 0; i < nbSamples_; ++i) {
@@ -66,9 +68,10 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 		else { mod_->postInitAssetCustomDates(path, opt_->customDates, opt_->nbTimeSteps, rng_); }
 
 		for (int j = 0; j < mod_->size_; j++) {
-			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, 0.01);
-			payoffPlus = opt_->payoff(pathPlus);//std::cout << "payoffPlus :" << payoffPlus << std::endl;
-			payoffMinus = opt_->payoff(pathMinus);//std::cout << "payoffMinus :" << payoffMinus << std::endl;
+			mod_->shiftPath(path, pathMinus, pathPlus, j, 1, opt_->nbTimeSteps, h);
+			payoffPlus = opt_->payoff(pathPlus);// std::cout << "payoffPlus :" << payoffPlus << std::endl;
+			payoffMinus = opt_->payoff(pathMinus);// std::cout << "payoffMinus :" << payoffMinus << std::endl;
+			LET(deltas, j) += (payoffPlus - payoffMinus) / (MGET(path, 0, j) * 2 * h);
 		}
 	}
 
@@ -76,6 +79,7 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 		LET(deltas, j) /= nbSamples_;
 		LET(deltas, j) *= exp(-mod_->r_ * opt_->T);
 	}
+
 
 	return;
 }
