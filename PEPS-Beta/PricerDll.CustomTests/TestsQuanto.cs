@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,8 +70,8 @@ namespace PricerDll.CustomTests
                 interestRates,
                 correlations,
                 date);
-
-            Console.WriteLine("");
+            Assert.IsTrue((realPrice < price + 1.5 * ic / 2) || (realPrice > price - 1.5 * ic / 2));
+            /*Console.WriteLine("");
             Console.WriteLine("");
             Console.WriteLine("Prix calculé par Monte-Carlo : " + price + " , Intervalle de confiance à 99% : [" + (price - 1.5 * ic / 2) + "," + (price + 1.5 * ic / 2) + "]");
             Console.WriteLine("Prix calculé par formule fermée : " + realPrice);
@@ -79,7 +80,7 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("Vrai prix en dehors de l'intervalle de confiance !");
             }
             Console.WriteLine("");
-            Console.WriteLine("");
+            Console.WriteLine("");*/
         }
 
         /*
@@ -274,8 +275,8 @@ namespace PricerDll.CustomTests
             tmpD /= spots[1];
             realDelta[1] = tmpD;
 
-
-            if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
+            Assert.IsTrue(Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) < 0.05);
+           /* if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
                 Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
@@ -294,7 +295,7 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("Deltas simulés");
                 Console.WriteLine(deltas[0]);
                 Console.WriteLine(deltas[1]);
-            }
+            }*/
         }
 
         private static void DeltaTestAnyTime(double maturity,
@@ -348,8 +349,8 @@ namespace PricerDll.CustomTests
             System.Runtime.InteropServices.Marshal.Copy(deltasAssets, deltas, 0, 6);
 
 
-
-            if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
+            Assert.IsTrue(Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) < 0.05);
+           /* if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
                 Console.WriteLine("problème de deltas pour l'option quanto en t>0!");
@@ -361,8 +362,8 @@ namespace PricerDll.CustomTests
                 Console.WriteLine(realDelta[0]);
                 Console.WriteLine("Deltas simulés");
                 Console.WriteLine(deltas[0]);
-
-            }
+                */
+            //}
         }
 
         public static void PerformDeltaTests0()
