@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ namespace PricerDll.CustomTests
     {
         static void Main(string[] args)
         {
+            
             //TestsCall.PerformPriceTests();
             //TestsCall.PerformPriceTestsAnyTime();
             //TestsCall.PerformDeltaTests0();
