@@ -154,11 +154,17 @@ namespace PEPS_Beta.Controllers
                 dal.Init();
 
                 List<Indice> indices = dal.GetIndices();
-                //List<TauxDeChange> TauxDC = dal.GetTDC();
+                List<TauxDeChange> tauxDC = dal.GetTDC();
 
-                int optionSize = indices.Count;
-                double[,] data_ = new double[optionSize, indices[0].Histo.Count];
-                int k = 0;
+                Models.DataStorage ds = new Models.DataStorage();
+                ds.FillDataHtml(500,500);
+                //ds.DataToArray();
+                double[,] dataAssets = ds.IndexValues;
+                double[,] dataFX = ds.ChangeValues;
+
+                int optionSize = dataAssets.GetLength(0) + dataFX.GetLength(0);
+                double[,] data_ = new double[optionSize, dataAssets.GetLength(1)];
+                /*int k = 0;
                 foreach (Indice j in indices)
                 {
                     double[] dataJ = new double[j.Histo.Count];
@@ -167,6 +173,20 @@ namespace PEPS_Beta.Controllers
                     for (int x = 0; x < dataJ.Length; x++)
                     {
                         data_[k, x] = dataJ[x];
+                    }
+                }*/
+                for (int i=0; i < data_.GetLength(0); i++)
+                {
+                    for (int x = 0; x < data_.GetLength(1); x++)
+                    {
+                        if(i < dataAssets.GetLength(0))
+                        {
+                            data_[i, x] = dataAssets[i, x];
+                        }
+                        else
+                        {
+                            data_[i, x] = dataFX[i, x];
+                        }
                     }
                 }
                 double[] volatilities = new double[optionSize];
@@ -182,6 +202,10 @@ namespace PEPS_Beta.Controllers
                     foreach (Indice j in indices)
                     {
                         i.CorrelationMat.Add(j,corrMat[indices.IndexOf(i), indices.IndexOf(j)]);
+                    }
+                    foreach(TauxDeChange j in tauxDC)
+                    {
+                        i.CorrelationMatTC.Add(j, corrMat[indices.IndexOf(i), indices.Count + tauxDC.IndexOf(j)]);
                     }
                 }
                 // ne pas toucher au return
