@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace PricerDll.CustomTests
 {
+    
     public static unsafe class TestsCall
     {
+        
         public static double RealPrice(
             double maturity,
             double strike,
@@ -60,8 +59,10 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 0.0);
+            // directive assert : Assure que le prix renvoyé par la formule fermée et celui renvoyé par la simulation sont dans un intervalle de confiance de largeur 2%.
+            Assert.IsTrue(Math.Abs((realPrice - price) / price) < 0.02);
 
-            Console.WriteLine("Prix selon la formule : " + realPrice);
+           /* Console.WriteLine("Prix selon la formule : " + realPrice);
             Console.WriteLine("Prix selon le pricer : " + price);
             if (Math.Abs( (realPrice-price)/price) > 0.02) {
                 Console.WriteLine("Test du prix du call en 0 : différence de prix supérieur à 2%.");
@@ -70,9 +71,10 @@ namespace PricerDll.CustomTests
             {
                 Console.WriteLine("Test du prix du call en 0 concluant.");
             }
-            Console.WriteLine();
+            Console.WriteLine();*/
         }
 
+        // lance le test ci-dessus à partir des données de test ci-dessous 
         public static void PerformPriceTests()
         {
             double maturity = 3.0;
@@ -146,9 +148,9 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 t);
-
-
-            Console.WriteLine("Prix selon la formule : " + realPrice);
+            //assure que prix formule fermée et prix simulé en tout t<T  dans un intervalle de confiance de largeur 2%
+            Assert.IsTrue(Math.Abs((realPrice - price) / price) < 0.02);
+           /* Console.WriteLine("Prix selon la formule : " + realPrice);
             Console.WriteLine("Prix selon le pricer : " + price);
             if (Math.Abs((realPrice - price) / price) > 0.02)
             {
@@ -159,6 +161,8 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("Test du prix du call en t concluant.");
             }
             Console.WriteLine();
+            */
+
         }
 
         public static void PerformPriceTestsAnyTime()
@@ -251,6 +255,9 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 0.0);
+            //Assure que le delta calculé et simulé sont dans un intervalle de confiance de largeur inferieure à 2%.
+            Assert.IsTrue(Math.Abs((realDelta - deltas[0]) / deltas[0]) < 0.02);
+            /*
             Console.WriteLine("Delta selon la formule : " + realDelta);
             Console.WriteLine("Delta selon le pricer : " + deltas[0]);
             //on teste juste le delta de l'option ,rien de plus,et en 0
@@ -264,6 +271,7 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("Test du delta du call en 0 concluant.");
             }
             Console.WriteLine();
+            */
         }
 
         public static void PerformDeltaTests0()
@@ -356,7 +364,8 @@ namespace PricerDll.CustomTests
                 interestRate,
                 correlations,
                 t);
-
+            Assert.IsTrue(Math.Abs((realDelta - deltas[0]) / deltas[0]) < 0.02);
+            /*
             Console.WriteLine("Delta selon la formule : " + realDelta);
             Console.WriteLine("Delta selon le pricer : " + deltas[0]);
             if (Math.Abs((realDelta - deltas[0]) / deltas[0]) > 0.02)
@@ -368,6 +377,7 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("Test du delta du call en t concluant.");
             }
             Console.WriteLine();
+            */
         }
 
         public static void PerformDeltaTestsAnyTime()
