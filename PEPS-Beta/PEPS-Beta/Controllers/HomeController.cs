@@ -6,6 +6,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Web;
 using System.Web.Mvc;
+using PricerDll.CustomTests;
+
 
 namespace PEPS_Beta.Controllers
 {
@@ -149,8 +151,39 @@ namespace PEPS_Beta.Controllers
             {
                 // Il faut estimer les vol des indices et les correlations
                 // entre les dates estim.DebutEstim et estim.FinEstim
+                dal.Init();
 
+                List<Indice> indices = dal.GetIndices();
+                //List<TauxDeChange> TauxDC = dal.GetTDC();
 
+                int optionSize = indices.Count;
+                double[,] data_ = new double[optionSize, indices[0].Histo.Count];
+                int k = 0;
+                foreach (Indice j in indices)
+                {
+                    double[] dataJ = new double[j.Histo.Count];
+                    j.Histo.Values.CopyTo(dataJ, k);
+                    k++;
+                    for (int x = 0; x < dataJ.Length; x++)
+                    {
+                        data_[k, x] = dataJ[x];
+                    }
+                }
+                double[] volatilities = new double[optionSize];
+                double[,] covMat = PricerDll.CustomTests.MathUtils.ComputeCovMatrix(PricerDll.CustomTests.MathUtils.ComputeReturns(data_));
+                volatilities = PricerDll.CustomTests.MathUtils.ComputeVolatility(covMat);
+                foreach (Indice i in indices)
+                {
+                    i.Vol = volatilities[indices.IndexOf(i)];
+                }
+                double[,] corrMat = PricerDll.CustomTests.MathUtils.ComputeCorrMatrix(covMat);
+                foreach (Indice i in indices)
+                {
+                    foreach (Indice j in indices)
+                    {
+                        i.CorrelationMat.Add(j,corrMat[indices.IndexOf(i), indices.IndexOf(j)]);
+                    }
+                }
                 // ne pas toucher au return
                 return PartialView(dal.GetIndices());
             }

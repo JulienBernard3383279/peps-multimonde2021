@@ -12,6 +12,7 @@ namespace PEPS_Beta.Models
         public double Vol { get; set; }
         public Dictionary<DateTime, double> Histo { get; set; }
         public Dictionary<Indice, double> CorrelationMat { get; set; }
+        public Dictionary<TauxDeChange, double> CorrelationMatTC { get; set; }
         public String Money { get; set; }
         public double InterestRateThisArea { get; set; }
 
@@ -27,6 +28,7 @@ namespace PEPS_Beta.Models
             this.InterestRateThisArea = 0.01;
             this.Histo = new Dictionary<DateTime, double>();
             this.CorrelationMat = new Dictionary<Indice, double>();
+            this.CorrelationMatTC = new Dictionary<TauxDeChange, double>();
         }
     }
 }
