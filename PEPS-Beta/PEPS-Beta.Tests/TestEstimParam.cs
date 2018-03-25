@@ -11,7 +11,7 @@ using PricerDll.CustomTests;
 namespace PEPS_Beta.Tests
 {
     [TestClass]
-    class TestEstimParam
+    public class TestEstimParam
     {
         [TestMethod]
         public void TestEstimCorrelation()
