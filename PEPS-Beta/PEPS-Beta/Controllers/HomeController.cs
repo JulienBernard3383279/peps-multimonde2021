@@ -28,11 +28,11 @@ namespace PEPS_Beta.Controllers
         // GET: Home
         public unsafe ActionResult Index()
         {
-           
 
-            // ParseData
-         //   Models.DataStorage ds = new Models.DataStorage();
-         //   ds.FillDataHtml(500,500);
+                        // ParseData
+
+
+            //ds.Update();
             //
 
             /*
@@ -157,11 +157,12 @@ namespace PEPS_Beta.Controllers
                 List<TauxDeChange> tauxDC = dal.GetTDC();
 
                 Models.DataStorage ds = new Models.DataStorage();
-                ds.FillDataHtml(500, 500);
+                //ds.FillDataHtml(500, 500);
                 //ds.FillDataHtml();
                 //ds.DataToArray();
-                double[,] dataAssets = ds.IndexValues;
-                double[,] dataFX = ds.ChangeValues;
+                double[,] dataAssets = new double[1,1];//= ds.IndexValues;
+                double[,] dataFX = new double[1,1];//= ds.ChangeValues;
+
 
                 /*for (int k = 0; k < dataAssets.GetLength(1); k++)
                 {
