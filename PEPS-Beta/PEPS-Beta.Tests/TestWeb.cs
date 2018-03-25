@@ -12,21 +12,21 @@ namespace PEPS_Beta.Tests
         [TestMethod]
         public void TestInit()
         {
-            IDatabaseInitializer<BddContext> init = new DropCreateDatabaseAlways<BddContext>();
-            Database.SetInitializer(init);
-            init.InitializeDatabase(new BddContext());
-
             using (DAL dal = new DAL())
             {
-                dal.Init();
-
                 List<Indice> indices = dal.GetIndices();
                 Assert.IsNotNull(indices);
                 Assert.AreEqual(6, indices.Count);
-                Assert.AreEqual("asx", indices[0].Nom);
+                Assert.AreEqual("estox", indices[0].Nom);
                 MultiMondeParam param = dal.GetParams();
                 Assert.AreEqual(1000, param.NbSamples);
             }
+        }
+
+        [TestMethod]
+        public void NewTest()
+        {
+            Assert.AreEqual(1.0,0.5);
         }
     }
 }

@@ -9,10 +9,10 @@ using PricerDll.CustomTests;
 namespace PEPS_Beta.Tests
 {
     [TestClass]
-    class TestDeltaCall0
+    public class TestDeltaCall0
     {
         [TestMethod]
-        private static void DeltaTest0()
+        public void DeltaTest0()
         {
             double maturity = 3.0;
             int optionSize = 1;

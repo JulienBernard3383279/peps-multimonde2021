@@ -9,10 +9,10 @@ using PricerDll.CustomTests;
 namespace PEPS_Beta.Tests
 {
     [TestClass]
-    class TestPriceCallAnyTime
+    public class TestPriceCallAnyTime
     {
         [TestMethod] 
-        private static unsafe void PriceTestCallAnyTime()
+        public unsafe void PriceTestCallAnyTime()
         {
             double maturity = 3.0;
             int optionSize = 1;

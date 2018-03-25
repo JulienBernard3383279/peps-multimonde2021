@@ -9,10 +9,10 @@ using PricerDll.CustomTests;
 namespace PEPS_Beta.Tests
 {
     [TestClass]
-    class TestPriceQuantoAnyTimecs
+    public class TestPriceQuantoAnyTimecs
     {
         [TestMethod]
-        private static void DeltaTest0()
+        public void DeltaTest0()
         {
             double maturity = 3.0;
             double strike = 100.0;

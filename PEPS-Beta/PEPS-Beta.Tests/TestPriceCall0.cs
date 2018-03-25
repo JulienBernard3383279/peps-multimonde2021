@@ -10,10 +10,10 @@ using PricerDll.CustomTests;
 namespace PEPS_Beta.Tests
 {
     [TestClass]
-     class TestPriceCall0
+    public class TestPriceCall0
     {
         [TestMethod]
-        private static unsafe void PriceCall()
+        public unsafe void PriceCall()
         {
 
             double maturity = 3.0;

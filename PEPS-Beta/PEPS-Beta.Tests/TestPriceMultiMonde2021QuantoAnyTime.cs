@@ -9,10 +9,10 @@ using PricerDll.CustomTests;
 namespace PEPS_Beta.Tests
 {
     [TestClass]
-    class TestPriceMultiMonde2021QuantoAnyTime
+    public class TestPriceMultiMonde2021QuantoAnyTime
     {
         [TestMethod]
-        public static unsafe void PerformPriceTestAnyTime()
+        public unsafe void PerformPriceTestAnyTime()
         {
             double price;
             double ic;

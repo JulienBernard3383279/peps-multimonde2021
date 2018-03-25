@@ -9,10 +9,10 @@ using PricerDll.CustomTests;
 namespace PEPS_Beta.Tests
 {
     [TestClass]
-    class TestPriceMultiMonde2021Quanto0
+    public class TestPriceMultiMonde2021Quanto0
     {
         [TestMethod]
-        public static unsafe void PerformPriceTests()
+        public unsafe void PerformPriceTests()
         {
            
             int nbSamples;
