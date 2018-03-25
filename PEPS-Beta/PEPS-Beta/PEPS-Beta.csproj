@@ -502,6 +502,7 @@
       <Visible>false</Visible>
     </Compile>
     <Compile Include="Models\BddContext.cs" />
+    <Compile Include="Models\PortefeuilleCouverture.cs" />
     <Compile Include="Models\DAL.cs" />
     <Compile Include="Models\IDAL.cs" />
     <Compile Include="Models\Indice.cs" />
@@ -768,6 +769,7 @@
       <Visible>false</Visible>
     </Compile>
     <Compile Include="Utility.cs" />
+    <Compile Include="ViewModels\CouvertureIdealeViewModel.cs" />
     <Compile Include="ViewModels\EstimationViewModel.cs" />
     <Compile Include="ViewModels\IndexViewModel.cs" />
     <Compile Include="WILLR\Const_WILLR.cs">
@@ -812,6 +814,7 @@
     <Content Include="Views\Home\IndiceLigne.cshtml" />
     <Content Include="Views\Home\EstimationBouton.cshtml" />
     <Content Include="Scripts\jquery.validate.unobtrusive.bootstrap.min.js.map" />
+    <Content Include="Views\Home\CouvertureIdeale.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

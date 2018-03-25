@@ -77,5 +77,10 @@ namespace PEPS_Beta.Models
                 bdd.SaveChanges();
             }
         }
+
+        public PortefeuilleCouverture getPortefeuilleCouverture()
+        {
+            return bdd.GetPort.ToList()[0];
+        }
     }
 }

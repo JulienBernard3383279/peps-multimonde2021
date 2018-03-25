@@ -157,9 +157,9 @@ namespace PEPS_Beta.Controllers
                 List<TauxDeChange> tauxDC = dal.GetTDC();
 
                 Models.DataStorage ds = new Models.DataStorage();
-                //ds.FillDataHtml(500,500);
-                ds.FillData();
-                ds.DataToArray();
+                ds.FillDataHtml(500, 500);
+                //ds.FillDataHtml();
+                //ds.DataToArray();
                 double[,] dataAssets = ds.IndexValues;
                 double[,] dataFX = ds.ChangeValues;
 
@@ -222,6 +222,21 @@ namespace PEPS_Beta.Controllers
                 }
                 // ne pas toucher au return
                 return PartialView(dal.GetIndices());
+            }
+        }
+
+        public ActionResult UpdatePortefeuille(CouvertureIdealeViewModel couvertureIdealeViewModel)
+        {
+            using (DAL dal = new DAL())
+            {
+                DateTime currD = couvertureIdealeViewModel.CurrDate;
+                double portValue = 0.0;
+                //for (Indice ind : dal.GetIndices())
+                //{
+                //}
+
+                return PartialView(dal.getPortefeuilleCouverture());
+
             }
         }
     }

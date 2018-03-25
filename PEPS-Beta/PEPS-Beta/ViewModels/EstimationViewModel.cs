@@ -9,13 +9,13 @@ namespace PEPS_Beta.ViewModels
         [DisplayFormat(ApplyFormatInEditMode = true,
                                     HtmlEncode = false,
                                     NullDisplayText = "",
-                                    DataFormatString = "{0:MM/dd/yyyy}")]
+                                    DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime DebutEst { get; set; }
         [DataType(DataType.DateTime)]
         [DisplayFormat(ApplyFormatInEditMode = true,
                                     HtmlEncode = false,
                                     NullDisplayText = "",
-                                    DataFormatString = "{0:MM/dd/yyyy}")]
+                                    DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime FinEst { get; set; }
 
     }

@@ -11,5 +11,6 @@ namespace PEPS_Beta.Models
         public DbSet<Indice> Indices { get; set; }
         public DbSet<MultiMondeParam> Parametres { get; set; }
         public DbSet<TauxDeChange> GetTaux { get; set; }
+        public DbSet<PortefeuilleCouverture> GetPort { get; set; }
     }
 }

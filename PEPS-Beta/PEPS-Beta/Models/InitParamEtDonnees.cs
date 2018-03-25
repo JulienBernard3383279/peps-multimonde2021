@@ -35,6 +35,9 @@ namespace PEPS_Beta.Models
             newParam.NbIndices = 6;
             newParam.NbSamples = 1000;
 
+            PortefeuilleCouverture newPort = new PortefeuilleCouverture();
+            context.GetPort.Add(newPort);
+
             base.Seed(context);
 
         }
