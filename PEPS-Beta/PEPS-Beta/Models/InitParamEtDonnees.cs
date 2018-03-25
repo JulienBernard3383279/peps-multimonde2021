@@ -15,7 +15,7 @@ namespace PEPS_Beta.Models
             context.Parametres.Add(newParam);
 
             DataStorage ds = new DataStorage();
-            ds.FillDataHtml("full",200,200);
+            ds.FillDataHtml("full",2000,2000);
             IndexesAtDate fillIndexDataBase;
             TauxDeChange fillChangeDataBase;
             double[] index = new double[6];

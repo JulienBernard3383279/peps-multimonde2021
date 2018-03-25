@@ -28,9 +28,8 @@ namespace PEPS_Beta.Controllers
         // GET: Home
         public unsafe ActionResult Index()
         {
-           
 
-            // ParseData
+                        // ParseData
 
 
             //ds.Update();
@@ -137,15 +136,15 @@ namespace PEPS_Beta.Controllers
             // IDEM POUR PARAMS MULTIMONDE
         }
 
-        //[HttpPost]
-        //public unsafe void IndiceLigne(Indice ourInd)
-        //{
-        //    using (DAL dal = new DAL())
-        //    {
-        //        dal.modifierIndice(ourInd.Id, ourInd.InterestRateThisArea, ourInd.Vol);
-        //    }
-        //}
-        
+        [HttpPost]
+        public unsafe void IndiceLigne(Indice ourInd)
+        {
+            using (DAL dal = new DAL())
+            {
+                dal.modifierIndice(ourInd.Id, ourInd.InterestRateThisArea, ourInd.Vol);
+            }
+        }
+
         //public unsafe ActionResult EstimerParam(EstimationViewModel estim)
         //{
         //    using(DAL dal = new DAL())
@@ -206,7 +205,7 @@ namespace PEPS_Beta.Controllers
         //        {
         //            dal.modifierIndice(i.Id, i.InterestRateThisArea, volatilities[indices.IndexOf(i)]);
         //            //dal.modifierIndice(i.Id, i.InterestRateThisArea, 15.0);
-                    
+
         //            //i.Vol = volatilities[indices.IndexOf(i)];
         //        }
         //        double[,] corrMat = PricerDll.CustomTests.MathUtils.ComputeCorrMatrix(covMat);
