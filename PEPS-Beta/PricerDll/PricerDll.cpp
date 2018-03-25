@@ -1010,10 +1010,10 @@ PnlMat* Multimonde2021Quanto_BuildFromPast(
 			MLET(pastMat, y, x) /= MGET(pastMat, y, x + 5);
 		}
 	}
-	// Remplacement du TDC €/$ par la valeur du zéro-coupon
+	// Remplacement du TDC €/$ par la valeur du zéro-coupon ($/€ actualisé)
 	for (int y = 0; y < nbRows; y++) {
 		for (int x = 6; x <= 10; x++) {
-			MLET(pastMat, y, x) *= exp(-interestRates[x - 5] * (T - GET(dates, y)));
+			MLET(pastMat, y, x) = 1/MGET(pastMat, y, x) * exp(-interestRates[x - 5] * (T - GET(dates, y)));
 		}
 	}
 	return pastMat;
@@ -1030,7 +1030,7 @@ PnlVect* Multimonde2021Quanto_BuildFromCurrentPrices(
 	}
 	// Remplacement du TDC €/$ par la valeur du zéro-coupon
 	for (int x = 6; x <= 10; x++) {
-		LET(toBeReturned, x) *= exp(-interestRates[x - 5] * (T -t));
+		LET(toBeReturned, x) = 1/GET(toBeReturned, x) * exp(-interestRates[x - 5] * (T -t));
 	}
 	return toBeReturned;
 }
@@ -1254,29 +1254,105 @@ void TrackingErrorMultimonde2021Quanto(
 #pragma endregion
 
 #pragma region SingleMonde
-void PriceSingleMonde(int sampleNumber,
-	//double past[], // format [,]
-	double currentPrices[],//taille 1, il s'agit juste du spot
-	double volatilities[],//taille 1 pareil
-	double interestRates[],//pour l'instant taille 1
-	double* price,
+#pragma region Inits
+/*
+* Initialise le MonteCarlo, l'Option, le BlackScholesModel, en calculant
+* au préalable les nouvelles volatilités, tendances & corrélations.
+*/
+void InitSingleMonde(
+	MonteCarlo** mc,
+	Option** opt,
+	BlackScholesModel** mod,
+	int sampleNumber, // Nombre de tirages ; les taux de changes attendus sont UN EURO EN LA MONNAIE ETRANGERE. (€/$)
+	double currentPrices[], // Taille 2. Prix de l'actif dans sa monnaie / taux de change €/$.
+	double volatilities[], // Taille 2 Volatilités de l'actif dans sa monnaie / du taux de change €/$.
+	double interestRates[], // Taille 2. Taux d'intérêts. Indice 0 = domestique.
+	double correlations[]) // Taille 2x2. Corrélations entre les actifs dans leurs monnaies et le le tdc €/$.
+{
+	// Calcul de la volatilité
+	// vol actif en € = actif en $ / (€/$) => Vol A-B dans l'exponentielle
+	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(11, volatilities);
+	LET(volatilitiesVect, 0) = VolAminusB(correlations[1], volatilities[0], volatilities[1]);
+
+	// Calcul des spots des actifs en euros
+	PnlVect* spotsVect = pnl_vect_create_from_zero(11);
+	// Voir commentaire spotsVect Multimonde2021Q
+
+	// Mises des tendances des actifs au taux sans risque domestique ; calcul des tendances des taux de change
+	PnlVect* trendsVect = pnl_vect_create(11);
+	LET(trendsVect, 0) = interestRates[0];
+	LET(trendsVect, 1) = interestRates[0];
+
+	// Mises à jour des corrélations
+	PnlMat* correlationsMat = GenCorrAMinusBBFromCorrAB(correlations, volatilities);
+
+	*opt = new Multimonde2021Quanto(interestRates);
+
+	*mod = new BlackScholesModel(11, interestRates[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
+
+	PnlRng *rng = pnl_rng_create(0);
+	pnl_rng_sseed(rng, time(NULL));
+	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
+}
+
+PnlMat* SingleMonde_BuildFromPast(
+	int nbRows,
+	double past[],
+	double* interestRates,
 	double T,
+	PnlVect* dates) {
+	// Mises des actifs dans leurs monnaies à l'aide du TDC €/$
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 11, past);
+	for (int y = 0; y < nbRows; y++) {
+		for (int x = 1; x <= 5; x++) {
+			MLET(pastMat, y, x) /= MGET(pastMat, y, x + 5);
+		}
+	}
+	// Remplacement du TDC €/$ par la valeur du zéro-coupon
+	for (int y = 0; y < nbRows; y++) {
+		for (int x = 6; x <= 10; x++) {
+			MLET(pastMat, y, x) = 1/MGET(pastMat, y, x) * exp(-interestRates[x - 5] * (T - GET(dates, y)));
+		}
+	}
+	return pastMat;
+}
+PnlVect* SingleMonde_BuildFromCurrentPrices(
+	double current[], // actif en $ ; un € en $
+	double* interestRates,
+	double t,
+	double T
+) {
+	PnlVect* toBeReturned = pnl_vect_create_from_ptr(11, current);
+	LET(toBeReturned, 0) /= GET(toBeReturned, 1);
+	// Remplacement du TDC €/$ par la valeur du zéro-coupon
+	LET(toBeReturned, 1) = 1/GET(toBeReturned, 1) * exp(-interestRates[1] * (T - t));
+
+	return toBeReturned;
+}
+#pragma endregion
+void PriceSingleMonde(
+	int sampleNumber,
+	double past[],
+	int nbRows,
+	double t,
+	double currentPrices[],
+	double volatilities[],
+	double interestRates[],
+	double correlations[],
+	double* price,
 	double* ic)
 {
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
-	opt = new SingleMonde(T);
-	int OptionSize = 1;
-	PnlRng *rng = pnl_rng_create(0);
-	pnl_rng_sseed(rng, time(NULL));
-	PnlMat *corr = pnl_mat_create_from_double(1, 1, 1.0);
-	PnlVect* sigma = pnl_vect_create_from_double(1, volatilities[0]);
-	PnlVect* spot = pnl_vect_create_from_double(1, currentPrices[0]);
-	PnlVect* rate = pnl_vect_create_from_double(1, interestRates[0]);
-	mod = new BlackScholesModel(OptionSize, interestRates[0], corr, sigma, spot, rate);
-	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
-	mc->price(price, ic);
+
+	InitSingleMonde(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+
+	//Gestions paramètres past
+	PnlMat* pastMat = SingleMonde_BuildFromPast(nbRows, past, interestRates, opt->T, opt->customDates);
+	PnlVect* currentVect = SingleMonde_BuildFromCurrentPrices(currentPrices, interestRates, t, opt->T);
+
+	mc->price(pastMat, t, currentVect, price, ic);
 }
 #pragma endregion
 

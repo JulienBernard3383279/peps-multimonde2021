@@ -309,13 +309,16 @@ namespace PricerDll.CustomTests
 
         #region SingleMonde
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
-        public static extern unsafe void PriceSingleMonde(int sampleNumber,
-            //double past[], // format [,]
-            double[] currentPrices,//taille 1, il s'agit juste du spot
-            double[] volatilities,//taille 1 pareil
-            double[] interestRates,//pour l'instant taille 1
+        public static extern unsafe void PriceSingleMonde(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations,
             double* price,
-            double T,
             double* ic);
         #endregion
     }
