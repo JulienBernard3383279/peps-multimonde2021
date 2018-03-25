@@ -143,8 +143,36 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 
 	pnl_vect_free(&temp);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
-
+	bool antithetiques = false;
+	// Variables antithétiques - génération de gaussiens opposés par multiplication matricielle A x B ; B est la demi-matrice haute des gaussiens et 
+	/* A = 
+	# # # # # # # #
+	# 1           #
+	#   1         #
+	#     1       #
+	#-1           #
+	#  -1         #
+	#    -1       #
+	# # # # # # # #
+	*/
+	if (antithetiques) {
+		pnl_mat_rng_normal(gMemSpace_, (nbTimeSteps + 1 - from + 1)/2, size_, rng);
+		PnlMat* temp = pnl_mat_create(nbTimeSteps + 1 - from, size_);
+		for (int i = 0; i < (nbTimeSteps + 1 + from + 1) / 2; i++) {
+			MLET(temp, i, i) = 1;
+		}
+		for (int i = 0; i < (nbTimeSteps + 1 + from ) / 2; i++) {
+			MLET(temp, i, i) = -1;
+		}
+		// Libération de la mémoire
+		PnlMat* temp2 = pnl_mat_mult_mat(temp, gMemSpace_);
+		pnl_mat_clone(gMemSpace_, temp2);
+		pnl_mat_free(&temp);
+		pnl_mat_free(&temp2);
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
+	}
 	double step = T / nbTimeSteps;
 
 	//from est traité différemment car t n'est pas la date de constatation précédente
