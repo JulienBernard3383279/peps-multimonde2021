@@ -15,7 +15,7 @@ namespace PEPS_Beta.Models
             context.Parametres.Add(newParam);
 
             DataStorage ds = new DataStorage();
-            ds.FillDataHtml("full",2000,2000);
+            ds.FillDataHtml("full",2500,2500);
             IndexesAtDate fillIndexDataBase;
             TauxDeChange fillChangeDataBase;
             double[] index = new double[6];
@@ -26,13 +26,20 @@ namespace PEPS_Beta.Models
                 #region keyCheckIndex
                 try
                 {
-                    index[0] = ds.estox[key];
-                } catch (KeyNotFoundException) {
+                    if (ds.estox[key] != 0)
+                        index[0] = ds.estox[key];
+                    else
+                        index[0] = -1;
+                }
+                catch (KeyNotFoundException) {
                     index[0] = -1;
                 }
                 try
                 {
-                    index[1] = ds.ftse[key];
+                    if (ds.ftse[key] != 0)
+                        index[1] = ds.ftse[key];
+                    else
+                        index[1] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -40,7 +47,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    index[2] = ds.sp500[key];
+                    if (ds.sp500[key] != 0)
+                        index[2] = ds.sp500[key];
+                    else
+                        index[2] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -48,7 +58,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    index[3] = ds.n225[key];
+                    if (ds.n225[key] != 0)
+                        index[3] = ds.n225[key];
+                    else
+                        index[3] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -56,7 +69,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    index[4] = ds.hang[key];
+                    if (ds.hang[key] != 0)
+                        index[4] = ds.hang[key];
+                    else
+                        index[4] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -64,7 +80,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    index[5] = ds.asx[key];
+                    if (ds.asx[key] != 0)
+                        index[5] = ds.asx[key];
+                    else
+                        index[5] = -1;
                 } 
                 catch (KeyNotFoundException)
                 {
@@ -83,7 +102,10 @@ namespace PEPS_Beta.Models
                 #region keyCheckChange
                 try
                 {
-                    change[0] = ds.EurUsd[key];
+                    if(ds.EurUsd[key] != 0)
+                        change[0] = ds.EurUsd[key];
+                    else
+                        change[0] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -91,7 +113,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    change[1] = ds.EurAud[key];
+                    if (ds.EurAud[key] != 0)
+                        change[1] = ds.EurAud[key];
+                    else
+                        change[1] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -99,7 +124,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    change[2] = ds.EurGbp[key];
+                    if (ds.EurGbp[key] != 0)
+                        change[2] = ds.EurGbp[key];
+                    else
+                        change[2] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -107,7 +135,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    change[3] = ds.EurJpy[key];
+                    if (ds.EurJpy[key] != 0)
+                        change[3] = ds.EurJpy[key];
+                    else
+                        change[3] = -1;
                 }
                 catch (KeyNotFoundException)
                 {
@@ -115,7 +146,10 @@ namespace PEPS_Beta.Models
                 }
                 try
                 {
-                    change[4] = ds.EurHkd[key];
+                    if (ds.EurHkd[key] != 0)
+                        change[4] = ds.EurHkd[key];
+                    else
+                        change[4] = -1;
                 }
                 catch (KeyNotFoundException)
                 {

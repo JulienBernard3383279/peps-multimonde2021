@@ -17,24 +17,37 @@ namespace PEPS_Beta
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
+            //add Sql.Client.SqlException catch => init
             // make a request, if request return empty => init
-            using (SqlConnection conn = new SqlConnection())
+            // if it fails => init
+            try
             {
-                conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-                conn.Open();
-                SqlCommand command = new SqlCommand("SELECT ASX FROM  IndexesAtDates", conn);
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection())
                 {
-                    if (reader.Read() == false)
+                    conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+                    conn.Open();
+                    SqlCommand command = new SqlCommand("SELECT ASX FROM  IndexesAtDates WHERE Date = @DateParam", conn);
+                    command.Parameters.Add(new SqlParameter("DateParam", DateTime.Parse("29/01/2008")));
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        conn.Close();
-                        IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
+                        if (reader.Read() == false)
+                        {
+                            conn.Close();
+                            IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
 
-                        Database.SetInitializer(init);
+                            Database.SetInitializer(init);
 
-                        init.InitializeDatabase(new BddContext());
+                            init.InitializeDatabase(new BddContext());
+                        }
                     }
                 }
+            } catch (SqlException)
+            {
+                IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
+
+                Database.SetInitializer(init);
+
+                init.InitializeDatabase(new BddContext());
             }
         }
     }
