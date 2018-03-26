@@ -13,8 +13,8 @@ namespace PEPS_Beta.Controllers
 {
     public class HomeController : Controller
     {
-        [DllImport(@"..\..\x64\Debug\PricerDll.dll")] 
-        extern unsafe static void PriceMultimonde2021(
+        [DllImport(@"..\..\x64\Debug\PricerDll.dll")]
+        static extern unsafe void PriceMultimonde2021(
             int sampleNumber,
             double[] spots,
             double[] volatilities,
@@ -24,6 +24,34 @@ namespace PEPS_Beta.Controllers
             double* price,
             double* ic
         );
+
+        [DllImport(@"..\..\x64\Debug\PricerDll.dll")]
+        static extern unsafe void PriceMultimonde2021Quanto(
+            int sampleNumber,
+            double[] past, // format [,]
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations, //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+            double* price,
+            double* ic
+            );
+
+        [DllImport(@"..\..\x64\Debug\PricerDll.dll")]
+        static extern unsafe void DeltasMultimonde2021Quanto(
+            int sampleNumber,
+            double[] past, // format [,]
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations, //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
+            double** deltas);
+
+
 
         // GET: Home
         public unsafe ActionResult Index()
@@ -226,14 +254,15 @@ namespace PEPS_Beta.Controllers
             }
         }
 
-        public ActionResult UpdatePortefeuille(CouvertureIdealeViewModel couvertureIdealeViewModel)
+        public ActionResult UpdatePortefeuille()
         {
             using (DAL dal = new DAL())
             {
-                DateTime currD = couvertureIdealeViewModel.CurrDate;
+                DateTime currD = dal.GetParams().CurrDate;
                 double portValue = 0.0;
                 double optimumValue = 0.0;
                 MultiMondeParam param = dal.GetParams();
+                PortefeuilleIdeal IdealPort = dal.getPortOpti();
 
                 double currTDC;
                 double currP;
@@ -257,20 +286,30 @@ namespace PEPS_Beta.Controllers
 
                     portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Nom) * currP;
                     portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Money) * currZC;
-                    optimumValue += couvertureIdealeViewModel.IdealPort.GetDelta(ind.Nom) * currP;
-                    optimumValue += couvertureIdealeViewModel.IdealPort.GetDelta(ind.Money) * currZC;
+                    optimumValue += IdealPort.GetDelta(ind.Nom) * currP;
+                    optimumValue += IdealPort.GetDelta(ind.Money) * currZC;
 
-                    dal.SetDelta(ind.Nom, couvertureIdealeViewModel.IdealPort.GetDelta(ind.Nom));
-                    dal.SetDelta(ind.Money, couvertureIdealeViewModel.IdealPort.GetDelta(ind.Money));
+                    dal.SetDelta(ind.Nom, IdealPort.GetDelta(ind.Nom));
+                    dal.SetDelta(ind.Money, IdealPort.GetDelta(ind.Money));
                 }
 
                 double restant = portValue - optimumValue;
                 restant *= Math.Exp(tauxEuro * Tmoinst);
-                restant += couvertureIdealeViewModel.IdealPort.GetDelta("eur");
+                restant += IdealPort.GetDelta("eur");
                 dal.SetDelta("eur", restant);
 
                 return PartialView("Couverture", dal.getPortefeuilleCouverture());
 
+            }
+        }
+
+        public ActionResult InitPortefeuille(CouvertureIdealeViewModel couvertureIdealeViewModel)
+        {
+            using (DAL dal = new DAL())
+            {
+                dal.SetPort(dal.getPortOpti());
+
+                return PartialView("Couverture", dal.getPortefeuilleCouverture());
             }
         }
 
@@ -279,6 +318,20 @@ namespace PEPS_Beta.Controllers
             using (DAL dal = new DAL())
             {
                 return PartialView("Couverture", dal.getPortefeuilleCouverture());
+            }
+        }
+
+        public ActionResult CalculerDeltas()
+        {
+            using (DAL dal = new DAL())
+            {
+                CouvertureIdealeViewModel vm = new CouvertureIdealeViewModel();
+                vm.IdealPort = new PortefeuilleIdeal();
+                vm.IdealPort.DeltaAsx = 1.0;
+                vm.CurrDate = new DateTime(2015, 10, 01);
+                dal.saveOpti(vm.IdealPort);
+                return PartialView("CouvertureIdeale", vm);
+                //return Content("Deltas en cours d'implémentation");
             }
         }
     }

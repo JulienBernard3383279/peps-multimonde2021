@@ -9,6 +9,12 @@ namespace PEPS_Beta.ViewModels
     public class CouvertureIdealeViewModel
     {
         public DateTime CurrDate { get; set; }
-        public PortefeuilleCouverture IdealPort { get; set; }
+        public PortefeuilleIdeal IdealPort { get; set; }
+
+        public CouvertureIdealeViewModel()
+        {
+            CurrDate = new DateTime();
+            IdealPort = new PortefeuilleIdeal();
+        }
     }
 }

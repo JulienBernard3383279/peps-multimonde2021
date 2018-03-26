@@ -84,6 +84,25 @@ namespace PEPS_Beta.Models
             return bdd.GetPort.ToList()[0];
         }
 
+        public PortefeuilleIdeal getPortOpti()
+        {
+            return bdd.GetOptim.FirstOrDefault();
+        }
+
+        public void saveOpti(PortefeuilleIdeal port)
+        {
+            PortefeuilleIdeal inBdd = bdd.GetOptim.FirstOrDefault();
+            if (inBdd == null)
+            {
+                bdd.GetOptim.Add(port);
+            }
+            else
+            {
+                inBdd.Copy(port);
+            }
+            bdd.SaveChanges();
+        }
+
         public void SetDelta(String toSet, double val)
         {
             bdd.GetPort.FirstOrDefault().SetDelta(toSet, val);
@@ -133,6 +152,12 @@ namespace PEPS_Beta.Models
                 }
             }
             return -1;
+        }
+
+        internal void SetPort(PortefeuilleIdeal idealPort)
+        {
+            bdd.GetPort.FirstOrDefault().Copy(idealPort);
+            bdd.SaveChanges();
         }
     }
 }

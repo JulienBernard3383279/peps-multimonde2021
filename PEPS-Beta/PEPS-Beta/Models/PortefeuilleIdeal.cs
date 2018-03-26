@@ -6,7 +6,7 @@ using System.Web;
 
 namespace PEPS_Beta.Models
 {
-    public class PortefeuilleCouverture
+    public class PortefeuilleIdeal
     {
         public int Id { get; set; }
 

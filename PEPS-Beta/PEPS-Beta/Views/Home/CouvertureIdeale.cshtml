@@ -1,16 +1,24 @@
 ﻿@model PEPS_Beta.ViewModels.CouvertureIdealeViewModel
 
+<h1> Deltas Optimaux : </h1>
 <div id="optimCouverture">
-    @Html.Partial("Couverture", Model.IdealPort)
+    @Html.Partial("CouvertureIde", Model.IdealPort)
 </div>
 
 
 
 @using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
 {
-    @Html.HiddenFor(couvertureIdealeViewModel => Model)
     <div>
         @*<label>&nbsp;</label>*@
         <input type="submit" value="Mettre à jour" class="submit" />
+    </div>
+}
+
+@using (Ajax.BeginForm("InitPortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
+{
+    <div>
+        @*<label>&nbsp;</label>*@
+        <input type="submit" value="Init" class="submit" />
     </div>
 }

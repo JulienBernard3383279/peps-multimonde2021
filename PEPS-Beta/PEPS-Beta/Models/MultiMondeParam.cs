@@ -14,11 +14,11 @@ namespace PEPS_Beta.Models
 
         private int nbIndices;
 
-        private readonly DateTime origin = new DateTime(2015, 10, 01);
+        private DateTime origin = new DateTime(2015, 10, 01);
 
         private DateTime[] constatations = new DateTime[6] { new DateTime(2016, 10, 07), new DateTime(2017, 10, 13), new DateTime(2018, 10, 19), new DateTime(2019, 10, 25), new DateTime(2020, 10, 30), new DateTime(2021, 11, 05) };
 
-        private DateTime currDate;
+        private DateTime currDate = new DateTime(2015, 10, 01);
 
         private int nbSamples;
 
@@ -28,9 +28,8 @@ namespace PEPS_Beta.Models
         #region properties
 
 
-        protected DateTime[] Constatations { get => constatations; }
+        public DateTime[] Constatations { get => constatations; }
 
-        protected DateTime CurrDate { get => currDate; set => currDate = value; }
 
         public int NbSamples { get => nbSamples; set => nbSamples = value; }
 
@@ -39,11 +38,12 @@ namespace PEPS_Beta.Models
         public virtual List<Indice> Indices { get => indices; set => indices = value; }
         #endregion
 
-        private DateTime endDate = new DateTime(2021,11,05);
+        private DateTime endDate = new DateTime(2021, 11, 05);
 
-        public DateTime EndDate { get => endDate; }
 
-        public DateTime Origin => origin;
+        public DateTime CurrDate { get => currDate; set => currDate = value; }
+        public DateTime EndDate { get => endDate; set => endDate = value; }
+        public DateTime Origin { get => origin; set => origin = value; }
 
         public MultiMondeParam()
         {

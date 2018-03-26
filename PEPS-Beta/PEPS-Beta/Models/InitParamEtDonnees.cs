@@ -154,6 +154,9 @@ namespace PEPS_Beta.Models
             PortefeuilleCouverture port = new PortefeuilleCouverture();
             context.GetPort.Add(port);
 
+            PortefeuilleIdeal port2 = new PortefeuilleIdeal();
+            context.GetOptim.Add(port2);
+
             base.Seed(context);
             context.SaveChanges();
         }

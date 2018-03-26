@@ -503,6 +503,7 @@
     </Compile>
     <Compile Include="Models\BddContext.cs" />
     <Compile Include="Models\PortefeuilleCouverture.cs" />
+    <Compile Include="Models\PortefeuilleIdeal.cs" />
     <Compile Include="Models\DAL.cs" />
     <Compile Include="Models\IDAL.cs" />
     <Compile Include="Models\IndexesAtDate.cs" />
@@ -818,6 +819,7 @@
     <Content Include="Views\Home\Couverture.cshtml" />
     <Content Include="Views\Home\Portefeuilles.cshtml" />
     <Content Include="Views\Home\CouvertureIdeale.cshtml" />
+    <Content Include="Views\Home\CouvertureIde.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
