@@ -41,7 +41,8 @@ namespace PEPS_Beta
                         }
                     }
                 }
-            } catch (SqlException)
+            }
+            catch (SqlException)
             {
                 IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
 

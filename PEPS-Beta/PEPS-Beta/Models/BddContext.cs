@@ -13,5 +13,11 @@ namespace PEPS_Beta.Models
         public DbSet<MultiMondeParam> Parametres { get; set; }
         public DbSet<TauxDeChange> GetTaux { get; set; }
         public DbSet<PortefeuilleCouverture> GetPort { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            Database.SetInitializer<BddContext>(null);
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }
