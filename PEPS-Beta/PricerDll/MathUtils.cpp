@@ -22,6 +22,14 @@ static double VolAminusB(double corrAB, double volA, double volB) {
 
 #pragma region Correlation utils
 /*
+N'accepte que les matrices 2x2 pour l'instant
+*/
+static void ReverseCorrMatrix(PnlMat* mat) {
+	MLET(mat, 0, 1) *= -1;
+	MLET(mat, 1, 0) *= -1;
+}
+
+/*
 * Computes the volatility of A+B with C assuming A, B and C follow normal laws
 */
 static double CorrAplusBwithC(double corrAB, double corrAC, double corrBC, double volA, double volB) {

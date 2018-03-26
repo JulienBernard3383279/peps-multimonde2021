@@ -549,7 +549,6 @@ void DeltasSingleCurrencyMultimonde2021AnyTime(
 	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
 }
 #pragma endregion
-
 #pragma region Convert deltas
 void ConvertDeltas(
 	double deltas[],
@@ -733,7 +732,6 @@ void PriceQuanto(
 	double* price,
 	double* ic)
 {
-
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
@@ -742,29 +740,26 @@ void PriceQuanto(
 
 	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
-	LET(volatilitiesVect, 0) = sqrt(volatilities[1] * volatilities[1] + volatilities[0] * volatilities[0] - 2 * correlations[1] * volatilities[0] * volatilities[1]);
-	LET(volatilitiesVect, 1) *= -1;
+	LET(volatilitiesVect, 0) = VolAminusB(correlations[1], volatilities[0], volatilities[1]);
 
-	// Calcul de la cor de S-X et X
-	PnlMat* correlationsMat = GenCorrAPlusBBFromCorrAB(correlations, volatilities);
+	// Calcul de la cor de S-X et -X
+	PnlMat* correlationsMat = GenCorrAMinusBBFromCorrAB(correlations, volatilities[0], volatilities[1]);
+	ReverseCorrMatrix(correlationsMat);//car on nous passe celle de S$ avec €/$ et qu'on veut celle de S€ avec $/€
 
-
-	// On actualise le prix en euros
-	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
-
-	PnlMat* past = pnl_mat_create_from_zero(1, 2);
-	pnl_mat_set_row(past, spotsVect, 0);
-
-
-	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
-	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity-date));
-
-	// On fixe les mu avec les taux sans risque
+									   // On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];
 	LET(trendsVect, 1) = interestRate[0];
+	
+	// On actualise le prix en euros
+	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+	
+	PnlMat* past = pnl_mat_create_from_zero(1, 2);
+	pnl_mat_set_row(past, spotsVect, 0);
 
+	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
+	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity - date));
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
 
@@ -798,12 +793,13 @@ void SimulDeltasQuanto(
 
 	opt = new QuantoOption(maturity, strike);
 
-	// Calcul de la vol de S+X (S = S$ ; X = $/€ ; S€ = SX & ZC ~ X (terme d'actualisation ne change pas la vol ou la corr) )
+	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
-	LET(volatilitiesVect, 0) = VolAplusB(correlations[1], volatilities[0], volatilities[1]);
+	LET(volatilitiesVect, 0) = VolAminusB(correlations[1], volatilities[0], volatilities[1]);
 
-	// Calcul de la cor de S+X et X
-	PnlMat* correlationsMat = GenCorrAPlusBBFromCorrAB(correlations, volatilities);
+	// Calcul de la cor de S-X et -X
+	PnlMat* correlationsMat = GenCorrAMinusBBFromCorrAB(correlations, volatilities[0], volatilities[1]);
+	ReverseCorrMatrix(correlationsMat);//car on nous passe celle de S$ avec €/$ et qu'on veut celle de S€ avec $/€
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
