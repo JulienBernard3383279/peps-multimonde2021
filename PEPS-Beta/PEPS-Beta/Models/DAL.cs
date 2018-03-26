@@ -79,6 +79,11 @@ namespace PEPS_Beta.Models
             }
         }
 
+        public PortefeuilleCouverture getPortefeuilleCouverture()
+        {
+            return bdd.GetPort.ToList()[0];
+        }
+
         // Possible indexName ASX, ESTOX, SP500, N225, FTSE, HANG
         public double getSingleData(DateTime date, String indexName)
         {
