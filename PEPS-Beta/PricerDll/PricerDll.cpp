@@ -1250,12 +1250,12 @@ void TrackingErrorMultimonde2021Quanto(
 #pragma endregion
 
 #pragma region SingleMonde
-#pragma region Inits
+#pragma region Deprecated
 /*
 * Initialise le MonteCarlo, l'Option, le BlackScholesModel, en calculant
 * au préalable les nouvelles volatilités, tendances & corrélations.
 */
-void InitSingleMonde(
+void InitSingleMonde_Deprecated(
 	MonteCarlo** mc,
 	Option** opt,
 	BlackScholesModel** mod,
@@ -1291,7 +1291,7 @@ void InitSingleMonde(
 	*mc = new MonteCarlo(*mod, *opt, rng, sampleNumber);
 }
 
-PnlMat* SingleMonde_BuildFromPast(
+PnlMat* SingleMonde_BuildFromPast_Deprecated(
 	int nbRows,
 	double past[],
 	double* interestRates,
@@ -1312,7 +1312,7 @@ PnlMat* SingleMonde_BuildFromPast(
 	}
 	return pastMat;
 }
-PnlVect* SingleMonde_BuildFromCurrentPrices(
+PnlVect* SingleMonde_BuildFromCurrentPrices_Deprecated(
 	double current[], // actif en $ ; un € en $
 	double* interestRates,
 	double t,
@@ -1325,8 +1325,8 @@ PnlVect* SingleMonde_BuildFromCurrentPrices(
 
 	return toBeReturned;
 }
-#pragma endregion
-void PriceSingleMonde(
+
+void PriceSingleMonde_Deprecated(
 	int sampleNumber,
 	double past[],
 	int nbRows,
@@ -1342,14 +1342,138 @@ void PriceSingleMonde(
 	Option *opt;
 	BlackScholesModel *mod;
 
-	InitSingleMonde(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
+	InitSingleMonde_Deprecated(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
 
 	//Gestions paramètres past
-	PnlMat* pastMat = SingleMonde_BuildFromPast(nbRows, past, interestRates, opt->T, opt->customDates);
-	PnlVect* currentVect = SingleMonde_BuildFromCurrentPrices(currentPrices, interestRates, t, opt->T);
+	PnlMat* pastMat = SingleMonde_BuildFromPast_Deprecated(nbRows, past, interestRates, opt->T, opt->customDates);
+	PnlVect* currentVect = SingleMonde_BuildFromCurrentPrices_Deprecated(currentPrices, interestRates, t, opt->T);
 
 	mc->price(pastMat, t, currentVect, price, ic);
 }
+#pragma endregion
+#pragma region Price
+void PriceSingleMonde(
+	double maturity,
+	double strike,
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate[],
+	double correlations[],
+	double date,
+	double currents[],
+	double* price,
+	double* ic)
+{
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	opt = new SingleMonde();
+
+	// Calcul de la vol de S-X
+	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
+	LET(volatilitiesVect, 0) = VolAminusB(correlations[1], volatilities[0], volatilities[1]);
+
+	// Calcul de la cor de S-X et -X
+	PnlMat* correlationsMat = GenCorrAMinusBBFromCorrAB(correlations, volatilities[0], volatilities[1]);
+	ReverseCorrMatrix(correlationsMat);//car on nous passe celle de S$ avec €/$ et qu'on veut celle de S€ avec $/€
+
+									   // On fixe les mu avec les taux sans risque
+	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
+	LET(trendsVect, 0) = interestRate[0];
+	LET(trendsVect, 1) = interestRate[0];
+
+	// On actualise le prix en euros
+	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+
+	PnlMat* past = pnl_mat_create_from_zero(1, 2);
+	pnl_mat_set_row(past, spotsVect, 0);
+
+	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
+	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity - date));
+
+	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
+
+	PnlRng *rng = pnl_rng_create(0);
+	pnl_rng_sseed(rng, time(NULL));
+
+	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
+
+	mc->price(past, date, currVect, price, ic);
+}
+
+#pragma endregion
+#pragma region Deltas
+void DeltasSingleMonde(
+	double maturity,
+	double strike,
+	int sampleNumber,
+	double spots[],
+	double volatilities[],
+	double interestRate[],
+	double correlations[],
+	double date,
+	double currents[],
+	double** deltasAssets,
+	double** deltasFXRates)
+{
+
+	MonteCarlo *mc;
+	Option *opt;
+	BlackScholesModel *mod;
+
+	opt = new SingleMonde();
+	//Vieux copié-collé du quanto. Voir ci-dessus pour commentaires.
+	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
+	LET(volatilitiesVect, 0) = VolAminusB(correlations[1], volatilities[0], volatilities[1]);
+	PnlMat* correlationsMat = GenCorrAMinusBBFromCorrAB(correlations, volatilities[0], volatilities[1]);
+	ReverseCorrMatrix(correlationsMat);
+
+	// On actualise le prix en euros
+	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+	PnlMat* past = pnl_mat_create_from_zero(1, 2);
+	pnl_mat_set_row(past, spotsVect, 0);
+	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
+	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity - date));
+
+	// On fixe les mu avec les taux sans risque
+	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
+	LET(trendsVect, 0) = interestRate[0];
+	LET(trendsVect, 1) = interestRate[0];
+
+	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
+
+	PnlRng *rng = pnl_rng_create(0);
+	pnl_rng_sseed(rng, time(NULL));
+
+	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
+
+	double price;
+	double ic;
+	mc->price(past, date, currVect, &price, &ic);
+
+	PnlVect* deltasQuanto = pnl_vect_create_from_zero(2);
+	mc->deltas(past, date, currVect, deltasQuanto);
+
+	double* myDeltasAssets = new double[1];
+	double* myDeltasFXRates = new double[1];
+
+	myDeltasAssets[0] = GET(deltasQuanto, 0);
+	myDeltasFXRates[0] = GET(deltasQuanto, 1);
+
+	std::cout << "Prix simule : " << price << std::endl;
+	std::cout << "ic : " << ic << std::endl;
+
+	*deltasAssets = static_cast<double*>(malloc(1 * sizeof(double)));
+	memcpy(*deltasAssets, &(myDeltasAssets[0]), 1 * sizeof(double));
+
+	*deltasFXRates = static_cast<double*>(malloc(1 * sizeof(double)));
+	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 1 * sizeof(double));
+}
+#pragma endregion
 #pragma endregion
 
 #pragma region Utils

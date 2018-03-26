@@ -7,7 +7,7 @@ class SingleMonde :
 	
 
 public:
-	SingleMonde(double T);
+	SingleMonde();
 	~SingleMonde();
 
 	double payoff(const PnlMat* path);
