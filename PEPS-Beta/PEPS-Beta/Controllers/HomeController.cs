@@ -232,12 +232,53 @@ namespace PEPS_Beta.Controllers
             {
                 DateTime currD = couvertureIdealeViewModel.CurrDate;
                 double portValue = 0.0;
-                //for (Indice ind : dal.GetIndices())
-                //{
-                //}
+                double optimumValue = 0.0;
+                MultiMondeParam param = dal.GetParams();
 
-                return PartialView(dal.getPortefeuilleCouverture());
+                double currTDC;
+                double currP;
+                double currZC;
+                double Tmoinst = (param.EndDate - currD).TotalDays / 365.0;
+                List<Indice> indList = dal.GetIndices();
+                double tauxEuro = 0.0;
+                foreach (Indice ind in indList)
+                {
+                    if (ind.Money == "eur")
+                    {
+                        tauxEuro = ind.InterestRateThisArea;
+                        currTDC = 1.0;
+                    }
+                    else
+                    {
+                        currTDC = dal.getSingleData(currD, ind.Money);
+                    }
+                    currP = dal.getSingleData(currD, ind.Nom.ToUpper()) / currTDC;
+                    currZC = Math.Exp(-ind.InterestRateThisArea * Tmoinst) * dal.getSingleData(currD, ind.Money.ToUpper()) / currTDC;
 
+                    portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Nom) * currP;
+                    portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Money) * currZC;
+                    optimumValue += couvertureIdealeViewModel.IdealPort.GetDelta(ind.Nom) * currP;
+                    optimumValue += couvertureIdealeViewModel.IdealPort.GetDelta(ind.Money) * currZC;
+
+                    dal.SetDelta(ind.Nom, couvertureIdealeViewModel.IdealPort.GetDelta(ind.Nom));
+                    dal.SetDelta(ind.Money, couvertureIdealeViewModel.IdealPort.GetDelta(ind.Money));
+                }
+
+                double restant = portValue - optimumValue;
+                restant *= Math.Exp(tauxEuro * Tmoinst);
+                restant += couvertureIdealeViewModel.IdealPort.GetDelta("eur");
+                dal.SetDelta("eur", restant);
+
+                return PartialView("Couverture", dal.getPortefeuilleCouverture());
+
+            }
+        }
+
+        public ActionResult VoirCurrPort()
+        {
+            using (DAL dal = new DAL())
+            {
+                return PartialView("Couverture", dal.getPortefeuilleCouverture());
             }
         }
     }

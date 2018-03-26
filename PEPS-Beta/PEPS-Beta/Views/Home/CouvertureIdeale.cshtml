@@ -1,2 +1,16 @@
-﻿@model PEPS_Beta.Models.PortefeuilleCouverture
+﻿@model PEPS_Beta.ViewModels.CouvertureIdealeViewModel
 
+<div id="optimCouverture">
+    @Html.Partial("Couverture", Model.IdealPort)
+</div>
+
+
+
+@using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
+{
+    @Html.HiddenFor(couvertureIdealeViewModel => Model)
+    <div>
+        @*<label>&nbsp;</label>*@
+        <input type="submit" value="Mettre à jour" class="submit" />
+    </div>
+}

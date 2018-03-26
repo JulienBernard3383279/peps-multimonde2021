@@ -151,6 +151,9 @@ namespace PEPS_Beta.Models
             context.Indices.Add(asx);
             newParam.Indices.Add(asx);
 
+            PortefeuilleCouverture port = new PortefeuilleCouverture();
+            context.GetPort.Add(port);
+
             base.Seed(context);
             context.SaveChanges();
         }

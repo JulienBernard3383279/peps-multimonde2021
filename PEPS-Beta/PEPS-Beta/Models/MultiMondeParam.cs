@@ -27,7 +27,6 @@ namespace PEPS_Beta.Models
 
         #region properties
 
-        protected DateTime Origin => origin;
 
         protected DateTime[] Constatations { get => constatations; }
 
@@ -39,6 +38,12 @@ namespace PEPS_Beta.Models
 
         public virtual List<Indice> Indices { get => indices; set => indices = value; }
         #endregion
+
+        private DateTime endDate = new DateTime(2021,11,05);
+
+        public DateTime EndDate { get => endDate; }
+
+        public DateTime Origin => origin;
 
         public MultiMondeParam()
         {

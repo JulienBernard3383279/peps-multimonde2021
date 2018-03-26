@@ -84,6 +84,12 @@ namespace PEPS_Beta.Models
             return bdd.GetPort.ToList()[0];
         }
 
+        public void SetDelta(String toSet, double val)
+        {
+            bdd.GetPort.FirstOrDefault().SetDelta(toSet, val);
+            bdd.SaveChanges();
+        }
+
         // Possible indexName ASX, ESTOX, SP500, N225, FTSE, HANG
         public double getSingleData(DateTime date, String indexName)
         {

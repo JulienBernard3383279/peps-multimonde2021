@@ -16,11 +16,6 @@ namespace PEPS_Beta
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
-
-            Database.SetInitializer(init);
-
-            init.InitializeDatabase(new BddContext());
 
             // make a request, if request return empty => init
             using (SqlConnection conn = new SqlConnection())
@@ -33,7 +28,7 @@ namespace PEPS_Beta
                     if (reader.Read() == false)
                     {
                         conn.Close();
-                        //IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
+                        IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
 
                         Database.SetInitializer(init);
 

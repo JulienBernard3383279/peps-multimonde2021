@@ -36,9 +36,9 @@ namespace PEPS_Beta.Models
         public double DeltaZCGbp { get => deltaZCGbp; set => deltaZCGbp = value; }
         public double DeltaZCAud { get => deltaZCAud; set => deltaZCAud = value; }
 
-        public double getDelta(String nom)
+        public double GetDelta(String nom)
         {
-            switch(nom)
+            switch (nom)
             {
                 case "estox":
                     return DeltaEstox;
@@ -63,6 +63,51 @@ namespace PEPS_Beta.Models
                 case "gbp":
                     return DeltaZCGbp;
                 case "aud":
+                    return DeltaZCAud;
+                default:
+                    return 0.0;
+            }
+        }
+
+        public double SetDelta(String nom, double val)
+        {
+            switch (nom)
+            {
+                case "estox":
+                    DeltaEstox = val;
+                    return DeltaEstox;
+                case "sp500":
+                    DeltaSp500 = val;
+                    return DeltaSp500;
+                case "n225":
+                    DeltaN225 = val;
+                    return DeltaN225;
+                case "hang":
+                    DeltaHang = val;
+                    return DeltaHang;
+                case "ftse":
+                    DeltaFtse = val;
+                    return DeltaFtse;
+                case "asx":
+                    DeltaAsx = val;
+                    return DeltaAsx;
+                case "eur":
+                    DeltaZCEur = val;
+                    return DeltaZCEur;
+                case "usd":
+                    DeltaZCUsd = val;
+                    return DeltaZCUsd;
+                case "jpy":
+                    DeltaZCJpy = val;
+                    return DeltaZCJpy;
+                case "hkd":
+                    DeltaZCHkd = val;
+                    return DeltaZCHkd;
+                case "gbp":
+                    DeltaZCGbp = val;
+                    return DeltaZCGbp;
+                case "aud":
+                    DeltaZCAud = val;
                     return DeltaZCAud;
                 default:
                     return 0.0;
