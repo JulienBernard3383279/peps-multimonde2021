@@ -84,8 +84,14 @@ void BlackScholesModel::postInitAsset(PnlMat *path, double T, int nbTimeSteps, P
 	// Initialisation de path
 	pnl_mat_set_row(path, spot_, 0);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
-
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
+		if (antithetiques) noRegen = true;
+	}
 	double step = T / nbTimeSteps;
 
 	for (int i = 1; i <= nbTimeSteps; ++i) {
@@ -105,8 +111,14 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, PnlVect* dates, i
 	// Initialisation de path
 	pnl_mat_set_row(path, spot_, 0);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
-
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
+		if (antithetiques) noRegen = true;
+	}
 	double step;
 
 	for (int i = 1; i <= nbTimeSteps; ++i) {
@@ -143,35 +155,13 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 
 	pnl_vect_free(&temp);
 
-	bool antithetiques = false;
-	// Variables antithétiques - génération de gaussiens opposés par multiplication matricielle A x B ; B est la demi-matrice haute des gaussiens et 
-	/* A = 
-	# # # # # # # #
-	# 1           #
-	#   1         #
-	#     1       #
-	#-1           #
-	#  -1         #
-	#    -1       #
-	# # # # # # # #
-	*/
-	if (antithetiques) {
-		pnl_mat_rng_normal(gMemSpace_, (nbTimeSteps + 1 - from + 1)/2, size_, rng);
-		PnlMat* temp = pnl_mat_create(nbTimeSteps + 1 - from, size_);
-		for (int i = 0; i < (nbTimeSteps + 1 + from + 1) / 2; i++) {
-			MLET(temp, i, i) = 1;
-		}
-		for (int i = 0; i < (nbTimeSteps + 1 + from ) / 2; i++) {
-			MLET(temp, i, i) = -1;
-		}
-		// Libération de la mémoire
-		PnlMat* temp2 = pnl_mat_mult_mat(temp, gMemSpace_);
-		pnl_mat_clone(gMemSpace_, temp2);
-		pnl_mat_free(&temp);
-		pnl_mat_free(&temp2);
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
 	}
 	else {
 		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
+		if (antithetiques) noRegen = true;
 	}
 	double step = T / nbTimeSteps;
 
@@ -226,7 +216,14 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 
 	pnl_vect_free(&temp);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
+		if (antithetiques) noRegen = true;
+	}
 
 	//for (int i = 0; i < 500; i++) { std::cout << from << std::endl; }
 
