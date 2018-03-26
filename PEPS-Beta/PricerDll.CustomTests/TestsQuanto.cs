@@ -17,7 +17,6 @@ namespace PricerDll.CustomTests
             double[] correlations,
             double date)
         {
-
             double d1 = ((Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
 
             double d2 = d1 - volatilities[0] * Math.Sqrt(maturity - date);
@@ -48,7 +47,8 @@ namespace PricerDll.CustomTests
             double price;
             double ic;
 
-            API.PriceQuanto(
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+             API.PriceQuanto(
                 maturity, //maturity in years
                 strike, //strike when applicable
                 nbSamples, //nbSamples
@@ -60,6 +60,8 @@ namespace PricerDll.CustomTests
                 spots,
                 &price,
                 &ic);
+            watch.Stop();
+            var executionTime = watch.ElapsedMilliseconds;
 
             double date = 0.0;
             //price et ics contiennent prix et intervalle de couverture selon le pricer
@@ -74,6 +76,7 @@ namespace PricerDll.CustomTests
 
             Console.WriteLine("");
             Console.WriteLine("");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix calculé par Monte-Carlo : " + price + " , Intervalle de confiance à 99% : [" + (price - 1.5 * ic / 2) + "," + (price + 1.5 * ic / 2) + "]");
             Console.WriteLine("Prix calculé par formule fermée : " + realPrice);
             if ((realPrice > price + 1.5 * ic / 2) || (realPrice < price - 1.5 * ic / 2))
@@ -91,7 +94,7 @@ namespace PricerDll.CustomTests
         {
             double maturity = 3.0;
             double strike = 100.0;
-            int nbSamples = 1000000;
+            int nbSamples = 10_000_000;
 
             Console.WriteLine("Test sur équivalent de call vanille simple");
             double currFXRate = 1.0;

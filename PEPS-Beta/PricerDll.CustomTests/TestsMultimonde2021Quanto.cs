@@ -49,6 +49,7 @@ namespace PricerDll.CustomTests
             nbRows = 1;
             t = 0;
 
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -60,9 +61,12 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            var executionTime = watch.ElapsedMilliseconds;
 
             Console.WriteLine("Test du Multimonde 2021 quanto sur monde gelé :");
             Console.WriteLine("Devrait renvoyer avec certitude 100");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -70,6 +74,7 @@ namespace PricerDll.CustomTests
             past = currentPrices = new double[11] {
                 80.0, 90.0, 100.0, 110.0, 120.0, 130.0,
                 1.0, 1.0, 1.0, 1.0, 1.0 };
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -81,8 +86,12 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
+
             Console.WriteLine("Spots désormais non égaux à 100 : ");
             Console.WriteLine("Devrait renvoyer avec certitude 100");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -90,6 +99,7 @@ namespace PricerDll.CustomTests
             past = currentPrices = new double[11] {
                 80.0, 90.0, 100.0, 110.0, 120.0, 130.0,
                 1.5, 1.3, 1.1, 0.9, 0.7 };
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -101,8 +111,11 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Taux de change désormais non égaux à 1 : ");
             Console.WriteLine("Devrait renvoyer avec certitude 100");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -111,6 +124,7 @@ namespace PricerDll.CustomTests
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0 };
             interestRates = new double[6] { 0.01, 0.01, 0.01, 0.01, 0.01, 0.01 };
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -122,8 +136,11 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Retour au monde gelé basique ; taux d'intérêts tous égaux à 0.01 : ");
             Console.WriteLine("Devrait renvoyer avec certitude 114,60599991");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -160,6 +177,7 @@ namespace PricerDll.CustomTests
                 99.0, 100000.0, 100000.0, 100000.0, 100000.0, 100000.0, 1.0, 1.0, 1.0, 1.0, 1.0
             };
 
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -171,9 +189,12 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
 
             Console.WriteLine("Test du Multimonde 2021 quanto avec histoire fournie :");
             Console.WriteLine("Devrait renvoyer ~174 avec quasi-certitude.");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -191,6 +212,7 @@ namespace PricerDll.CustomTests
                 50, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 1.0, 1.0
             };
 
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -202,9 +224,12 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
 
             Console.WriteLine("Test du Multimonde 2021 quanto avec histoire fournie :");
             Console.WriteLine("Devrait renvoyer ~115 avec quasi-certitude.");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -222,6 +247,7 @@ namespace PricerDll.CustomTests
                 -1/12, 0, 0, 0, 0, Math.E*10000, 1.0, 1.0, 1.0, 1.0, 1.0
             }; // la fatigue
 
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -233,9 +259,12 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
 
             Console.WriteLine("Test du Multimonde 2021 quanto avec histoire fournie :");
             Console.WriteLine("Devrait renvoyer ~190 avec quasi-certitude.");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -265,6 +294,7 @@ namespace PricerDll.CustomTests
             nbRows = 1;
             t = 0;
 
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -276,8 +306,11 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,02.");
             Console.WriteLine("Devrait renvoyer légèrement plus que 100 (l'exponentielle est convexe)");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -287,6 +320,7 @@ namespace PricerDll.CustomTests
                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
                 0, 0, 0, 0, 0
             };
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -298,8 +332,11 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,04.");
             Console.WriteLine("Devrait renvoyer plus que précedemment.");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
@@ -308,6 +345,7 @@ namespace PricerDll.CustomTests
                 0.1, 0.1, 0.1, 0.1, 0.1, 0.1,
                 0, 0, 0, 0, 0
             };
+            watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
@@ -319,8 +357,11 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,1.");
             Console.WriteLine("Devrait renvoyer plus que 100");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             #endregion

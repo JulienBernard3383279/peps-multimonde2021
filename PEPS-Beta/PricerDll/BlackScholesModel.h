@@ -12,7 +12,7 @@ class BlackScholesModel
 	PnlVect tempMemSpace1_;
 	PnlVect tempMemSpace2_;
 	bool noRegen = false; //utilisé pour l'accélération par variable antithétiques
-	bool antithetiques = false;
+	bool antithetiques = true;
 public:
 	int size_; /// nombre d'actifs du modèle
 	double r_; /// taux d'intérêt
