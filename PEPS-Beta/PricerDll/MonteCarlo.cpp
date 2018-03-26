@@ -30,6 +30,7 @@ void MonteCarlo::price(double* prix, double* ic) {
 
 	PnlMat *path = pnl_mat_create(opt_->nbTimeSteps + 1, mod_->size_);
 
+
 	mod_->initAsset(opt_->nbTimeSteps);
 	for (int i = 0; i < nbSamples_; ++i) {
 		if (!opt_->custom) { mod_->postInitAsset(path, opt_->T, opt_->nbTimeSteps, rng_); }
@@ -47,6 +48,7 @@ void MonteCarlo::price(double* prix, double* ic) {
 		* (mySquaredSum / nbSamples_ - pow(mySum / nbSamples_, 2));
 
 	*ic = 2 * 1.96 * sqrt(var) / sqrt(nbSamples_);
+
 
 	// Free memory
 	pnl_mat_free(&path);
@@ -98,9 +100,11 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 
 	double tempPayoff = 0;
 	//for (int i = 0; i < 500; i++) { std::cout << "mc-> price 2" << std::endl; }
+	//std::cout << "Price pré init asset"; std::cin.ignore();
 
 	for (int i = 0; i < nbSamples_; ++i) {
 
+		//std::cout << "Price pré asset"; std::cin.ignore();
 		if (!opt_->custom) {
 			mod_->postInitAsset(path,
 				past, t, current,
@@ -113,7 +117,11 @@ void MonteCarlo::price(PnlMat* past, double t, PnlVect* current, double* prix, d
 				past, t, current,
 				opt_->customDates, opt_->nbTimeSteps, rng_);
 		}
+		//std::cout << "Price pré payoff"; std::cin.ignore();
+		//pnl_mat_print(path);
+		//std::cin.ignore();
 		tempPayoff = opt_->payoff(path);
+		//std::cout << "Price post payoff"; std::cin.ignore();
 		mySum += tempPayoff;
 		mySquaredSum += tempPayoff * tempPayoff;
 

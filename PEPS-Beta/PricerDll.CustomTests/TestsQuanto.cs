@@ -9,7 +9,7 @@ namespace PricerDll.CustomTests
 {
     public static unsafe class TestsQuanto
     {
-        private static double RealPriceQuanto(
+        public static double RealPriceQuanto(
             double maturity,
             double strike,
             double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.

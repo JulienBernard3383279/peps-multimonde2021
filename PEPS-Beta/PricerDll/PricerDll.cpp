@@ -1353,8 +1353,6 @@ void PriceSingleMonde_Deprecated(
 #pragma endregion
 #pragma region Price
 void PriceSingleMonde(
-	double maturity,
-	double strike,
 	int sampleNumber,
 	double spots[],
 	double volatilities[],
@@ -1386,13 +1384,13 @@ void PriceSingleMonde(
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * (371.0/365.25));
 
 	PnlMat* past = pnl_mat_create_from_zero(1, 2);
 	pnl_mat_set_row(past, spotsVect, 0);
 
 	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
-	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity - date));
+	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * ((371.0 / 365.25) - date));
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
 
@@ -1407,8 +1405,6 @@ void PriceSingleMonde(
 #pragma endregion
 #pragma region Deltas
 void DeltasSingleMonde(
-	double maturity,
-	double strike,
 	int sampleNumber,
 	double spots[],
 	double volatilities[],
@@ -1433,11 +1429,11 @@ void DeltasSingleMonde(
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * maturity);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * (371.0 / 365.25));
 	PnlMat* past = pnl_mat_create_from_zero(1, 2);
 	pnl_mat_set_row(past, spotsVect, 0);
 	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
-	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * (maturity - date));
+	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * ((371.0 / 365.25) - date));
 
 	// On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);

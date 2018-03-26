@@ -311,15 +311,27 @@ namespace PricerDll.CustomTests
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void PriceSingleMonde(
             int sampleNumber,
-            double[] past,
-            int nbRows,
-            double t,
-            double[] currentPrices,
+            double[] spots,
             double[] volatilities,
-            double[] interestRates,
+            double[] interestRate,
             double[] correlations,
+            double date,
+            double[] currents,
             double* price,
             double* ic);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void DeltasSingleMonde( 
+            double strike,
+            int sampleNumber,
+            double[] spots,
+            double[] volatilities,
+            double[] interestRate,
+            double[] correlations,
+            double date,
+            double[] currents,
+            IntPtr deltasAssets,
+            IntPtr deltasFXRates);
         #endregion
     }
 }
