@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -41,6 +42,11 @@ namespace PEPS_Beta.Models
         private DateTime endDate = new DateTime(2021, 11, 05);
 
 
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true,
+                                    HtmlEncode = false,
+                                    NullDisplayText = "",
+                                    DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime CurrDate { get => currDate; set => currDate = value; }
         public DateTime EndDate { get => endDate; set => endDate = value; }
         public DateTime Origin { get => origin; set => origin = value; }

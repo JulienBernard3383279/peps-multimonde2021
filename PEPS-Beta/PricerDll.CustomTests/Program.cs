@@ -16,7 +16,7 @@ namespace PricerDll.CustomTests
             //TestsCall.PerformDeltaTests0();
             //TestsCall.PerformDeltaTestsAnyTime();
 
-            //TestsQuanto.PerformPriceTests();
+            TestsQuanto.PerformPriceTests();
             //TestsQuanto.PerformDeltaTests0();
             //TestsQuanto.PerformDeltaTestsAnyTime();
 
@@ -25,7 +25,7 @@ namespace PricerDll.CustomTests
             //TestsMultimonde2021Quanto.PerformPriceTests();
             //TestsMultimonde2021Quanto.PerformDeltaTest();
 
-            TestsSingleMonde.PerformPriceSingleMondeTests();
+            //TestsSingleMonde.PerformPriceSingleMondeTests();
 
             //TestsMultimonde2021Quanto.PerformPriceTests(); //pas finie l'automatisation
             //TestsMultimonde2021Quanto.PerformDeltaTest();

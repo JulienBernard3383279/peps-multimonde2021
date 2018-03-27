@@ -310,6 +310,12 @@ namespace PEPS_Beta.Models
             return res;
         }
 
+        internal void ChangeDate(DateTime currDate)
+        {
+            bdd.Parametres.FirstOrDefault().CurrDate = currDate;
+            bdd.SaveChanges();
+        }
+
         private double GetBusinessDays(DateTime startD, DateTime endD)
         {
             double calcBusinessDays =
