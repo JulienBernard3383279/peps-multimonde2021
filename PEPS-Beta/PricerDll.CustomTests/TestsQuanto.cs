@@ -8,7 +8,7 @@ namespace PricerDll.CustomTests
 {
     public static unsafe class TestsQuanto
     {
-        public static double RealPriceQuanto(
+        public static double RealPriceCallQuanto(
             double maturity,
             double strike,
             double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
@@ -25,9 +25,26 @@ namespace PricerDll.CustomTests
                 * API.call_pnl_cdfnor(d1)
                 - strike * Math.Exp(-interestRates[0] * (maturity - date))
                 * API.call_pnl_cdfnor(d2);
-
         }
 
+        public static double RealPricePutQuanto(
+            double maturity,
+            double strike,
+            double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
+            double[] volatilities,//les vol dans un ordre suivant: actif puis taux de change de 1euro en dollars
+            double[] interestRates,//les taux d'interets domestiques et etrangers dans cet ordre!
+            double[] correlations,
+            double date)
+        {
+            return RealPriceCallQuanto(maturity, //relation de parité call-put
+                strike,
+                currents,
+                volatilities,
+                interestRates,
+                correlations,
+                date)
+                - (currents[0] - strike * Math.Exp(-interestRates[0] * (maturity - date)));
+        }
 
         /*
          * Test pour un ensemble de paramètres donné.
@@ -66,7 +83,7 @@ namespace PricerDll.CustomTests
             double date = 0.0;
             //price et ics contiennent prix et intervalle de couverture selon le pricer
 
-            double realPrice = RealPriceQuanto(maturity,
+            double realPrice = RealPriceCallQuanto(maturity,
                 strike,
                 spots,
                 volatilities,
@@ -256,7 +273,7 @@ namespace PricerDll.CustomTests
             System.Runtime.InteropServices.Marshal.Copy(deltasFXRates, tmp, 0, 1);
             deltas[1] = tmp[0];
 
-            double realPrice = RealPriceQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
+            double realPrice = RealPriceCallQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
             double tmpD = realPrice - realDelta[0] * spots[0] * currFXRate - realDelta[1] * Math.Exp(-interestRates[0] * maturity);
             tmpD /= spots[1];
             realDelta[1] = tmpD;
@@ -295,7 +312,7 @@ namespace PricerDll.CustomTests
             double[] volatilities = new double[2] { 0.01, 0.02 };
             double[] correlations = new double[4] { 1.0, 0.05, 0.05, 1.0 };
 
-            double realPrice = RealPriceQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
+            double realPrice = RealPriceCallQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
             Console.WriteLine("Prix fermé " + realPrice);
             DeltaTest0(maturity,
                 strike,

@@ -9,7 +9,7 @@ namespace PricerDll.CustomTests
     public static unsafe class TestsSingleMonde
     {
 
-        private static double RealPriceSingleMonde(
+        /*private static double RealPriceSingleMonde(
             double maturity,
             double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
             double[] volatilities,//les vol dans un ordre suivant: actif puis taux de change de 1euro en dollars
@@ -23,9 +23,9 @@ namespace PricerDll.CustomTests
 
             return (API.call_pnl_cdfnor(d1) * (1.15 * S0 + currents[0]) + (0.85) * S0 - currents[0] +
                 (currents[0] - (0.85) * S0) * API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
-        }
+        } Renvoie 215. Lol.*/
 
-        private static double RealPriceSingleMondeAlt(
+        private static double RealPriceSingleMonde(
             double maturity,
             double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
             double[] volatilities,//les vol dans un ordre suivant: actif puis taux de change de 1euro en dollars
@@ -33,11 +33,9 @@ namespace PricerDll.CustomTests
             double[] correlations,
             double date)
         {
-            return 100
-                - 30 * Math.Exp(-interestRates[0] * (maturity - date))
-                + (100 / currents[0]) *
-                (TestsQuanto.RealPriceQuanto(maturity, 0.85 * currents[0], currents, volatilities, interestRates, correlations, date)
-                - TestsQuanto.RealPriceQuanto(maturity, 1.15 * currents[0], currents, volatilities, interestRates, correlations, date));
+            return 85*Math.Exp(-interestRates[0] * (maturity-date))
+                + 100/currents[0] * TestsQuanto.RealPriceCallQuanto(maturity, 0.85 * currents[0], currents, volatilities, interestRates, correlations, date)
+                - 100/currents[0] * TestsQuanto.RealPriceCallQuanto(maturity, 1.15 * currents[0], currents, volatilities, interestRates, correlations, date);
         }
 
 
@@ -68,7 +66,7 @@ namespace PricerDll.CustomTests
 
             //price et ics contiennent prix et intervalle de couverture selon le pricer
 
-            double realPrice = RealPriceSingleMondeAlt(
+            double realPrice = RealPriceSingleMonde(
                 371.0/365.25,
                 currentPrices,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
                 volatilities,//les vol dans un ordre suivant: actif puis taux de change de 1euro en dollars
@@ -95,10 +93,37 @@ namespace PricerDll.CustomTests
         {
             int nbSamples = 1000000;
 
-            double[] spots = new double[2] { 100.0, 1.0 };
-            double[] volatilities = new double[2] { 0.05, 0.02 };
-            double[] interestRates = new double[2] { 0.05, 0.05 };
-            double[] correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            double[] spots;
+            double[] volatilities;
+            double[] interestRates;
+            double[] correlations;
+
+            spots = new double[2] { 100.0, 1.0 };
+            volatilities = new double[2] { 0.0, 0.0 };
+            interestRates = new double[2] { 0.0, 0.0 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            spots = new double[2] { 100.0, 1.0 };
+            volatilities = new double[2] { 0.02, 0.0 };
+            interestRates = new double[2] { 0.0, 0.0 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            spots = new double[2] { 100.0, 1.0 };
+            volatilities = new double[2] { 0.02, 0.0 };
+            interestRates = new double[2] { 0.1, 0.0 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
             PriceTestSingleMonde(
                 nbSamples,
                 spots,
