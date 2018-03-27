@@ -57,7 +57,7 @@ namespace PEPS_Beta.Tests
             System.Runtime.InteropServices.Marshal.Copy(deltasFXRates, tmp, 0, 1);
             deltas[1] = tmp[0];
 
-            double realPrice = TestsQuanto.RealPriceQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
+            double realPrice = TestsQuanto.RealPriceCallQuanto(maturity, strike, spots, volatilities, interestRates, correlations, 0);
             double tmpD = realPrice - realDelta[0] * spots[0] * currFXRate - realDelta[1] * Math.Exp(-interestRates[0] * maturity);
             tmpD /= spots[1];
             realDelta[1] = tmpD;

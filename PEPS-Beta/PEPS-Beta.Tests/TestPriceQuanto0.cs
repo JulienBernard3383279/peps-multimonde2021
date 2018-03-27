@@ -42,7 +42,7 @@ namespace PEPS_Beta.Tests
             double date = 0.0;
             //price et ics contiennent prix et intervalle de couverture selon le pricer
 
-            double realPrice = TestsQuanto.RealPriceQuanto(maturity,
+            double realPrice = TestsQuanto.RealPriceCallQuanto(maturity,
                 strike,
                 spots,
                 volatilities,
