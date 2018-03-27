@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PricerDll.CustomTests;
+using PricerDll;
 
 namespace PEPS_Beta.Tests
 {
@@ -23,7 +24,7 @@ namespace PEPS_Beta.Tests
             double[] volatilities = new double[2] { 0.01, 0.02 };
             double[] correlations = new double[4] { 1.0, 0.05, 0.05, 1.0 };
             //call quanto = une seule monnaie pour l'actif (un actif quoi), elle est etrangère
-            API.SimulDeltasQuanto(
+            API1.SimulDeltasQuanto(
                 maturity,
                 strike,
                 nbSamples,

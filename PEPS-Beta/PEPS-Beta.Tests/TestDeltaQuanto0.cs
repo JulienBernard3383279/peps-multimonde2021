@@ -24,7 +24,7 @@ namespace PEPS_Beta.Tests
             double[] correlations = new double[4] { 1.0, 0.05, 0.05, 1.0 };
 
             //call quanto = une seule monnaie pour l'actif (un actif quoi), elle est etrangère
-            API.SimulDeltasQuanto(
+            API1.SimulDeltasQuanto(
                 maturity,
                 strike,
                 nbSamples,

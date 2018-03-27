@@ -26,7 +26,7 @@ namespace PEPS_Beta.Tests
             double price;
             double ic;
 
-            API.PriceQuanto(
+            API1.PriceQuanto(
                 maturity, //maturity in years
                 strike, //strike when applicable
                 nbSamples, //nbSamples

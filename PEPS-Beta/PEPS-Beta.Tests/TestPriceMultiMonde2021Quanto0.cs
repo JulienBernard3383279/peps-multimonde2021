@@ -51,7 +51,7 @@ namespace PEPS_Beta.Tests
             nbRows = 1;
             t = 0;
 
-            API.PriceMultimonde2021Quanto(
+            API1.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
                 nbRows,
