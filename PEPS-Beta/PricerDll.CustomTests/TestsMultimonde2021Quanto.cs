@@ -467,7 +467,7 @@ namespace PricerDll.CustomTests
             int nbUpdates;
             #endregion
             #region Test
-            nbSamples = 100000;
+            nbSamples = 50_000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0
@@ -490,7 +490,7 @@ namespace PricerDll.CustomTests
             past = currentPrices;
             nbRows = 1;
             t = 0;
-            nbUpdates = 30;
+            nbUpdates = 6*6; //Ne pas mettre un multiple de 6 = ne pas rebalancer aux dates de constatation = le faire foirer exprès
 
             API.TrackingErrorMultimonde2021Quanto(
                 nbSamples,

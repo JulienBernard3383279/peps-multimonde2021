@@ -47,8 +47,9 @@ void MonteCarlo::price(double* prix, double* ic) {
 	var = exp(-mod_->r_ * opt_->T * 2)
 		* (mySquaredSum / nbSamples_ - pow(mySum / nbSamples_, 2));
 
-	*ic = 2 * 1.96 * sqrt(var) / sqrt(nbSamples_);
-
+	//*ic = 2 * 1.96 * sqrt(var) / sqrt(nbSamples_); Dû au projet MEP de début d'année. Je pense que c'est car *2 et non *1.96 donne
+	//quelque chose de légèrement plus précis que 95% d'où la correction fournie.
+	*ic = 4 * sqrt(var) / sqrt(nbSamples_);
 
 	// Free memory
 	pnl_mat_free(&path);
