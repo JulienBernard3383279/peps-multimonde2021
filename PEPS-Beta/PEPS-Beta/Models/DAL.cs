@@ -133,7 +133,7 @@ namespace PEPS_Beta.Models
                     }
                     while (maxTry < 10)
                     {
-                        tmpDate = date.AddDays(-1);
+                        tmpDate = tmpDate.AddDays(-1);
                         command = new SqlCommand("SELECT " + indexName + " FROM  IndexesAtDates WHERE Date = @DateValue", conn);
                         command.Parameters.Add(new SqlParameter("DateValue", tmpDate));
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -181,7 +181,7 @@ namespace PEPS_Beta.Models
                     }
                     while (maxTry < 10)
                     {
-                        tmpDate = date.AddDays(-1);
+                        tmpDate = tmpDate.AddDays(-1);
                         command = new SqlCommand("SELECT " + changeName + " FROM  TauxDeChanges WHERE Date = @DateValue", conn);
                         command.Parameters.Add(new SqlParameter("DateValue", tmpDate));
                         using (SqlDataReader reader = command.ExecuteReader())
