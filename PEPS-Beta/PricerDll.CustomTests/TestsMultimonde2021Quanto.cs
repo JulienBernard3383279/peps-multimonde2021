@@ -25,7 +25,7 @@ namespace PricerDll.CustomTests
             double ic;
             #endregion
             #region Certains
-            nbSamples = 100000;
+            nbSamples = 1_000_000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0
@@ -146,7 +146,7 @@ namespace PricerDll.CustomTests
             Console.WriteLine();
             #endregion
             #region Quasi-déterminés
-            nbSamples = 100000;
+            nbSamples = 1_000_000;
             volatilities = new double[11] {
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0
@@ -271,7 +271,7 @@ namespace PricerDll.CustomTests
 
             #endregion
             #region Incertains
-            nbSamples = 100000;
+            nbSamples = 1_000_000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0 };
@@ -306,6 +306,7 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+
             watch.Stop();
             executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,02.");
@@ -332,6 +333,7 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+
             watch.Stop();
             executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,04.");
@@ -357,6 +359,7 @@ namespace PricerDll.CustomTests
                 correlations,
                 &price,
                 &ic);
+
             watch.Stop();
             executionTime = watch.ElapsedMilliseconds;
             Console.WriteLine("Monde basique ; volatilités des actifs (pas des taux de change) modifiés à 0,1.");

@@ -74,6 +74,7 @@ namespace PricerDll.CustomTests
                 correlations,
                 date);
 
+            // Assert.IsTrue((realPrice < price + 1.5 * ic / 2) || (realPrice > price - 1.5 * ic / 2));
             Console.WriteLine("");
             Console.WriteLine("");
             Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
@@ -193,7 +194,7 @@ namespace PricerDll.CustomTests
                 correlations);
         }
 
-        private static double[] RealDeltaQuanto0(
+        public static double[] RealDeltaQuanto0(
                 double maturity,
                 double strike,
                 double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
@@ -260,7 +261,7 @@ namespace PricerDll.CustomTests
             tmpD /= spots[1];
             realDelta[1] = tmpD;
 
-
+            //Assert.IsTrue(Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) < 0.05);
             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !

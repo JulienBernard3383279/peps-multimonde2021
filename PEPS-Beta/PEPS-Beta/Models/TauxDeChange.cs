@@ -7,9 +7,22 @@ namespace PEPS_Beta.Models
 {
     public class TauxDeChange
     {
-        public int Id { get; set; }
-        public String MoneyFrom { get; set; }
-        public String MoneyTo { get; set; }
-        public Dictionary<DateTime, double> Histo { get; set; }
+        [System.ComponentModel.DataAnnotations.Key]
+        public DateTime date { get; private set; }
+        public double EURUSD { get; private set; }
+        public double EURAUD { get; private set; }
+        public double EURGBP { get; private set; }
+        public double EURJPY { get; private set; }
+        public double EURHKD { get; private set; }
+
+        public TauxDeChange(DateTime date, double EURUSD, double EURAUD, double EURGBP, double EURJPY, double EURHKD)
+        {
+            this.date = date;
+            this.EURAUD = EURAUD;
+            this.EURUSD = EURUSD;
+            this.EURGBP = EURGBP;
+            this.EURJPY = EURJPY;
+            this.EURHKD = EURHKD;
+        }
     }
 }

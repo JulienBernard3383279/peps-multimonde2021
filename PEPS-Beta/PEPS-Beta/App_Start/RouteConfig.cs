@@ -48,6 +48,20 @@ namespace PEPS_Beta
             url: "{controller}/{action}/{id}",
             defaults: new { controller = "Home", action = "EstimerParam", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+            name: "UpdatePortefeuille",
+            url: "{controller}/{action}/{id}",
+            defaults: new { controller = "Home", action = "UpdatePortefeuille", id = UrlParameter.Optional }
+            );
+
+            routes.MapRoute(
+            name: "VoirCurrPort",
+            url: "{controller}/{action}/{id}",
+            defaults: new { controller = "Home", action = "VoirCurrPort", id = UrlParameter.Optional }
+          );
+
+            
         }
     }
 }

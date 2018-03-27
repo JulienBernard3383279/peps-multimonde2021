@@ -130,7 +130,7 @@ namespace PEPS_Beta.Models
 
             IAvapiResponse_TIME_SERIES_DAILY_ADJUSTED EURJPYResponse =
                 TSD.QueryPrimitive(
-                "EURUSD=X",
+                "EURJPY=X",
                 dataSize
                 );
 
@@ -151,7 +151,8 @@ namespace PEPS_Beta.Models
                 );
 
             this.USDHKD = USDHKDResponse.Data;
-#pragma warning restore CS0436 // Le type est en conflit avec le type importé
         }
     }
+#pragma warning restore CS0436 // Le type est en conflit avec le type importé
+
 }
