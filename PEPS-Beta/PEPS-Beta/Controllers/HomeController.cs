@@ -279,10 +279,10 @@ namespace PEPS_Beta.Controllers
                     }
                     else
                     {
-                        currTDC = dal.getSingleData(currD, ind.Money);
+                        currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
                     }
                     currP = dal.getSingleData(currD, ind.Nom.ToUpper()) / currTDC;
-                    currZC = Math.Exp(-ind.InterestRateThisArea * Tmoinst) * dal.getSingleData(currD, ind.Money.ToUpper()) / currTDC;
+                    currZC = Math.Exp(-ind.InterestRateThisArea * Tmoinst) / currTDC;
 
                     portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Nom) * currP;
                     portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Money) * currZC;
