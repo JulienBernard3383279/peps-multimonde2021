@@ -170,6 +170,7 @@
     <ClCompile Include="BasketOption.cpp" />
     <ClCompile Include="BlackScholesModel.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="HedgingUtilies.cpp" />
     <ClCompile Include="MathUtils.cpp" />
     <ClCompile Include="MonteCarlo.cpp" />
     <ClCompile Include="Multimonde2021.cpp" />

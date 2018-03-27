@@ -1,0 +1,16 @@
+﻿
+<h1> Deltas Actuels : </h1>
+<div id="currPort">
+    @Html.Action("VoirCurrPort","Home")
+</div>
+
+<div id="optimPort">
+</div>
+
+@using (Ajax.BeginForm("CalculerDeltas", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "optimPort" }))
+{
+    <div>
+        <label>&nbsp;</label>
+        <input type="submit" value="Calculer deltas" class="submit" />
+    </div>
+}

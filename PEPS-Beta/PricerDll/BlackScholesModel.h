@@ -11,6 +11,8 @@ class BlackScholesModel
 	PnlMat *gMemSpace_;
 	PnlVect tempMemSpace1_;
 	PnlVect tempMemSpace2_;
+	bool noRegen = false; //utilisé pour l'accélération par variable antithétiques
+	bool antithetiques = true;
 public:
 	int size_; /// nombre d'actifs du modèle
 	double r_; /// taux d'intérêt
@@ -114,4 +116,19 @@ public:
 	* @param[in] h est l'intensité de shifting
 	*/
 	void shiftPath(PnlMat* path, PnlMat *pathMinus, PnlMat *pathPlus, int j, int from, int nbTimeSteps, double h);
+
+	/*
+	* Cette fonction shift les colonnes de telles sortes que j 0-5 <-> S et j 6-10 <-> X
+	*
+	* @param[in] path  contient le path initial.
+	* @param[out] pathMinus contiendra le path shifté de -h après exécution. La matrice doit être déclarée au préalable.
+	* @param[out] pathPlus contiendra le path shifté de +h après exécution. La matrice doit être déclarée au préalable.
+	* @param[in] j contient l'indice de l'actif à shifter.
+	* @param[in] from contient le premier indice à shifter.
+	* @param[in] nbTimeSteps est le nombre de dates de constation (hauteur de la matrice - 1)
+	* @param[in] h est l'intensité de shifting
+	*/
+	void shiftPathMultimonde2021Quanto(PnlMat* path, PnlMat *pathMinus, PnlMat *pathPlus, int j, int from, int nbTimeSteps, double h);
+
+
 };

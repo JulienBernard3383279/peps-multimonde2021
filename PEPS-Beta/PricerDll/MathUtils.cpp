@@ -22,6 +22,14 @@ static double VolAminusB(double corrAB, double volA, double volB) {
 
 #pragma region Correlation utils
 /*
+N'accepte que les matrices 2x2 pour l'instant
+*/
+static void ReverseCorrMatrix(PnlMat* mat) {
+	MLET(mat, 0, 1) *= -1;
+	MLET(mat, 1, 0) *= -1;
+}
+
+/*
 * Computes the volatility of A+B with C assuming A, B and C follow normal laws
 */
 static double CorrAplusBwithC(double corrAB, double corrAC, double corrBC, double volA, double volB) {
@@ -132,17 +140,19 @@ static double CorrAplusBwithB(double corrAB, double volA, double volB)
 * transforms it into the correlation matrix of variables A+B and B
 * Uses an array
 */
+/*
 static void FromCorrABToCorrAPlusBB_old(double* matrix, double volA, double volB)
 {
 	matrix[1] = CorrAminusBwithB(matrix[1], volA, volB);
 	matrix[2] = CorrAminusBwithB(matrix[2], volA, volB);
-}
+}*/
 
 /*
 * Generates a 2x2 correlation matrix for variables A+B and B
 * from the correlation matrix of variables A+B and B
 * Uses an array
 */
+/*
 static double* GenCorrAPlusBBFromCorrAB_old(double* matrix, double volA, double volB)
 {
 	double* toBeReturned = new double[4];
@@ -154,7 +164,7 @@ static double* GenCorrAPlusBBFromCorrAB_old(double* matrix, double volA, double 
 static double* GenCorrAPlusBBFromCorrAB_old(double* matrix, double* vol)
 {
 	return GenCorrAPlusBBFromCorrAB_old(matrix, vol[0], vol[1]);
-}
+}*/
 
 /*
 * Takes a 2x2 correlation matrix for variables A and B and
@@ -162,6 +172,17 @@ static double* GenCorrAPlusBBFromCorrAB_old(double* matrix, double* vol)
 * Uses an array
 */
 static void FromCorrABToCorrAPlusBB(PnlMat* matrix, double volA, double volB)
+{
+	MLET(matrix, 0, 1) = CorrAplusBwithB(MGET(matrix, 0, 1), volA, volB);
+	MLET(matrix, 1, 0) = CorrAplusBwithB(MGET(matrix, 1, 0), volA, volB);
+}
+
+/*
+* Takes a 2x2 correlation matrix for variables A and B and
+* transforms it into the correlation matrix of variables A-B and B
+* Uses an array
+*/
+static void FromCorrABToCorrAMinusBB(PnlMat* matrix, double volA, double volB)
 {
 	MLET(matrix, 0, 1) = CorrAminusBwithB(MGET(matrix, 0, 1), volA, volB);
 	MLET(matrix, 1, 0) = CorrAminusBwithB(MGET(matrix, 1, 0), volA, volB);
@@ -187,4 +208,27 @@ static PnlMat* GenCorrAPlusBBFromCorrAB(double* matrix, double* vol)
 {
 	return GenCorrAPlusBBFromCorrAB(matrix, vol[0], vol[1]);
 }
+
+/*
+* Generates a 2x2 correlation matrix for variables A-B and B
+* from the correlation matrix of variables A-B and B
+* Uses an array
+*/
+static PnlMat* GenCorrAMinusBBFromCorrAB(double* matrix, double volA, double volB)
+{
+	PnlMat* toBeReturned = pnl_mat_create(2, 2);
+	MLET(toBeReturned, 0, 0) = matrix[0];
+	MLET(toBeReturned, 0, 1) = matrix[1];
+	MLET(toBeReturned, 1, 0) = matrix[2];
+	MLET(toBeReturned, 1, 1) = matrix[3];
+
+	FromCorrABToCorrAMinusBB(toBeReturned, volA, volB);
+	return toBeReturned;
+}
+static PnlMat* GenCorrAMinusBBFromCorrAB(double* matrix, double* vol)
+{
+	return GenCorrAMinusBBFromCorrAB(matrix, vol[0], vol[1]);
+}
+
+
 #pragma endregion

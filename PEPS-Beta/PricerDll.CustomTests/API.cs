@@ -290,17 +290,48 @@ namespace PricerDll.CustomTests
             double[] interestRates,
             double[] correlations,
             out IntPtr deltas);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void TrackingErrorMultimonde2021Quanto(
+            int sampleNumber,
+            double[] past,
+            int nbRows,
+            double t,
+            double[] currentPrices,
+            double[] volatilities,
+            double[] interestRates,
+            double[] correlations,
+            int nbUpdates,
+            double* tracking_error,
+            out IntPtr portfolioReturns,
+            out IntPtr productReturns);
         #endregion
+
         #region SingleMonde
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
-        public static extern unsafe void PriceSingleMonde(int sampleNumber,
-    //double past[], // format [,]
-    double[] currentPrices,//taille 1, il s'agit juste du spot
-    double[] volatilities,//taille 1 pareil
-    double[] interestRates,//pour l'instant taille 1
-    double* price,
-    double T,
-    double* ic);
+        public static extern unsafe void PriceSingleMonde(
+            int sampleNumber,
+            double[] spots,
+            double[] volatilities,
+            double[] interestRate,
+            double[] correlations,
+            double date,
+            double[] currents,
+            double* price,
+            double* ic);
+
+        [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
+        public static extern unsafe void DeltasSingleMonde( 
+            double strike,
+            int sampleNumber,
+            double[] spots,
+            double[] volatilities,
+            double[] interestRate,
+            double[] correlations,
+            double date,
+            double[] currents,
+            IntPtr deltasAssets,
+            IntPtr deltasFXRates);
         #endregion
     }
 }

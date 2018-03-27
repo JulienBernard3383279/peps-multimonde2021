@@ -5,8 +5,9 @@ class Multimonde2021Quanto :
 {
 	PnlVect* payoffVectMemSpaceInit_;
 	PnlVect* payoffVectMemSpaceCurrent_;
+	double* interestRates;
 public:
-	Multimonde2021Quanto();
+	Multimonde2021Quanto(double interestRates[6]);
 	~Multimonde2021Quanto();
 
 	double payoff(const PnlMat *path);

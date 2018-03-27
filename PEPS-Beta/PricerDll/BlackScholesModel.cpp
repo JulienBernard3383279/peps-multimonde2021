@@ -84,8 +84,14 @@ void BlackScholesModel::postInitAsset(PnlMat *path, double T, int nbTimeSteps, P
 	// Initialisation de path
 	pnl_mat_set_row(path, spot_, 0);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
-
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
+		if (antithetiques) noRegen = true;
+	}
 	double step = T / nbTimeSteps;
 
 	for (int i = 1; i <= nbTimeSteps; ++i) {
@@ -105,8 +111,14 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path, PnlVect* dates, i
 	// Initialisation de path
 	pnl_mat_set_row(path, spot_, 0);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
-
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1, size_, rng);
+		if (antithetiques) noRegen = true;
+	}
 	double step;
 
 	for (int i = 1; i <= nbTimeSteps; ++i) {
@@ -143,8 +155,14 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 
 	pnl_vect_free(&temp);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
-
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
+		if (antithetiques) noRegen = true;
+	}
 	double step = T / nbTimeSteps;
 
 	//from est traité différemment car t n'est pas la date de constatation précédente
@@ -173,38 +191,59 @@ void BlackScholesModel::postInitAsset(PnlMat *path,
 void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 	PnlMat *past, double t, PnlVect *current,
 	PnlVect* dates, int nbTimeSteps, PnlRng *rng) {
+	//for (int i = 0; i < 500; i++) { std::cout << "bsm -> piacd -> 1" << std::endl; }
 
 	PnlVect* temp = pnl_vect_create(size_);
 
-	// Initialisation de path
-	int from = past->m;
-	
-	if (from == 0) {
+	// Initialisation de path [modif 22/03]
+	// On augmente from jusqu'à ce qu'il soit supérieur dates[t]. Si il est égal à t, 
+	// c'est à l'utilisateur de faire gaffe à ce que current matche les valeurs de past en t.
+
+	int from = 0;
+	while (GET(dates, from) <= t) {
+		from++;
+	}
+	/*if (from == 0) {
 		pnl_mat_set_row(path, spot_, 0); //Ici pour le debug. Pour les appels avec past via API, spot n'est pas initialisé !
 	}
-	else { // Pas trouvé de solution évidemment plus efficace. Mais il doit y avoir mieux ?
-		for (int i = 0; i < from; i++) {
-			pnl_mat_get_row(temp, past, i);
-			pnl_mat_set_row(path, temp, i);
-		}
+	else {*/ // Pas trouvé de solution évidemment plus efficace. Mais il doit y avoir mieux ?
+	for (int i = 0; i < from; i++) {
+		pnl_mat_get_row(temp, past, i);
+		pnl_mat_set_row(path, temp, i);
 	}
+	//}
+	//for (int i = 0; i < 500; i++) { std::cout << "bsm -> piacd -> 2" << std::endl; }
 
 	pnl_vect_free(&temp);
 
-	pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
+	if (noRegen) {
+		pnl_mat_mult_scalar(gMemSpace_, -1);
+		noRegen = false;
+	}
+	else {
+		pnl_mat_rng_normal(gMemSpace_, nbTimeSteps + 1 - from, size_, rng);
+		if (antithetiques) noRegen = true;
+	}
 
+	//for (int i = 0; i < 500; i++) { std::cout << from << std::endl; }
 
 	double step = GET(dates,from) - t;
+
+	//for (int i = 0; i < 500; i++) { std::cout << "bsm -> piacd -> 3" << std::endl; }
+
 	//from est traité différemment car t n'est pas la date de constatation précédente
 	for (int d = 0; d < size_; ++d) {
 		tempMemSpace1_ = pnl_vect_wrap_mat_row(gammaMemSpace_, d);
 		tempMemSpace2_ = pnl_vect_wrap_mat_row(gMemSpace_, 0);
+
+		//for (int i = 0; i < 500; i++) { std::cout << "bsm -> piacd -> 3.5" << std::endl; }
 
 		MLET(path, from, d) = GET(current, d)
 			* exp((GET(trend_, d) - pow(GET(sigma_, d), 2) / 2.) * (step)
 				+ GET(sigma_, d) * sqrt(step) * pnl_vect_scalar_prod(&tempMemSpace1_, &tempMemSpace2_));
 	
 	}
+	//for (int i = 0; i < 500; i++) { std::cout << "bsm -> piacd -> 4" << std::endl; }
 
 	for (int i = from + 1; i <= nbTimeSteps; ++i) {
 		step = GET(dates, i) - GET(dates, i - 1);
@@ -217,6 +256,8 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 					+ GET(sigma_, d) * sqrt(step) * pnl_vect_scalar_prod(&tempMemSpace1_, &tempMemSpace2_));
 		}
 	}
+	//for (int i = 0; i < 500; i++) { std::cout << "bsm -> piacd -> 5" << std::endl; }
+
 }
 
 void BlackScholesModel::shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int j, int from, int nbTimeSteps, double h) {
@@ -228,6 +269,25 @@ void BlackScholesModel::shiftPath(PnlMat *path, PnlMat *pathMinus, PnlMat *pathP
 	}
 }
 
+void BlackScholesModel::shiftPathMultimonde2021Quanto(PnlMat *path, PnlMat *pathMinus, PnlMat *pathPlus, int j, int from, int nbTimeSteps, double h) {
+	pnl_mat_clone(pathMinus, path);
+	pnl_mat_clone(pathPlus, path);
+	if (j <= 5) { //j est un actif (S -> S ; SX ; 1/X ) ; S=actif en $
+		for (int i = from; i < nbTimeSteps + 1; i++) {
+			MLET(pathMinus, i, j) *= (1.0 - h);
+			MLET(pathPlus, i, j) *= (1.0 + h);
+		}
+	}
+	else { //j est un taux de change (X -> S ; SX ; 1/X ) ; X=$/€
+		for (int i = from; i < nbTimeSteps + 1; i++) {
+			MLET(pathMinus, i, j) /= (1.0 - h);
+			MLET(pathPlus, i, j) /= (1.0 + h);
+			MLET(pathMinus, i, j-5) *= (1.0 - h);
+			MLET(pathPlus, i, j-5) *= (1.0 + h);
+
+		}
+	}
+}
 /**
 * Génère une trajectoire du modèle et la stocke dans path
 */
