@@ -1367,7 +1367,7 @@ void PriceSingleMonde(
 	Option *opt;
 	BlackScholesModel *mod;
 
-	opt = new SingleMonde();
+	opt = new SingleMonde(interestRate);
 
 	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
@@ -1384,13 +1384,13 @@ void PriceSingleMonde(
 
 	// On actualise le prix en euros
 	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * (371.0/365.25));
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(interestRate[1] * (371.0/365.25));
 
 	PnlMat* past = pnl_mat_create_from_zero(1, 2);
 	pnl_mat_set_row(past, spotsVect, 0);
 
 	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
-	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * ((371.0 / 365.25) - date));
+	LET(currVect, 0) *= GET(currVect, 1) / exp(interestRate[1] * ((371.0 / 365.25) - date));
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
 
@@ -1420,7 +1420,7 @@ void DeltasSingleMonde(
 	Option *opt;
 	BlackScholesModel *mod;
 
-	opt = new SingleMonde();
+	opt = new SingleMonde(interestRate);
 	//Vieux copié-collé du quanto. Voir ci-dessus pour commentaires.
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
 	LET(volatilitiesVect, 0) = VolAminusB(correlations[1], volatilities[0], volatilities[1]);

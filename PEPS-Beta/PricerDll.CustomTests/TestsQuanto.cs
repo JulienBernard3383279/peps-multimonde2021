@@ -112,7 +112,8 @@ namespace PricerDll.CustomTests
         {
             double maturity = 3.0;
             double strike = 100.0;
-            int nbSamples = 10_000_000;
+            int nbSamples = 1_000_000;
+
 
             Console.WriteLine("Test sur équivalent de call vanille simple");
             double currFXRate = 1.0;
@@ -120,6 +121,34 @@ namespace PricerDll.CustomTests
             double[] spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
             double[] volatilities = new double[2] { 0.05, 0.00 };
             double[] correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            PriceTestQuanto(maturity,
+                strike,
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("Test sur monde gelé mais volatilité de l'actif = 0,1%");
+            currFXRate = 1;
+            interestRates = new double[2] { 0.0, 0.0 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
+            volatilities = new double[2] { 0.01, 0.00 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            PriceTestQuanto(maturity,
+                strike,
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("Test sur monde gelé mais volatilité de l'actif = 0,1% et taux d'intérêt étranger non nul");
+            currFXRate = 1;
+            interestRates = new double[2] { 0.0, 0.05 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
+            volatilities = new double[2] { 0.01, 0.00 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
             PriceTestQuanto(maturity,
                 strike,
                 nbSamples,
