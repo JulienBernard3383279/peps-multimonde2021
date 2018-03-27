@@ -3,12 +3,13 @@
 #include <iostream>
 #include <cstring>
 
-SingleMonde::SingleMonde() {
+SingleMonde::SingleMonde(double interestRates[2]) {
 	this->custom = true;
 	this->T = 371.0/365.25;
 	this->nbTimeSteps = 1;
 	this->size = 1;
 	this->customDates = pnl_vect_create_from_list(2, 0, this->T);
+	this->interestRates = interestRates;
 }
 
 SingleMonde::~SingleMonde() {
@@ -19,7 +20,8 @@ double SingleMonde::payoff(const PnlMat* path) {
 	//std::cout << MGET(path, 1, 0); std::cin.ignore();
 	//std::cout << MGET(path, 0, 0); std::cin.ignore();
 
-	double perf = MGET(path, 1, 0) / MGET(path, 0, 0);
+	double perf = (MGET(path, 1, 0) / MGET(path, 1, 1))
+		/ ( MGET(path, 0, 0) / (MGET(path, 0, 1)*exp(interestRates[1] * this->T)));
 	//std::cout << "uh"; std::cin.ignore();
 
 	return 100 * (perf < 0.85 ? 0.85 : perf > 1.15 ? 1.15 : perf);

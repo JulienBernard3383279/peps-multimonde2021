@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PricerDll.CustomTests;
+//using PricerDll.CustomTests;
+//using PricerDll;
 
 namespace PEPS_Beta.Tests
 {
@@ -12,7 +13,7 @@ namespace PEPS_Beta.Tests
     public class TestDeltaCall0
     {
         [TestMethod]
-        public void DeltaTest0()
+        public void TestDeltaCall_0()
         {
             double maturity = 3.0;
             int optionSize = 1;
@@ -26,7 +27,7 @@ namespace PEPS_Beta.Tests
            // int timestepNumber = 1;
             double[] trends = new double[1] { 0.05 };
 
-            API.DeltasMultiCurrencyBasket(
+            API1.DeltasMultiCurrencyBasket(
                  maturity,
                  optionSize,
                  strike,
@@ -42,7 +43,7 @@ namespace PEPS_Beta.Tests
             double[] deltas = new double[1];
             System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 1); //< -deltas contient maintenant les deltas
 
-            double realDelta = TestsCall.RealDelta0(maturity,
+            double realDelta = PricerDll.CustomTests.TestsCall.RealDelta0(maturity,
                 strike,
                 spots,
                 volatilities,

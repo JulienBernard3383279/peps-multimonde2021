@@ -47,7 +47,7 @@ namespace PEPS_Beta.Tests
                 99.0, 100000.0, 100000.0, 100000.0, 100000.0, 100000.0, 1.0, 1.0, 1.0, 1.0, 1.0
             };
 
-            API.PriceMultimonde2021Quanto(
+            API1.PriceMultimonde2021Quanto(
                 nbSamples,
                 past,
                 nbRows,

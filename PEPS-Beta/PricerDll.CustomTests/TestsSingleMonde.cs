@@ -53,6 +53,7 @@ namespace PricerDll.CustomTests
 
             double date = 0.0;
 
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             API.PriceSingleMonde(
                 sampleNumber,
                 currentPrices,
@@ -63,6 +64,8 @@ namespace PricerDll.CustomTests
                 currentPrices,
                 &price_,
                 &ic_);
+            watch.Stop();
+            var executionTime = watch.ElapsedMilliseconds;
 
             //price et ics contiennent prix et intervalle de couverture selon le pricer
 
@@ -75,7 +78,7 @@ namespace PricerDll.CustomTests
                 date);
 
             Console.WriteLine("");
-            Console.WriteLine("");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
             Console.WriteLine("Prix calculé par Monte-Carlo : " + price_ + " , Intervalle de confiance à 99% : [" + (price_ - 1.5 * ic_ / 2) + "," + (price_ + 1.5 * ic_ / 2) + "]");
             Console.WriteLine("Prix calculé par formule fermée : " + realPrice);
             if ((realPrice > price_ + 1.5 * ic_ / 2) || (realPrice < price_ - 1.5 * ic_ / 2))
@@ -83,25 +86,26 @@ namespace PricerDll.CustomTests
                 Console.WriteLine("Vrai prix en dehors de l'intervalle de confiance !");
             }
             Console.WriteLine("");
-            Console.WriteLine("");
-
         }
         /*
         * Lance le test pour certaines combinaisons de valeurs.
         */
         public static void PerformPriceSingleMondeTests()
         {
-            int nbSamples = 1000000;
+            int nbSamples = 1_000_000;
 
+            double currFXRate;
             double[] spots;
             double[] volatilities;
             double[] interestRates;
             double[] correlations;
 
-            spots = new double[2] { 100.0, 1.0 };
+            Console.WriteLine("Monde gelé");
+            currFXRate = 1;
             volatilities = new double[2] { 0.0, 0.0 };
             interestRates = new double[2] { 0.0, 0.0 };
             correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * 371.0/365.25) };
             PriceTestSingleMonde(
                 nbSamples,
                 spots,
@@ -109,10 +113,11 @@ namespace PricerDll.CustomTests
                 interestRates,
                 correlations);
 
-            spots = new double[2] { 100.0, 1.0 };
+            Console.WriteLine("+ Volatilité de l'actif = 2%");
             volatilities = new double[2] { 0.02, 0.0 };
             interestRates = new double[2] { 0.0, 0.0 };
             correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
             PriceTestSingleMonde(
                 nbSamples,
                 spots,
@@ -120,10 +125,98 @@ namespace PricerDll.CustomTests
                 interestRates,
                 correlations);
 
-            spots = new double[2] { 100.0, 1.0 };
+            Console.WriteLine("+ Taux d'intérêt Euro = 5%");
             volatilities = new double[2] { 0.02, 0.0 };
-            interestRates = new double[2] { 0.1, 0.0 };
+            interestRates = new double[2] { 0.05, 0.0 };
             correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("+ Taux d'intérêt étranger = 5%");
+            volatilities = new double[2] { 0.02, 0 };
+            interestRates = new double[2] { 0.05, 0.05 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("+ Volatilité du taux de change = 5%");
+            volatilities = new double[2] { 0.02, 0.02 };
+            interestRates = new double[2] { 0.05, 0.05 };
+            correlations = new double[4] { 1.0, 0.0, 0.0, 1.0 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("+ Corrélation 0.1");
+            volatilities = new double[2] { 0.02, 0.02 };
+            interestRates = new double[2] { 0.05, 0.05 };
+            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("+ Spots 120.0");
+            volatilities = new double[2] { 0.02, 0.02 };
+            interestRates = new double[2] { 0.05, 0.05 };
+            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            spots = new double[2] { 120.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("+ Taux de change 0.5");
+            currFXRate = 0.5;
+            volatilities = new double[2] { 0.02, 0.02 };
+            interestRates = new double[2] { 0.05, 0.05 };
+            correlations = new double[4] { 1.0, 0.1, 0.1, 1.0 };
+            spots = new double[2] { 120.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("Valeurs random");
+            currFXRate = 10;
+            volatilities = new double[2] { 0.05, 0.06 };
+            interestRates = new double[2] { 0.2, 0.01 };
+            correlations = new double[4] { 1.0, -0.1, -0.1, 1.0 };
+            spots = new double[2] { 150.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
+            PriceTestSingleMonde(
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations);
+
+            Console.WriteLine("Valeurs random");
+            currFXRate = 0.3;
+            volatilities = new double[2] { 0.03, 0.01 };
+            interestRates = new double[2] { -0.01, 0.04 };
+            correlations = new double[4] { 1.0, 0.15, 0.15, 1.0 };
+            spots = new double[2] { 10.0, currFXRate * Math.Exp(-interestRates[1] * 371.0 / 365.25) };
             PriceTestSingleMonde(
                 nbSamples,
                 spots,
@@ -131,6 +224,8 @@ namespace PricerDll.CustomTests
                 interestRates,
                 correlations);
         }
+
+
 
         private static double RealDeltaSingleMonde(
            double maturity,
