@@ -30,7 +30,7 @@ namespace PEPS_Beta.Tests
             double[] currents = new double[1] { 95.0 };
             double[] deltas = new double[1];
 
-            API.DeltasMultiCurrencyBasketAnyTime(
+            API1.DeltasMultiCurrencyBasketAnyTime(
                  maturity,
                  optionSize,
                  strike,

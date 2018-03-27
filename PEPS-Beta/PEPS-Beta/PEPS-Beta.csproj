@@ -820,6 +820,7 @@
     <Content Include="Views\Home\Portefeuilles.cshtml" />
     <Content Include="Views\Home\CouvertureIdeale.cshtml" />
     <Content Include="Views\Home\CouvertureIde.cshtml" />
+    <Content Include="Views\Home\MultiMondeParam.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

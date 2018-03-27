@@ -31,7 +31,7 @@ namespace PEPS_Beta.Tests
             double price;
             double ic;
 
-            API.PriceBasketAnyTime(
+            API1.PriceBasketAnyTime(
                 maturity,
                 optionSize,
                 strike,
