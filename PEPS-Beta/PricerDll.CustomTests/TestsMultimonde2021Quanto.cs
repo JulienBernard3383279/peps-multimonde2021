@@ -468,16 +468,21 @@ namespace PricerDll.CustomTests
             #endregion
             #region Test
             nbSamples = 50_000;
+            interestRates = new double[6] {
+                //0.1, 0.1, 0.1, 0.1, 0.1, 0.1
+                0, 0, 0, 0, 0, 0
+            };
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
-                1.0, 1.0, 1.0, 1.0, 1.0
+                1.0,//*Math.Exp(-interestRates[1]*(6*371.0/365.25)),
+                1.0,// *Math.Exp(-interestRates[2]*(6*371.0/365.25)),
+                1.0,// *Math.Exp(-interestRates[3]*(6*371.0/365.25)),
+                1.0,// *Math.Exp(-interestRates[4]*(6*371.0/365.25)),
+                1.0 //*Math.Exp(-interestRates[5]*(6*371.0/365.25))
             };
             volatilities = new double[11] {
                 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
-                0, 0, 0, 0, 0
-            };
-            interestRates = new double[6] {
-                0, 0, 0, 0, 0, 0
+                0.02, 0.02, 0.02, 0.02, 0.02
             };
             correlations = new double[11 * 11];
             for (int i = 0; i < 11; i++)

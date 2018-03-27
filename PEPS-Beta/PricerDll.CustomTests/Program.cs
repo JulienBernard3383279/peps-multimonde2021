@@ -24,12 +24,10 @@ namespace PricerDll.CustomTests
 
             //TestsMultimonde2021Quanto.PerformPriceTests();
             //TestsMultimonde2021Quanto.PerformDeltaTest();
+            TestsMultimonde2021Quanto.PerformTrackingErrorTest();
 
-            TestsSingleMonde.PerformPriceSingleMondeTests();
-
-            //TestsMultimonde2021Quanto.PerformPriceTests(); //pas finie l'automatisation
-            //TestsMultimonde2021Quanto.PerformDeltaTest();
             //TestsSingleMonde.PerformPriceSingleMondeTests();
+
 
             Console.WriteLine("Appuyez sur une touche pour terminer le programme.");
             Console.ReadKey();

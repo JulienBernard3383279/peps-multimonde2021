@@ -1164,10 +1164,9 @@ void TrackingErrorMultimonde2021Quanto(
 
 	PnlVect* deltas = pnl_vect_create_from_zero(11);
 	mc->deltas(scenario, GET(dates, advancement), currentVect, deltas);
-	spare = price;
-	UpdatePortfolio(quantities, currentVect, deltas, spare);
-
-	value = ComputeValue(quantities, currentVect);
+	UpdatePortfolio(quantities, currentVect, deltas);
+	value = price;
+	spare = value - ComputeValue(quantities, currentVect);
 
 	bool verbose = false;
 	bool stepByStep = false;
@@ -1257,9 +1256,11 @@ void TrackingErrorMultimonde2021Quanto(
 	double sumVols = 0;
 	std::cout << "Difference vectors" << std::endl;
 	pnl_vect_print(returnsDiff);
+	double get;
 	for (int i = 0; i < nbUpdates; i++) {
-		sum += GET(returnsDiff, i);
-		squaresSum += GET(returnsDiff, i)*GET(returnsDiff, i);
+		get = GET(returnsDiff, i);
+		sum += get;
+		squaresSum += get * get;
 		sumVols += GET(priceEstimationVolatilities, i);
 	}
 	sum /= (nbUpdates*nbUpdates);
