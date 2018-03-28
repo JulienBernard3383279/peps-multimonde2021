@@ -1102,13 +1102,12 @@ void DeltasMultimonde2021Quanto(
 #pragma region Tracking error
 void TrackingErrorMultimonde2021Quanto(
 	int sampleNumber,
-	//double beginning,
-	//double end,
-	double t,
+	double beginning,
+	double end,
 	double dateStartSimul,
 	double providedScenario[],
 	int nbRows,
-	double currentPrices[],
+	double spots[],
 	double pricesAtSimulStart[],
 	double volatilities[],
 	double interestRates[],
@@ -1118,15 +1117,10 @@ void TrackingErrorMultimonde2021Quanto(
 	double** portfolioReturns,
 	double ** productReturns) {
 
-	//std::cout << "Tracking error > 1" << std::endl;
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
-	//std::cout << "Tracking error > 2" << std::endl;
-
-	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, currentPrices, volatilities, interestRates, correlations);
-	mc->nbSamples_ = sampleNumber; //à appeler quand deltas
-	//std::cout << "Tracking error > 3" << std::endl;
+	InitMultimonde2021Quanto(&mc, &opt, &mod, sampleNumber, spots, volatilities, interestRates, correlations);
 
 	//dates
 	PnlVect* dates = pnl_vect_create(nbUpdates + 1);
@@ -1135,18 +1129,14 @@ void TrackingErrorMultimonde2021Quanto(
 	}
 
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, providedScenario, interestRates, opt->T, dates); // Ici on passe dates car le format de past est celui de scénario
-	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices, interestRates, t, opt->T);
+	//PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(spots, interestRates, t, opt->T);
 	PnlVect* pricesAtSimulStartVect = Multimonde2021Quanto_BuildFromCurrentPrices(pricesAtSimulStart, interestRates, dateStartSimul, opt->T);
 
 	PnlMat *scenario = pnl_mat_create(371*6 + 1, mod->size_);
 	PnlMat *scenarioToFeed = pnl_mat_create(7, mod->size_);
 
-	//std::cout << "Tracking error > 4" << std::endl;
-
 	mod->initAsset(nbUpdates);
 	
-	//std::cout << "Tracking error > 5" << std::endl;
-
 	mod->postInitAssetCustomDates(scenario,
 		pastMat, dateStartSimul, pricesAtSimulStartVect,
 		dates, nbUpdates, mc->rng_);
@@ -1159,7 +1149,11 @@ void TrackingErrorMultimonde2021Quanto(
 	}
 	pnl_vect_free(&temp);
 
-	//std::cout << "Tracking error > 6" << std::endl;
+	//Gestion de début/fin
+	int indexBegin = (int)(nbUpdates * (beginning/opt->T));
+	if ((double)(indexBegin) != nbUpdates * (beginning / opt->T)) indexBegin++;
+	int indexEnd = (int)(nbUpdates * (end / opt->T));
+	int realNbUpdates = indexEnd - indexBegin;
 
 	double portfolioReturn;
 	double previousValue;
@@ -1167,22 +1161,26 @@ void TrackingErrorMultimonde2021Quanto(
 	double spare = 0;
 	PnlVect* quantities = pnl_vect_create_from_zero(11);
 
-	int advancement = 0;
+	int advancement = indexBegin;
 	double productReturn;
 	double previousPrice;
 	double price;
 	double ic;
 	 
-	PnlVect* returnsDiff = pnl_vect_create(nbUpdates);
-	double* portfolioReturnsIntermediate = new double[nbUpdates];
-	double* productReturnsIntermediate = new double[nbUpdates];
+	PnlVect* returnsDiff = pnl_vect_create(realNbUpdates);
+	double* portfolioReturnsIntermediate = new double[realNbUpdates];
+	double* productReturnsIntermediate = new double[realNbUpdates];
 	
-	PnlVect* priceEstimationVolatilities = pnl_vect_create_from_zero(nbUpdates);
-	mc->price(scenario, GET(dates,advancement), currentVect, &price, &ic);
+	PnlVect* currentVect = pnl_vect_create(opt->size);
+	std::cout << GET(dates, advancement) << std::endl;
+	pnl_mat_get_row(currentVect, scenario, advancement);
+
+	PnlVect* priceEstimationVolatilities = pnl_vect_create_from_zero(realNbUpdates);
+	mc->price(scenarioToFeed, GET(dates,advancement), currentVect, &price, &ic); // Ici
 	LET(priceEstimationVolatilities, 0) = (ic / 4) / price;
 
 	PnlVect* deltas = pnl_vect_create_from_zero(11);
-	mc->deltas(scenario, GET(dates, advancement), currentVect, deltas);
+	mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas); // et là, le currentVect est faux
 	UpdatePortfolio(quantities, currentVect, deltas);
 	value = price;
 	spare = value - ComputeValue(quantities, currentVect);
@@ -1191,22 +1189,20 @@ void TrackingErrorMultimonde2021Quanto(
 	bool stepByStep = false;
 
 	double step = (371.0 * 6.0 / 365.25) / nbUpdates;
-	//pnl_mat_print(scenario);
+
 	std::cout << "Advancement : ";
 
-	for (int advancement = 1; advancement<nbUpdates; advancement++) {
-		// mise à jour des informations
+	for (int advancement = indexBegin+1; advancement<indexEnd+1; advancement++) {
 		std::cout << advancement << "; ";
 
 		if (verbose) std::cout << "Step : " << step << std::endl;
-		if (stepByStep && advancement>5) std::cin.ignore();
 		pnl_mat_get_row(currentVect, scenario, advancement);
 
 		// Calcul du rendement du portefeuille
+		if (stepByStep) std::cin.ignore();
 		if (verbose) std::cout << "Current prices : " << std::endl; if (verbose) pnl_vect_print(currentVect);
 		if (verbose) std::cout << "Current quantities : " << std::endl; if (verbose) pnl_vect_print(quantities);
 		if (verbose) std::cout << "Spare : " << spare << std::endl;
-		if (stepByStep && advancement>5) std::cin.ignore();
 
 		/*Plus d'étape actualisation pour les monnaies étrangères depuis que nous manipulons des zéro-coupons étrangers directement.
 		Ils s'apprécient dans le modèle. En revanche les euros doivent être actualisés !
@@ -1217,61 +1213,63 @@ void TrackingErrorMultimonde2021Quanto(
 		if (verbose) std::cout << "Spare post update : " << spare << std::endl;
 
 		previousValue = value;
+		if (stepByStep) std::cin.ignore();
 
 		if (verbose) std::cout << "Previous value : " << previousValue << std::endl;
-		if (stepByStep && advancement>5) std::cin.ignore();
 		value = ComputeValue(quantities, currentVect) + spare;
 		
 		if (verbose) std::cout << "New value : " << value << std::endl;
-		portfolioReturnsIntermediate[advancement] = portfolioReturn = value / previousValue;
+		portfolioReturnsIntermediate[advancement-indexBegin] = portfolioReturn = value / previousValue;
 		
 		if (verbose) std::cout << "Portfolio return : " << portfolioReturn << std::endl;
 		
 		// calcul du rendement du multimonde
 		previousPrice = price;
+		if (stepByStep) std::cin.ignore();
 
 		if (verbose) std::cout << "Previous price : " << previousPrice << std::endl;
-		if (stepByStep && advancement>5) std::cin.ignore();
 		mc->price(scenarioToFeed, GET(dates, advancement), currentVect, &price, &ic);
 
-		LET(priceEstimationVolatilities,advancement-1) = (ic / 4)/price;
+		LET(priceEstimationVolatilities, advancement - indexBegin -1) = (ic / 4)/price;
 		if (verbose) std::cout << "Price volatility : " << ic / 4 << std::endl;
 
 		if (verbose) std::cout << "New price : " << price << std::endl;
-		productReturnsIntermediate[advancement] = productReturn = price / previousPrice;
+		productReturnsIntermediate[advancement - indexBegin] = productReturn = price / previousPrice;
 
 		if (verbose) std::cout << "Product return : " << productReturn << std::endl;
-
-		// calcul de la différence
-		if (stepByStep && advancement>5) std::cin.ignore();
-		LET(returnsDiff, advancement - 1) = portfolioReturn - productReturn;
-
-		if (verbose) std::cout << "Return difference : " << GET(returnsDiff, advancement - 1) << std::endl;
-
-		// mise à jour de la composition du portefeuille
-		if (stepByStep && advancement>5) std::cin.ignore();
-		mc->nbSamples_ /= 10;
-		deltas = pnl_vect_create_from_zero(mod->size_);
-		mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas);
-		mc->nbSamples_ *= 10;
-
-		if (verbose) std::cout << "Deltas : " << std::endl; if (verbose) pnl_vect_print(deltas);
-
-		// Pour calculer la tracking error, on ne simule pas une stratégie de couverture - on regarde juste à chaque date
-		// la performance de la couverture jusqu'à la suivante. On considère donc à chaque fois "magiquement" qu'on a à
-		// nouveau le prix comme quantité d'€ disponible. Artificiel mais plus propre calculatoirement.
-		// Repasser à une courbe ne devrait alors pas être trop difficile (prix initial + multiplication par rendements )
-
-		if (stepByStep && advancement>5) std::cin.ignore();
-		value = price;
-		UpdatePortfolio(quantities, currentVect, deltas);
-		spare = price - ComputeValue(quantities, currentVect);
-
-		if (verbose) std::cout << "New quantities : " << std::endl; if (verbose) pnl_vect_print(quantities);
-		if (verbose) std::cout << "Spare : " << spare << std::endl;
 		if (stepByStep) std::cin.ignore();
 
-		if (verbose) std::cout << "ADVANCE" << std::endl;
+		// calcul de la différence
+		LET(returnsDiff, advancement - indexBegin - 1) = portfolioReturn - productReturn;
+
+		if (verbose) std::cout << "Return difference : " << GET(returnsDiff, advancement - indexBegin - 1) << std::endl;
+		if (stepByStep) std::cin.ignore();
+
+		if (advancement != indexEnd) {
+			// mise à jour de la composition du portefeuille
+			mc->nbSamples_ /= 10;
+			deltas = pnl_vect_create_from_zero(mod->size_);
+			mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas);
+			mc->nbSamples_ *= 10;
+			if (stepByStep) std::cin.ignore();
+
+			if (verbose) std::cout << "Deltas : " << std::endl; if (verbose) pnl_vect_print(deltas);
+
+			// Pour calculer la tracking error, on ne simule pas une stratégie de couverture - on regarde juste à chaque date
+			// la performance de la couverture jusqu'à la suivante. On considère donc à chaque fois "magiquement" qu'on a à
+			// nouveau le prix comme quantité d'€ disponible. Artificiel mais plus propre calculatoirement.
+			// Repasser à une courbe ne devrait alors pas être trop difficile (prix initial + multiplication par rendements )
+
+			value = price;
+			UpdatePortfolio(quantities, currentVect, deltas);
+			spare = price - ComputeValue(quantities, currentVect);
+
+			if (verbose) std::cout << "New quantities : " << std::endl; if (verbose) pnl_vect_print(quantities);
+			if (verbose) std::cout << "Spare : " << spare << std::endl;
+			if (stepByStep) std::cin.ignore();
+
+			if (verbose) std::cout << "ADVANCE" << std::endl;
+		}
 	}
 	std::cout << std::endl;
 	// calcul de la tracking error
@@ -1280,16 +1278,17 @@ void TrackingErrorMultimonde2021Quanto(
 	double sumVols = 0;
 	std::cout << "Difference vectors" << std::endl;
 	pnl_vect_print(returnsDiff);
+	std::cout << std::endl;
 	double get;
-	for (int i = 0; i < nbUpdates; i++) {
+	for (int i = 0; i < realNbUpdates; i++) {
 		get = GET(returnsDiff, i);
 		sum += get;
 		squaresSum += get * get;
 		sumVols += GET(priceEstimationVolatilities, i);
 	}
-	sum /= (nbUpdates*nbUpdates);
-	squaresSum /= nbUpdates;
-	sumVols /= nbUpdates;
+	sum /= (realNbUpdates*realNbUpdates);
+	squaresSum /= realNbUpdates;
+	sumVols /= realNbUpdates;
 
 	std::cout << "Squared sum ; sum ; tracking error ; average relative price estimation error" << std::endl;
 	std::cout << squaresSum << std::endl;
@@ -1297,11 +1296,11 @@ void TrackingErrorMultimonde2021Quanto(
 	std::cout << sqrt(squaresSum - sum*sum) << std::endl;
 	std::cout << sumVols << std::endl;
 
-	*productReturns = static_cast<double*>(malloc(nbUpdates * sizeof(double)));
-	memcpy(*productReturns, &(productReturnsIntermediate[0]), nbUpdates * sizeof(double));
+	*productReturns = static_cast<double*>(malloc(realNbUpdates * sizeof(double)));
+	memcpy(*productReturns, &(productReturnsIntermediate[0]), realNbUpdates * sizeof(double));
 
-	*portfolioReturns = static_cast<double*>(malloc(nbUpdates * sizeof(double)));
-	memcpy(*portfolioReturns, &(portfolioReturnsIntermediate[0]), nbUpdates * sizeof(double));
+	*portfolioReturns = static_cast<double*>(malloc(realNbUpdates * sizeof(double)));
+	memcpy(*portfolioReturns, &(portfolioReturnsIntermediate[0]), realNbUpdates * sizeof(double));
 
 	*tracking_error = sqrt(squaresSum - sum*sum);
 }

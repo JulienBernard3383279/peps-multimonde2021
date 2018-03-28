@@ -257,11 +257,12 @@ extern "C" PRICERDLL_API void DeltasMultimonde2021Quanto(
 
 extern "C" PRICERDLL_API void TrackingErrorMultimonde2021Quanto(
 	int sampleNumber,
-	double t,
+	double beginning,
+	double end,
 	double dateStartSimul,
 	double providedScenario[],
 	int nbRows,
-	double currentPrices[],
+	double spots[],
 	double pricesAtSimulStart[],
 	double volatilities[],
 	double interestRates[],

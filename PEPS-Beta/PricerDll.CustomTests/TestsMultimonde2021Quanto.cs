@@ -676,16 +676,17 @@ namespace PricerDll.CustomTests
             past = currentPrices;
             nbRows = 1;
             t = 0;
-            nbUpdates = 52*6-3;
+            nbUpdates = 52*6;
 
             API.TrackingErrorMultimonde2021Quanto(
                 nbSamples,
-                t,
+                0 * (371.0 / 365.25),
+                6 * (371.0 / 365.25),
                 t,
                 past,
                 nbRows,
-                currentPrices,
-                currentPrices,
+                currentPrices, //spots
+                currentPrices, //prices at simulation start
                 volatilities,
                 interestRates,
                 correlations,

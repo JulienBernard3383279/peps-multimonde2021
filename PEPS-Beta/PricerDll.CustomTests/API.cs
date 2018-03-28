@@ -297,11 +297,12 @@ namespace PricerDll.CustomTests
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void TrackingErrorMultimonde2021Quanto(
             int sampleNumber,
-            double t,
+            double beginning,
+            double end,
             double dateStartSimul,
             double[] providedScenario,
             int nbRows,
-            double[] currentPrices,
+            double[] spots,
             double[] pricesAtSimulStart,
             double[] volatilities,
             double[] interestRates,

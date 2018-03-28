@@ -193,6 +193,10 @@ void BlackScholesModel::postInitAssetCustomDates(PnlMat *path,
 	PnlVect* dates, int nbTimeSteps, PnlRng *rng) {
 	//for (int i = 0; i < 500; i++) { std::cout << "bsm -> piacd -> 1" << std::endl; }
 
+	if ((GET(dates,dates->size-1) - t) > -0.000001 && (GET(dates, dates->size - 1) - t) < 0.000001) {
+		pnl_mat_clone(path, past);
+		return;
+	}
 	PnlVect* temp = pnl_vect_create(size_);
 
 	// Initialisation de path [modif 22/03]
