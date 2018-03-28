@@ -17,11 +17,11 @@ namespace PEPS_Beta
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            //IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
+            IDatabaseInitializer<BddContext> init2 = new InitParamEtDonnees();
 
-            //Database.SetInitializer(init);
+            Database.SetInitializer(init2);
 
-            //init.InitializeDatabase(new BddContext());
+            init2.InitializeDatabase(new BddContext());
 
             //add Sql.Client.SqlException catch => init
             // make a request, if request return empty => init
