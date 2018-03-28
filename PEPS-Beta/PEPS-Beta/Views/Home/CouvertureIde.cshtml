@@ -1,41 +1,51 @@
 ﻿@model PEPS_Beta.Models.PortefeuilleIdeal
 
-<table>
+<div class="x_panel">
+    <div class="x_content">
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>Delta ESTOX</td>
+                    <td> @Model.DeltaEstox</td>
+                    <td> Delta EUR</td>
+                    <td> @Model.DeltaZCEur</td>
+                </tr>
 
-    <tr>
-        <td>Delta ESTOX et EUR</td>
-        <td> @Model.DeltaEstox</td>
-        <td> @Model.DeltaZCEur</td>
-    </tr>
+                <tr>
+                    <td>Delta SP500</td>
+                    <td> @Model.DeltaSp500</td>
+                    <td> Delta USD</td>
+                    <td> @Model.DeltaZCUsd</td>
+                </tr>
 
-    <tr>
-        <td>Delta SP500 et USD</td>
-        <td> @Model.DeltaSp500</td>
-        <td> @Model.DeltaZCUsd</td>
-    </tr>
+                <tr>
+                    <td>Delta N225</td>
+                    <td> @Model.DeltaN225</td>
+                    <td> Delta JPY</td>
+                    <td> @Model.DeltaZCJpy</td>
+                </tr>
 
-    <tr>
-        <td>Delta N225 et JPY</td>
-        <td> @Model.DeltaN225</td>
-        <td> @Model.DeltaZCJpy</td>
-    </tr>
+                <tr>
+                    <td>Delta HANG</td>
+                    <td> @Model.DeltaHang</td>
+                    <td> Delta HKD</td>
+                    <td> @Model.DeltaZCHkd</td>
+                </tr>
 
-    <tr>
-        <td>Delta HANG et HKD</td>
-        <td> @Model.DeltaHang</td>
-        <td> @Model.DeltaZCHkd</td>
-    </tr>
+                <tr>
+                    <td>Delta FTSE</td>
+                    <td> @Model.DeltaFtse</td>
+                    <td> Delta GBP</td>
+                    <td> @Model.DeltaZCGbp</td>
+                </tr>
 
-    <tr>
-        <td>Delta FTSE et GBP</td>
-        <td> @Model.DeltaFtse</td>
-        <td> @Model.DeltaZCGbp</td>
-    </tr>
-
-    <tr>
-        <td>Delta ASX et AUD</td>
-        <td> @Model.DeltaAsx</td>
-        <td> @Model.DeltaZCAud</td>
-    </tr>
-
-</table>
+                <tr>
+                    <td>Delta ASX</td>
+                    <td> @Model.DeltaAsx</td>
+                    <td> Delta AUD</td>
+                    <td> @Model.DeltaZCAud</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

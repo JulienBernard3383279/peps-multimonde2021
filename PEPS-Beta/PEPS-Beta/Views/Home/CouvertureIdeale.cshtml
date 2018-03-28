@@ -1,24 +1,31 @@
 ﻿@model PEPS_Beta.ViewModels.CouvertureIdealeViewModel
 
-<h1> Deltas Optimaux : </h1>
+<h2> Deltas Optimaux : </h2>
 <div id="optimCouverture">
     @Html.Partial("CouvertureIde", Model.IdealPort)
 </div>
 
-
-
-@using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
-{
-    <div>
-        @*<label>&nbsp;</label>*@
-        <input type="submit" value="Mettre à jour" class="submit" />
-    </div>
-}
-
-@using (Ajax.BeginForm("InitPortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
-{
-    <div>
-        @*<label>&nbsp;</label>*@
-        <input type="submit" value="Init" class="submit" />
-    </div>
-}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
+                {
+                <div>
+                    @*<label>&nbsp;</label>*@
+                    <button type="submit" class="btn btn-primary" value="Mettre à jour">Mettre à jour</button>
+                </div>
+                }
+            </th>
+            <th>
+                @using (Ajax.BeginForm("InitPortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
+                {
+                <div>
+                    @*<label>&nbsp;</label>*@
+                    <button type="submit" class="btn btn-primary" value="Init">Initialiser</button>
+                </div>
+                }
+            </th>
+        </tr>
+    </thead>
+</table>
