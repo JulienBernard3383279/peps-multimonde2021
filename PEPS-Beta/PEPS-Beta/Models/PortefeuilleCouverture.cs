@@ -41,7 +41,7 @@ namespace PEPS_Beta.Models
         {
             switch (nom)
             {
-                case "estox":
+                case "estoxx":
                     return DeltaEstox;
                 case "sp500":
                     return DeltaSp500;
@@ -74,7 +74,7 @@ namespace PEPS_Beta.Models
         {
             switch (nom)
             {
-                case "estox":
+                case "estoxx":
                     DeltaEstox = val;
                     return DeltaEstox;
                 case "sp500":

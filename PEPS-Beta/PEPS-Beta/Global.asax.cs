@@ -18,7 +18,6 @@ namespace PEPS_Beta
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             //IDatabaseInitializer<BddContext> init = new InitParamEtDonnees();
-            //IDatabaseInitializer<BddContext> init = new DropCreateDatabaseAlways<BddContext>();
 
             //Database.SetInitializer(init);
 

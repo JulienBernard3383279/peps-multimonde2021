@@ -4,11 +4,11 @@
     {
             <div>
                 @Html.LabelFor(estim => Model.DebutEst)
-                @Html.TextBoxFor(estim => Model.DebutEst, "01/10/2012")
-            </div>
+                @Html.TextBoxFor(estim => Model.DebutEst, new { @type = "date" })
+            </div> 
             <div>
                 @Html.LabelFor(ourInd => Model.FinEst)
-                @Html.TextBoxFor(ourInd => Model.FinEst, "01/10/2015")
+                @Html.TextBoxFor(ourInd => Model.FinEst, new { @type = "date" })
             </div>
             <div>
                 @*<label>&nbsp;</label>*@

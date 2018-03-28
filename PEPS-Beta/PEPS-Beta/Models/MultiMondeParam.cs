@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -27,10 +28,6 @@ namespace PEPS_Beta.Models
 
         #region properties
 
-
-        public DateTime[] Constatations { get => constatations; }
-
-
         public int NbSamples { get => nbSamples; set => nbSamples = value; }
 
         public int NbIndices { get => nbIndices; set => nbIndices = value; }
@@ -41,13 +38,18 @@ namespace PEPS_Beta.Models
         private DateTime endDate = new DateTime(2021, 11, 05);
 
 
+        [DataType(DataType.DateTime)]
+        [DisplayFormat(ApplyFormatInEditMode = true,
+                                    HtmlEncode = false,
+                                    NullDisplayText = "",
+                                    DataFormatString = "{0:MM/dd/yyyy}")]
         public DateTime CurrDate { get => currDate; set => currDate = value; }
         public DateTime EndDate { get => endDate; set => endDate = value; }
         public DateTime Origin { get => origin; set => origin = value; }
+        public DateTime[] Constatations { get => constatations; set => constatations = value; }
 
         public MultiMondeParam()
         {
-            this.constatations = new DateTime[6];
             this.indices = new List<Indice>();
         }
     }
