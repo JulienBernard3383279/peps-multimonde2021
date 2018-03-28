@@ -519,7 +519,7 @@ namespace PEPS_Beta.Controllers
             }
         }
 
-        public ActionResult SetDate(MultiMondeParam m)
+        public unsafe ActionResult SetDate(MultiMondeParam m)
         {
 
             using (DAL dal = new DAL())
@@ -530,6 +530,126 @@ namespace PEPS_Beta.Controllers
                     return PartialView("MultiMondeParam", dal.GetParams());
                 }
                 dal.ChangeDate(m.CurrDate);
+
+                MultiMondeParam param = dal.GetParams();
+                double t = (param.CurrDate - param.Origin).TotalDays / 365.25;
+                double currTDC;
+                double currP;
+                DateTime currD = param.CurrDate;
+                List<Indice> indList = dal.GetIndices();
+                int i = 0;
+                double[] currentPrices = new double[11];
+                double[] volatilities = new double[11];
+                double[] interestRates = new double[6];
+                double[] correlations = new double[11 * 11];
+
+                double[] tmpcorr;
+                foreach (Indice ind in indList)
+                {
+                    if (ind.Money != "eur")
+                    {
+                        currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
+                        currentPrices[i + 5] = currTDC;
+                        volatilities[i + 5] = ind.MoneyVol;
+                        correlations[(i + 5) * (i + 5)] = 1.0;
+
+                        tmpcorr = ind.getCorrTDC();
+                        for (int j = 0; j < 11; ++j)
+                        {
+                            correlations[(i + 5) * 11 + j] = tmpcorr[j];
+                        }
+                    }
+                    currP = dal.getSingleData(currD, ind.Nom.ToUpper());
+                    currentPrices[i] = currP;
+                    volatilities[i] = ind.Vol;
+                    interestRates[i] = ind.InterestRateThisArea;
+
+                    tmpcorr = ind.getCorrI();
+                    for (int j = 0; j < 11; ++j)
+                    {
+                        correlations[i * 11 + j] = tmpcorr[j];
+                    }
+
+                    i++;
+                }
+
+                int nbRows = 1;
+
+                foreach (DateTime constat in param.Constatations)
+                {
+                    if (DateTime.Compare(constat, currD) <= 0)
+                    {
+                        nbRows += 1;
+                    }
+                }
+                double[] past = new double[11 * nbRows];
+
+
+
+                int row = 0;
+                i = 0;
+                foreach (Indice ind in indList)
+                {
+                    if (ind.Money != "eur")
+                    {
+                        currTDC = dal.getSingleChange(param.Origin, "EUR" + ind.Money.ToUpper());
+                        past[11 * row + i + 5] = currTDC;
+                    }
+                    currP = dal.getSingleData(param.Origin, ind.Nom.ToUpper());
+                    past[11 * row + i] = currP;
+                    i++;
+                }
+                foreach (DateTime constat in param.Constatations)
+                {
+                    row += 1;
+                    if (DateTime.Compare(constat, currD) <= 0)
+                    {
+                        i = 0;
+                        foreach (Indice ind in indList)
+                        {
+                            if (ind.Money != "eur")
+                            {
+                                currTDC = dal.getSingleChange(constat, "EUR" + ind.Money.ToUpper());
+                                past[11 * row + i + 5] = currTDC;
+                            }
+                            currP = dal.getSingleData(constat, ind.Nom.ToUpper());
+                            past[11 * row + i] = currP;
+                            i++;
+                        }
+                    }
+                }
+
+
+                double price;
+                double ic;
+                PriceMultimonde2021Quanto(param.NbSamples, past, nbRows, t, currentPrices, volatilities, interestRates, correlations, &price, &ic);
+                dal.setPrice(price);
+
+                double tauxEuro;
+                double currZC;
+                double portValue = 0;
+                double Tmoinst = (param.EndDate - currD).TotalDays / 365.25;
+
+                foreach (Indice ind in indList)
+                {
+                    if (ind.Money == "eur")
+                    {
+                        tauxEuro = ind.InterestRateThisArea;
+                        currTDC = 1.0;
+                    }
+                    else
+                    {
+                        currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
+                    }
+                    currP = dal.getSingleData(currD, ind.Nom.ToUpper()) / currTDC;
+                    currZC = Math.Exp(-ind.InterestRateThisArea * Tmoinst) / currTDC;
+
+                    portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Nom) * currP;
+                    portValue += dal.getPortefeuilleCouverture().GetDelta(ind.Money) * currZC;
+                }
+
+                dal.setPnl(price - portValue);
+
                 return PartialView("MultiMondeParam", dal.GetParams());
             }
         }
