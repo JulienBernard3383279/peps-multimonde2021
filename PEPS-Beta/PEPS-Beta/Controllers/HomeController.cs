@@ -57,7 +57,7 @@ namespace PEPS_Beta.Controllers
         public unsafe ActionResult Index()
         {
 
-                        // ParseData
+            // ParseData
 
 
             //ds.Update();
@@ -324,7 +324,7 @@ namespace PEPS_Beta.Controllers
                 vm.IdealPort = new PortefeuilleIdeal();
 
                 MultiMondeParam param = dal.GetParams();
-                double t = (param.CurrDate-param.Origin).TotalDays / 365.25;
+                double t = (param.CurrDate - param.Origin).TotalDays / 365.25;
                 double currTDC;
                 double currP;
                 DateTime currD = param.CurrDate;
@@ -349,7 +349,7 @@ namespace PEPS_Beta.Controllers
                     currentPrices[i] = currP;
                     volatilities[i] = ind.Vol;
                     interestRates[i] = ind.InterestRateThisArea;
-                    correlations[i*i] = 1.0;
+                    correlations[i * i] = 1.0;
                     i++;
                 }
 
@@ -357,7 +357,7 @@ namespace PEPS_Beta.Controllers
 
                 foreach (DateTime constat in param.Constatations)
                 {
-                    if (DateTime.Compare(constat,currD)<=0)
+                    if (DateTime.Compare(constat, currD) <= 0)
                     {
                         nbRows += 1;
                     }
@@ -423,7 +423,7 @@ namespace PEPS_Beta.Controllers
                 "gbp",
                 "aud"};
 
-                for (int k = 0; k<11; ++k)
+                for (int k = 0; k < 11; ++k)
                 {
                     vm.IdealPort.SetDelta(names[k], deltas[k]);
                 }
@@ -475,13 +475,20 @@ namespace PEPS_Beta.Controllers
             }
         }
 
-        public void SetDate(MultiMondeParam m)
+        public ActionResult SetDate(MultiMondeParam m)
         {
+
             using (DAL dal = new DAL())
             {
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.MessageErreur = ModelState["CurrDate"].Errors[0].ErrorMessage;
+                    return PartialView("MultiMondeParam", dal.GetParams());
+                }
                 dal.ChangeDate(m.CurrDate);
+                return PartialView("MultiMondeParam", dal.GetParams());
             }
         }
-        
+
     }
 }

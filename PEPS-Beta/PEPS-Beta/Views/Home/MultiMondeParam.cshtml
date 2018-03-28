@@ -1,15 +1,16 @@
 ﻿@model PEPS_Beta.Models.MultiMondeParam
 
-<h2>
-    Date actuelle
-</h2>
 <div id="multimondeParam">
-    @using (Ajax.BeginForm("SetDate", "Home", new AjaxOptions { HttpMethod = "POST" }))
+    <h2>
+        Date actuelle
+    </h2>
+    @using (Ajax.BeginForm("SetDate", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "multimondeParam" }))
     {
         @Html.HiddenFor(m => Model.Id)
-        <div>
-            @Html.TextBoxFor(m => Model.CurrDate, new {@Value = Model.CurrDate.ToShortDateString() })
-        </div>
+    <div>
+        @Html.TextBoxFor(m => Model.CurrDate, new { @Value = Model.CurrDate.ToShortDateString() })
+        <span style="color:red">@ViewBag.MessageErreur</span>
+    </div>
         <div>
             @*<label>&nbsp;</label>*@
             <input type="submit" value="Modifier date" class="submit" />
