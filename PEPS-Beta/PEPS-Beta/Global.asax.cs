@@ -17,11 +17,11 @@ namespace PEPS_Beta
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
-            IDatabaseInitializer<BddContext> init2 = new InitParamEtDonnees();
+            //IDatabaseInitializer<BddContext> init2 = new InitParamEtDonnees();
 
-            Database.SetInitializer(init2);
+            //Database.SetInitializer(init2);
 
-            init2.InitializeDatabase(new BddContext());
+            //init2.InitializeDatabase(new BddContext());
 
             //add Sql.Client.SqlException catch => init
             // make a request, if request return empty => init
@@ -33,7 +33,7 @@ namespace PEPS_Beta
                     conn.ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=PEPS-Beta.Models.BddContext;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
                     conn.Open();
                     SqlCommand command = new SqlCommand("SELECT ASX FROM  IndexesAtDates WHERE Date = @DateParam", conn);
-                    command.Parameters.Add(new SqlParameter("DateParam", DateTime.Parse("30/01/2008")));
+                    command.Parameters.Add(new SqlParameter("DateParam", DateTime.Parse("31/01/2008")));
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read() == false)

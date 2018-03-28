@@ -42,22 +42,22 @@ namespace PEPS_Beta.Models
             {
                 MultiMondeParam newParam = new MultiMondeParam();
                 bdd.Parametres.Add(newParam);
-                Indice estox = new Indice("estox", "eur");
+                Indice estox = new Indice("estox", "eur",0);
                 bdd.Indices.Add(estox);
                 newParam.Indices.Add(estox);
-                Indice sp500 = new Indice("sp500", "usd");
+                Indice sp500 = new Indice("sp500", "usd",0);
                 bdd.Indices.Add(sp500);
                 newParam.Indices.Add(sp500);
-                Indice n225 = new Indice("n225", "jpy");
+                Indice n225 = new Indice("n225", "jpy",0);
                 bdd.Indices.Add(n225);
                 newParam.Indices.Add(n225);
-                Indice hang = new Indice("hang", "hkd");
+                Indice hang = new Indice("hang", "hkd",0);
                 bdd.Indices.Add(hang);
                 newParam.Indices.Add(hang);
-                Indice ftse = new Indice("ftse", "gbp");
+                Indice ftse = new Indice("ftse", "gbp",0);
                 bdd.Indices.Add(ftse);
                 newParam.Indices.Add(ftse);
-                Indice asx = new Indice("asx", "aud");
+                Indice asx = new Indice("asx", "aud",0);
                 bdd.Indices.Add(asx);
                 newParam.Indices.Add(asx);
 
@@ -75,6 +75,38 @@ namespace PEPS_Beta.Models
             {
                 indAmodifier.InterestRateThisArea = interestRateThisArea;
                 indAmodifier.Vol = vol;
+                bdd.SaveChanges();
+            }
+        }
+
+        internal void setCorrIndice(int id, double corrEstoxx, double corrSP500, double corrN225, double corrHANG, double corrFTSE, double corrASX, double corrEURUSD, double corrEURJPY, double corrEURHKD, double corrEURGBP, double corrEURAUD)
+        {
+            Indice indAmodifier = bdd.Indices.FirstOrDefault(indice => indice.Id == id);
+            if (indAmodifier != null)
+            {
+                indAmodifier.corrESTOXX = corrEstoxx;
+                indAmodifier.corrSP500 = corrSP500;
+                indAmodifier.corrN225 = corrN225;
+                indAmodifier.corrHANG = corrHANG;
+                indAmodifier.corrFTSE = corrFTSE;
+                indAmodifier.corrASX = corrASX;
+
+                indAmodifier.corrEURUSD = corrEURUSD;
+                indAmodifier.corrEURJPY = corrEURJPY;
+                indAmodifier.corrEURHKD = corrEURHKD;
+                indAmodifier.corrEURGBP = corrEURGBP;
+                indAmodifier.corrEURAUD = corrEURAUD;
+
+                bdd.SaveChanges();
+            }
+        }
+
+        internal void setMoneyVol(int id, double moneyVol)
+        {
+            Indice indAmodifier = bdd.Indices.FirstOrDefault(indice => indice.Id == id);
+            if (indAmodifier != null)
+            {
+                indAmodifier.MoneyVol = moneyVol;
                 bdd.SaveChanges();
             }
         }
