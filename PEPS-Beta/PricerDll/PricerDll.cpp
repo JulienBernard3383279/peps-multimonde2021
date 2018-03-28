@@ -1102,6 +1102,8 @@ void DeltasMultimonde2021Quanto(
 #pragma region Tracking error
 void TrackingErrorMultimonde2021Quanto(
 	int sampleNumber,
+	//double beginning,
+	//double end,
 	double past[],
 	int nbRows,
 	double t,
@@ -1109,12 +1111,10 @@ void TrackingErrorMultimonde2021Quanto(
 	double volatilities[],
 	double interestRates[],
 	double correlations[],
-	int nbUpdatesPerYear, //nbUpdates par an [par date de constatation]
+	int nbUpdates, //nbUpdates par an [par date de constatation]
 	double* tracking_error,
 	double** portfolioReturns,
 	double ** productReturns) {
-
-	int nbUpdates = nbUpdatesPerYear * 6;
 
 	//pour l'instant, t est ignoré
 	//std::cout << "Tracking error > 1" << std::endl;
@@ -1151,7 +1151,8 @@ void TrackingErrorMultimonde2021Quanto(
 
 	PnlVect* temp = pnl_vect_create(mod->size_);
 	for (int i = 0; i < 7; i++) {
-		pnl_mat_get_row(temp, scenario, i*nbUpdatesPerYear);
+		//pnl_mat_get_row(temp, scenario, i*nbUpdatesPerYear);
+		InterpolateValues(temp, scenario, i*371.0 / 365.25, 6 * 371.0 / 365.25, nbUpdates);
 		pnl_mat_set_row(scenarioToFeed, temp, i);
 	}
 	pnl_vect_free(&temp);
@@ -1189,10 +1190,11 @@ void TrackingErrorMultimonde2021Quanto(
 
 	double step = (371.0 * 6.0 / 365.25) / nbUpdates;
 	//pnl_mat_print(scenario);
+	std::cout << "Advancement : ";
+
 	for (int advancement = 1; advancement<nbUpdates; advancement++) {
-		verbose = ( advancement % (nbUpdates / 6) == 0 );
 		// mise à jour des informations
-		std::cout << "Advancement : " << advancement << std::endl;
+		std::cout << advancement << "; ";
 
 		if (verbose) std::cout << "Step : " << step << std::endl;
 		if (stepByStep && advancement>5) std::cin.ignore();
@@ -1269,6 +1271,7 @@ void TrackingErrorMultimonde2021Quanto(
 
 		if (verbose) std::cout << "ADVANCE" << std::endl;
 	}
+	std::cout << std::endl;
 	// calcul de la tracking error
 	double sum = 0;
 	double squaresSum = 0;

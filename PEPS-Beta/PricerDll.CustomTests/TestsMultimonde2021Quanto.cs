@@ -645,10 +645,10 @@ namespace PricerDll.CustomTests
             int nbRows;
             double t;
             double tracking_error;
-            int nbUpdatesPerYear;
+            int nbUpdates;
             #endregion
             #region Test
-            nbSamples = 50_000;
+            nbSamples = 5_000;
             interestRates = new double[6] {
                 0.02,0.02,0.02,0.02,0.02,0.02
                 //0, 0, 0, 0, 0, 0
@@ -676,7 +676,7 @@ namespace PricerDll.CustomTests
             past = currentPrices;
             nbRows = 1;
             t = 0;
-            nbUpdatesPerYear = 52;
+            nbUpdates = 52*6-3;
 
             API.TrackingErrorMultimonde2021Quanto(
                 nbSamples,
@@ -687,16 +687,16 @@ namespace PricerDll.CustomTests
                 volatilities,
                 interestRates,
                 correlations,
-                nbUpdatesPerYear,
+                nbUpdates,
                 &tracking_error,
                 out IntPtr portfolioReturnsPtr,
                 out IntPtr productReturnsPtr);
 
-            double[] portfolioReturns = new double[nbUpdatesPerYear * 6];
-            System.Runtime.InteropServices.Marshal.Copy(portfolioReturnsPtr, portfolioReturns, 0, nbUpdatesPerYear * 6); //<- deltas contient maintenant les deltas
+            double[] portfolioReturns = new double[nbUpdates];
+            System.Runtime.InteropServices.Marshal.Copy(portfolioReturnsPtr, portfolioReturns, 0, nbUpdates); //<- deltas contient maintenant les deltas
 
-            double[] productReturns = new double[nbUpdatesPerYear * 6];
-            System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, nbUpdatesPerYear * 6); //<- deltas contient maintenant les deltas
+            double[] productReturns = new double[nbUpdates];
+            System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, nbUpdates); //<- deltas contient maintenant les deltas
 
             Console.WriteLine("Tracking error : " + tracking_error);
 
