@@ -29,22 +29,23 @@ namespace PEPS_Beta.Tests
             int nbRows = 1;
             double[] currents = new double[1] { 95.0 };
             double[] deltas = new double[1];
-
+            double nbTimeStep = 1;
             API1.DeltasMultiCurrencyBasketAnyTime(
-                 maturity,
-                 optionSize,
-                 strike,
-                 payoffCoefficients,
-                 nbSamples,
-                 past,
-                 nbRows,
-                 t,
-                 currents,
-                 volatilities,
-                 interestRate,
-                 correlations,
-                 trends,
-                 out IntPtr deltasPtr);
+                maturity,
+                optionSize,
+                strike,
+                payoffCoefficients,
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currents,
+                volatilities,
+                interestRate,
+                correlations,
+                trends,
+                nbTimeStep,
+                out IntPtr deltasPtr);
 
             System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 1); //< -deltas contient maintenant les deltas
 
