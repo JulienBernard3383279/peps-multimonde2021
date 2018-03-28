@@ -69,10 +69,11 @@ void InitBasketAnyTime(
 	double volatilities[],
 	double interestRate,
 	double correlation[],
-	double trends[])
+	double trends[],
+	double nbTimeStep)
 {
 	PnlVect* payoffCoefficientsVect = pnl_vect_create_from_ptr(optionSize, payoffCoefficients);
-	*opt = new BasketOption(maturity, 1, optionSize, payoffCoefficientsVect, strike);
+	*opt = new BasketOption(maturity, nbTimeStep, optionSize, payoffCoefficientsVect, strike);
 
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(optionSize, volatilities);
 	PnlVect* spotsVect = pnl_vect_create_from_zero(optionSize);
@@ -122,17 +123,18 @@ void PriceBasketAnyTime(
 	double interestRate,
 	double correlation[], //optionSize², traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
 	double trends[],
+	double nbTimeStep,
 	double* price,
 	double* ic)
 {
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
-	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
+	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends,nbTimeStep);
 
 	//Gestion paramètres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
-	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, optionSize, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
+	PnlVect* currentVect = pnl_vect_create_from_ptr(optionSize, current);
 
 	mc->price(pastMat, t, currentVect, price, ic);
 }
@@ -156,16 +158,16 @@ void DeltasMultiCurrencyBasket(
 	BlackScholesModel *mod;
 	InitBasket(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, spots, volatilities, interestRate, correlation, trends);
 
-	PnlVect* myDeltas = pnl_vect_create_from_zero(6);
+	PnlVect* myDeltas = pnl_vect_create_from_zero(optionSize);
 	mc->deltas(myDeltas);
 
-	double* intermediate = new double[6];
-	for (int i = 0; i < 6; i++) {
+	double* intermediate = new double[optionSize];
+	for (int i = 0; i < optionSize; i++) {
 		intermediate[i] = GET(myDeltas, i);
 	}
 
-	*deltas = static_cast<double*>(malloc(6 * sizeof(double)));
-	memcpy(*deltas, &(intermediate[0]), 6 * sizeof(double));
+	*deltas = static_cast<double*>(malloc(optionSize * sizeof(double)));
+	memcpy(*deltas, &(intermediate[0]), optionSize * sizeof(double));
 }
 
 void DeltasMultiCurrencyBasketAnyTime(
@@ -182,12 +184,13 @@ void DeltasMultiCurrencyBasketAnyTime(
 	double interestRate,
 	double correlation[],
 	double trends[],
+	double nbTimestep,
 	double** deltas)
 {
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
-	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
+	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends,nbTimestep);
 
 	//Gestion paramètres past
 	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
@@ -196,13 +199,13 @@ void DeltasMultiCurrencyBasketAnyTime(
 	PnlVect* myDeltas = pnl_vect_create_from_zero(6);
 	mc->deltas(pastMat, t, currentVect, myDeltas);
 
-	double* intermediate = new double[6];
-	for (int i = 0; i < 6; i++) {
+	double* intermediate = new double[optionSize];
+	for (int i = 0; i < optionSize; i++) {
 		intermediate[i] = GET(myDeltas, i);
 	}
 
-	*deltas = static_cast<double*>(malloc(6 * sizeof(double)));
-	memcpy(*deltas, &(intermediate[0]), 6 * sizeof(double));
+	*deltas = static_cast<double*>(malloc(optionSize * sizeof(double)));
+	memcpy(*deltas, &(intermediate[0]), optionSize * sizeof(double));
 }
 #pragma endregion
 #pragma region Deltas single currency
@@ -226,22 +229,22 @@ void DeltasSingleCurrencyBasket(
 	BlackScholesModel *mod;
 	InitBasket(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, spots, volatilities, interestRate, correlation, trends);
 
-	PnlVect* deltas = deltas = pnl_vect_create_from_zero(2);
+	PnlVect* deltas = deltas = pnl_vect_create_from_zero(optionSize);
 	mc->deltas(deltas);
 
-	double* myDeltasAssets = new double[6];
-	double* myDeltasFXRates = new double[6];
+	double* myDeltasAssets = new double[optionSize];
+	double* myDeltasFXRates = new double[optionSize];
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < optionSize; i++) {
 		myDeltasAssets[i] = GET(deltas, i) / FXRates[i];
 		myDeltasFXRates[i] = -GET(deltas, i) * spots[i] / FXRates[i];
 	}
 
-	*deltasAssets = static_cast<double*>(malloc(6 * sizeof(double)));
-	memcpy(*deltasAssets, &(myDeltasAssets[0]), 6 * sizeof(double));
+	*deltasAssets = static_cast<double*>(malloc(optionSize * sizeof(double)));
+	memcpy(*deltasAssets, &(myDeltasAssets[0]), optionSize * sizeof(double));
 
-	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
-	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
+	*deltasFXRates = static_cast<double*>(malloc(optionSize * sizeof(double)));
+	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), optionSize * sizeof(double));
 }
 
 void DeltasSingleCurrencyBasketAnyTime(
@@ -259,17 +262,18 @@ void DeltasSingleCurrencyBasketAnyTime(
 	double correlation[],
 	double trends[],
 	double FXRates[],
+	double nbTimeStep,
 	double** deltasAssets,
 	double** deltasFXRates)
 {
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
-	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends);
+	InitBasketAnyTime(&mc, &opt, &mod, maturity, optionSize, strike, payoffCoefficients, sampleNumber, volatilities, interestRate, correlation, trends,nbTimeStep);
 
 	//Gestion paramètres past
-	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, 6, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
-	PnlVect* currentVect = pnl_vect_create_from_ptr(6, current);
+	PnlMat* pastMat = pnl_mat_create_from_ptr(nbRows, optionSize, past); //Le tableau c# devra être multidimensionnel [,], pas jagged !
+	PnlVect* currentVect = pnl_vect_create_from_ptr(optionSize, current);
 
 	/*PnlVect* myDeltas = pnl_vect_create_from_zero(6);
 	mc->deltas(pastMat, t, currentVect, deltas);
@@ -282,19 +286,19 @@ void DeltasSingleCurrencyBasketAnyTime(
 	PnlVect* deltas = deltas = pnl_vect_create_from_zero(6);
 	mc->deltas(pastMat, t, currentVect, deltas);
 
-	double* myDeltasAssets = new double[6];
-	double* myDeltasFXRates = new double[6];
+	double* myDeltasAssets = new double[optionSize];
+	double* myDeltasFXRates = new double[optionSize];
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < optionSize; i++) {
 		myDeltasAssets[i] = GET(deltas, i) / FXRates[i];
 		myDeltasFXRates[i] = -GET(deltas, i) * current[i] / FXRates[i];
 	}
 
-	*deltasAssets = static_cast<double*>(malloc(6 * sizeof(double)));
-	memcpy(*deltasAssets, &(myDeltasAssets[0]), 6 * sizeof(double));
+	*deltasAssets = static_cast<double*>(malloc(optionSize * sizeof(double)));
+	memcpy(*deltasAssets, &(myDeltasAssets[0]), optionSize * sizeof(double));
 
-	*deltasFXRates = static_cast<double*>(malloc(6 * sizeof(double)));
-	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), 6 * sizeof(double));
+	*deltasFXRates = static_cast<double*>(malloc(optionSize * sizeof(double)));
+	memcpy(*deltasFXRates, &(myDeltasFXRates[0]), optionSize * sizeof(double));
 }
 #pragma endregion
 #pragma endregion

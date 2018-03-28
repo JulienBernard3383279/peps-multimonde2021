@@ -27,7 +27,7 @@ namespace PEPS_Beta.Tests
             double interestRate = 0.05;
             double[] correlations = new double[1] { 1.0 };
             double[] trends = new double[1] { 0.05 };
-
+            double nbTimeStep = 1;
             double price;
             double ic;
 
@@ -45,6 +45,7 @@ namespace PEPS_Beta.Tests
                 interestRate,
                 correlations,
                 trends,
+                nbTimeStep,
                 &price,
                 &ic);
 

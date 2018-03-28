@@ -40,6 +40,7 @@ namespace PricerDll.CustomTests
             double interestRate,
             double[] correlation, //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
             double[] trends,
+            double nbTimeStep,
             double* price,
             double* ic);
 
@@ -73,6 +74,7 @@ namespace PricerDll.CustomTests
             double interestRate,
             double[] correlation,
             double[] trends,
+            double nbTimeStep,
             out IntPtr deltas
         );
 
@@ -109,6 +111,7 @@ namespace PricerDll.CustomTests
             double[] correlation,
             double[] trends,
             double[] FXRates,
+            double nbTimeStep,
             out IntPtr deltasAssets,
             out IntPtr deltasFXRates
         );

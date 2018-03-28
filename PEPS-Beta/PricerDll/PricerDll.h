@@ -36,6 +36,7 @@ extern "C" PRICERDLL_API void PriceBasketAnyTime(
 	double interestRate,
 	double correlation[],
 	double trends[],
+	double nbTimeStep,
 	double* price,
 	double* ic);
 
@@ -50,6 +51,7 @@ extern "C" PRICERDLL_API void DeltasMultiCurrencyBasket(
 	double interestRate,
 	double correlation[],
 	double trends[],
+	double nbTimeStep,
 	double** deltas
 );
 
