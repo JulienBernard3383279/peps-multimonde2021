@@ -1203,6 +1203,7 @@ void TrackingErrorMultimonde2021Quanto(
 		if (verbose) std::cout << "Current quantities : " << std::endl; if (verbose) pnl_vect_print(quantities);
 		if (verbose) std::cout << "Spare : " << spare << std::endl;
 		if (stepByStep && advancement>5) std::cin.ignore();
+
 		/*Plus d'étape actualisation pour les monnaies étrangères depuis que nous manipulons des zéro-coupons étrangers directement.
 		Ils s'apprécient dans le modèle. En revanche les euros doivent être actualisés !
 		UpdateCurrencyQuantities(step, &spare, 6, quantities, interestRates);
@@ -1246,6 +1247,7 @@ void TrackingErrorMultimonde2021Quanto(
 		// mise à jour de la composition du portefeuille
 		if (stepByStep && advancement>5) std::cin.ignore();
 		mc->nbSamples_ /= 10;
+		deltas = pnl_vect_create_from_zero(mod->size_);
 		mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas);
 		mc->nbSamples_ *= 10;
 

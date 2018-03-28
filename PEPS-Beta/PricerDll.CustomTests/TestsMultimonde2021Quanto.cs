@@ -648,7 +648,7 @@ namespace PricerDll.CustomTests
             int nbUpdatesPerYear;
             #endregion
             #region Test
-            nbSamples = 5_000;
+            nbSamples = 50_000;
             interestRates = new double[6] {
                 0.02,0.02,0.02,0.02,0.02,0.02
                 //0, 0, 0, 0, 0, 0
@@ -676,7 +676,7 @@ namespace PricerDll.CustomTests
             past = currentPrices;
             nbRows = 1;
             t = 0;
-            nbUpdatesPerYear = 60; //Ne pas mettre un multiple de 6 = ne pas rebalancer aux dates de constatation = le faire foirer exprès
+            nbUpdatesPerYear = 52;
 
             API.TrackingErrorMultimonde2021Quanto(
                 nbSamples,
