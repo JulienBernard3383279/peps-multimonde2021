@@ -12,13 +12,13 @@ namespace PricerDll.CustomTests
         public static double[,] ComputeReturns(double[,] data)
         {
 
-            double[,] returns = new double[data.GetLength(1) - 1, data.GetLength(0)];
+            double[,] returns = new double[data.GetLength(0) - 1, data.GetLength(1)];
             for (int j = 0; j < returns.GetLength(1); j++)
             {
                 for (int i = 0; i < returns.GetLength(0); i++)
                 {
                     //returns[i, j] = (data[j, i + 1] - data[j, i]) / data[j, i];
-                    returns[i, j] = Math.Log(data[j, i + 1] / data[j, i]);
+                    returns[i, j] = Math.Log(data[i+1, j] / data[i, j]);
                 }
             }
             return returns;
