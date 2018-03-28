@@ -79,6 +79,16 @@ namespace PEPS_Beta.Models
             }
         }
 
+        internal void modifierIndiceVolTDC(int id, double vol)
+        {
+            Indice indAmodifier = bdd.Indices.FirstOrDefault(indice => indice.Id == id);
+            if (indAmodifier != null)
+            {
+                indAmodifier.MoneyVol = vol;
+                bdd.SaveChanges();
+            }
+        }
+
         internal void setCorrIndice(int id, double corrEstoxx, double corrSP500, double corrN225, double corrHANG, double corrFTSE, double corrASX, double corrEURUSD, double corrEURJPY, double corrEURHKD, double corrEURGBP, double corrEURAUD)
         {
             Indice indAmodifier = bdd.Indices.FirstOrDefault(indice => indice.Id == id);
@@ -232,8 +242,29 @@ namespace PEPS_Beta.Models
             return -1;
         }
 
+        internal void setCorrTDC(int id, double corrEstoxx, double corrSP500, double corrN225, double corrHANG, double corrFTSE, double corrASX, double corrEURUSD, double corrEURJPY, double corrEURHKD, double corrEURGBP, double corrEURAUD)
+        {
+            Indice indAmodifier = bdd.Indices.FirstOrDefault(indice => indice.Id == id);
+            if (indAmodifier != null)
+            {
+                indAmodifier.corrTDCESTOXX = corrEstoxx;
+                indAmodifier.corrTDCSP500 = corrSP500;
+                indAmodifier.corrTDCN225 = corrN225;
+                indAmodifier.corrTDCHANG = corrHANG;
+                indAmodifier.corrTDCFTSE = corrFTSE;
+                indAmodifier.corrTDCASX = corrASX;
 
-        public double[,] getIndexValues(DateTime dateDebut, DateTime dateFin)
+                indAmodifier.corrTDCEURUSD = corrEURUSD;
+                indAmodifier.corrTDCEURJPY = corrEURJPY;
+                indAmodifier.corrTDCEURHKD = corrEURHKD;
+                indAmodifier.corrTDCEURGBP = corrEURGBP;
+                indAmodifier.corrTDCEURAUD = corrEURAUD;
+
+                bdd.SaveChanges();
+            }
+        }
+
+            public double[,] getIndexValues(DateTime dateDebut, DateTime dateFin)
         {
             int count = 1;
             double nbDate = GetBusinessDays(dateDebut, dateFin);
@@ -241,12 +272,12 @@ namespace PEPS_Beta.Models
             DateTime tmpDate = dateDebut;
             calibrateDate(ref tmpDate);
             // init first row
-            res[0, 1] = getSingleData(tmpDate, "ESTOXX");
-            res[0, 5] = getSingleData(tmpDate, "SP500");
-            res[0, 4] = getSingleData(tmpDate, "N225");
+            res[0, 0] = getSingleData(tmpDate, "ESTOXX");
+            res[0, 1] = getSingleData(tmpDate, "SP500");
+            res[0, 2] = getSingleData(tmpDate, "N225");
             res[0, 3] = getSingleData(tmpDate, "HANG");
-            res[0, 2] = getSingleData(tmpDate, "FTSE");
-            res[0, 0] = getSingleData(tmpDate, "ASX");
+            res[0, 4] = getSingleData(tmpDate, "FTSE");
+            res[0, 5] = getSingleData(tmpDate, "ASX");
             tmpDate = tmpDate.AddDays(1);
             calibrateDate(ref tmpDate);
 
@@ -299,10 +330,10 @@ namespace PEPS_Beta.Models
             calibrateDate(ref tmpDate);
             // init first row
             res[0, 0] = getSingleChange(tmpDate, "EURUSD");
-            res[0, 3] = getSingleChange(tmpDate, "EURJPY");
-            res[0, 4] = getSingleChange(tmpDate, "EURHKD");
-            res[0, 2] = getSingleChange(tmpDate, "EURGBP");
-            res[0, 1] = getSingleChange(tmpDate, "EURAUD");
+            res[0, 1] = getSingleChange(tmpDate, "EURJPY");
+            res[0, 2] = getSingleChange(tmpDate, "EURHKD");
+            res[0, 3] = getSingleChange(tmpDate, "EURGBP");
+            res[0, 4] = getSingleChange(tmpDate, "EURAUD");
             tmpDate = tmpDate.AddDays(1);
             calibrateDate(ref tmpDate);
 
@@ -374,6 +405,17 @@ namespace PEPS_Beta.Models
                 return prevValue;
             else
                 return currentValue;
+        }
+
+        internal void setPrice(double price)
+        {
+            bdd.Parametres.FirstOrDefault().Price = price;
+            bdd.SaveChanges();
+        }
+        internal void setPnl(double pnl)
+        {
+            bdd.Parametres.FirstOrDefault().Pnl = pnl;
+            bdd.SaveChanges();
         }
     }
 }

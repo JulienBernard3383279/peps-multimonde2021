@@ -28,6 +28,9 @@ namespace PEPS_Beta.Models
 
         #region properties
 
+        public double Price { get; set; }
+        public double Pnl { get; set; }
+
         public int NbSamples { get => nbSamples; set => nbSamples = value; }
 
         public int NbIndices { get => nbIndices; set => nbIndices = value; }
@@ -39,10 +42,7 @@ namespace PEPS_Beta.Models
 
 
         [DataType(DataType.DateTime)]
-        [DisplayFormat(ApplyFormatInEditMode = true,
-                                    HtmlEncode = false,
-                                    NullDisplayText = "",
-                                    DataFormatString = "{0:MM/dd/yyyy}")]
+        [DateCorrecte]
         public DateTime CurrDate { get => currDate; set => currDate = value; }
         public DateTime EndDate { get => endDate; set => endDate = value; }
         public DateTime Origin { get => origin; set => origin = value; }
@@ -51,6 +51,36 @@ namespace PEPS_Beta.Models
         public MultiMondeParam()
         {
             this.indices = new List<Indice>();
+        }
+    }
+
+
+    [AttributeUsage(AttributeTargets.Property)]
+    public class DateCorrecteAttribute : ValidationAttribute
+    {
+        public DateCorrecteAttribute()
+        {
+        }
+
+        private string DateToCompareToFieldName { get; set; }
+
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            DateTime currDate = (DateTime)value;
+
+            //DateTime laterDate = (DateTime)validationContext.ObjectType.GetProperty(DateToCompareToFieldName).GetValue(validationContext.ObjectInstance, null);
+            DateTime laterDate = DateTime.Now;
+            DateTime earlierDate = new DateTime(2015, 10, 01);
+
+
+            if (laterDate >= currDate && currDate >= earlierDate)
+            {
+                return ValidationResult.Success;
+            }
+            else
+            {
+                return new ValidationResult("Date is not valid");
+            }
         }
     }
 }

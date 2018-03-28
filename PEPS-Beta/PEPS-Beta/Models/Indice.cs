@@ -26,6 +26,27 @@ namespace PEPS_Beta.Models
         public double corrEURAUD { get; set; }
         public String Money { get; set; }
         public double InterestRateThisArea { get; set; }
+        public double corrTDCESTOXX { get; internal set; }
+        public double corrTDCSP500 { get; internal set; }
+        public double corrTDCN225 { get; internal set; }
+        public double corrTDCHANG { get; internal set; }
+        public double corrTDCFTSE { get; internal set; }
+        public double corrTDCASX { get; internal set; }
+        public double corrTDCEURUSD { get; internal set; }
+        public double corrTDCEURJPY { get; internal set; }
+        public double corrTDCEURHKD { get; internal set; }
+        public double corrTDCEURGBP { get; internal set; }
+        public double corrTDCEURAUD { get; internal set; }
+
+        public double[] getCorrI()
+        {
+            return new double[11] { corrESTOXX, corrSP500 , corrN225, corrHANG, corrFTSE, corrASX, corrEURUSD, corrEURJPY, corrEURHKD, corrEURGBP, corrEURAUD };
+        }
+
+        public double[] getCorrTDC()
+        {
+            return new double[11] { corrTDCESTOXX, corrTDCSP500, corrTDCN225, corrTDCHANG, corrTDCFTSE, corrTDCASX, corrTDCEURUSD, corrTDCEURJPY, corrTDCEURHKD, corrTDCEURGBP, corrTDCEURAUD };
+        }
 
         public Indice()
         {

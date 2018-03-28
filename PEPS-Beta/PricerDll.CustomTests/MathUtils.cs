@@ -34,7 +34,7 @@ namespace PricerDll.CustomTests
                 {
                     temp += returns[i, j];
                 }
-                mean[j] = temp / returns.GetLength(1);
+                mean[j] = temp / returns.GetLength(0);
             }
             return mean;
         }
@@ -64,7 +64,7 @@ namespace PricerDll.CustomTests
             double[] vol = new double[covMatrix.GetLength(1)];
             for (int i = 0; i < covMatrix.GetLength(1); i++)
             {
-                vol[i] = Math.Sqrt(covMatrix[i, i]);
+                vol[i] = Math.Sqrt(252*covMatrix[i, i]);
             }
             return vol;
         }
