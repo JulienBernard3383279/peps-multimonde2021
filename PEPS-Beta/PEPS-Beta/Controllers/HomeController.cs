@@ -8,7 +8,6 @@ using System.Web;
 using System.Web.Mvc;
 using PricerDll.CustomTests;
 
-
 namespace PEPS_Beta.Controllers
 {
     public class HomeController : Controller
@@ -214,7 +213,6 @@ namespace PEPS_Beta.Controllers
                         }
                     }
                 }
-
                 double[] volatilities = new double[optionSize];
                 double[,] returns = PricerDll.CustomTests.MathUtils.ComputeReturns(data_);
                 double[,] covMat = PricerDll.CustomTests.MathUtils.ComputeCovMatrix(returns);

@@ -4,20 +4,48 @@
 
 
 
-@using (Ajax.BeginForm("EstimerParam", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "indicesParam", LoadingElementId = "chargementEstim" }))
-{
-    <div>
-        @Html.LabelFor(estim => Model.DebutEst)
-        @Html.TextBoxFor(estim => Model.DebutEst, new { @type = "date" })
-    </div>
-    <div>
-        @Html.LabelFor(ourInd => Model.FinEst)
-        @Html.TextBoxFor(ourInd => Model.FinEst, new { @type = "date" })
-    </div>
+<div class="x_panel">
+    <div class="x_title">
+        <h2>Choix des dates</h2>
 
-    <img id="chargementEstim" src="~/Content/ajax-loader.gif" style="display: none" alt="Chargement en cours..." />
-    <div>
-        @*<label>&nbsp;</label>*@
-        <input type="submit" value="Estimer paramètres" class="submit" />
+        <div class="clearfix"></div>
     </div>
-}
+    <div class="x_content">
+        @using (Ajax.BeginForm("EstimerParam", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "indicesParam" }))
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="DateDeb">
+                                    Début
+                                </label>
+
+                                @Html.TextBoxFor(estim => Model.DebutEst, new { @type = "date" })
+                            </div>
+                        </th>
+                        <th>
+                            <div class="form-group">
+                                <label class="control-label col-md-3 col-sm-3 col-xs-12" for="dateFin">
+                                    Fin
+                                </label>
+                                @Html.TextBoxFor(ourInd => Model.FinEst, new { @type = "date" })
+                            </div>
+                        <th>
+                        </th>
+                        <th>
+                            <div class="ln_solid"></div>
+                            <div class="form-group">
+                                <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                                    <button type="submit" class="btn btn-primary" value="Estimer paramètres">Estimer paramètres</button>
+                                </div>
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+            <img id="chargementEstim" src="~/Content/ajax-loader.gif" style="display: none" alt="Chargement en cours..." />
+        }
+    </div>
+</div>

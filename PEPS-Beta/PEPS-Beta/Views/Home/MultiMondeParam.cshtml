@@ -1,22 +1,33 @@
 ﻿@model PEPS_Beta.Models.MultiMondeParam
 
 <div id="multimondeParam">
-    <h2>
-        Date actuelle
-    </h2>
     @using (Ajax.BeginForm("SetDate", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "multimondeParam", LoadingElementId = "chargementDate" }))
     {
         @Html.HiddenFor(m => Model.Id)
-    <div>
-        @Html.TextBoxFor(m => Model.CurrDate, new { @Value = Model.CurrDate.ToShortDateString() })
-        <span style="color:red">@ViewBag.MessageErreur</span>
-        <img id="chargementDate" src="~/Content/ajax-loader.gif" style="display: none" alt="Chargement en cours..." />
-        <span> Prix du Multimonde : @Model.Price</span>
-        <span> Pnl associée : @Model.Pnl</span>
-    </div>
-        <div>
-            @*<label>&nbsp;</label>*@
-            <input type="submit" value="Modifier date" class="submit" />
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <div>
+                            @Html.TextBoxFor(m => Model.CurrDate, new { @Value = Model.CurrDate.ToShortDateString() })
+                            <span style="color:red">@ViewBag.MessageErreur</span>
+                            <img id="chargementDate" src="~/Content/ajax-loader.gif" style="display: none" alt="Chargement en cours..." />
+                        </div>
+                    </th>
+                    <th>
+                        <div>
+                            @*<label>&nbsp;</label>*@
+                            <button type="submit" class="btn btn-primary" value="Modifier date">Modifier Date</button>
+                        </div>
+                    </th>
+                    <th>
+                        Prix du MultiMonde : @Model.Price
+                    </th>
+                    <th>
+                        Pnl associée :  @Model.Pnl
+                    </th>
+                </tr>
+            </thead>
+        </table>
     }
 </div>
