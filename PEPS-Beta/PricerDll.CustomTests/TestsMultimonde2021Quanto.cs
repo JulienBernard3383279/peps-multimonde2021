@@ -680,9 +680,11 @@ namespace PricerDll.CustomTests
 
             API.TrackingErrorMultimonde2021Quanto(
                 nbSamples,
+                t,
+                t,
                 past,
                 nbRows,
-                t,
+                currentPrices,
                 currentPrices,
                 volatilities,
                 interestRates,

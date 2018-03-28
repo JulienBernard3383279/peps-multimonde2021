@@ -1104,19 +1104,20 @@ void TrackingErrorMultimonde2021Quanto(
 	int sampleNumber,
 	//double beginning,
 	//double end,
-	double past[],
-	int nbRows,
 	double t,
+	double dateStartSimul,
+	double providedScenario[],
+	int nbRows,
 	double currentPrices[],
+	double pricesAtSimulStart[],
 	double volatilities[],
 	double interestRates[],
 	double correlations[],
-	int nbUpdates, //nbUpdates par an [par date de constatation]
+	int nbUpdates,
 	double* tracking_error,
 	double** portfolioReturns,
 	double ** productReturns) {
 
-	//pour l'instant, t est ignoré
 	//std::cout << "Tracking error > 1" << std::endl;
 	MonteCarlo *mc;
 	Option *opt;
@@ -1133,8 +1134,9 @@ void TrackingErrorMultimonde2021Quanto(
 		LET(dates, i) = (i*(6.0 * 371.0 / 365.25))/nbUpdates;
 	}
 
-	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past, interestRates, opt->T, dates); // Ici on passe dates car le format de past est celui de scénario
+	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, providedScenario, interestRates, opt->T, dates); // Ici on passe dates car le format de past est celui de scénario
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices, interestRates, t, opt->T);
+	PnlVect* pricesAtSimulStartVect = Multimonde2021Quanto_BuildFromCurrentPrices(pricesAtSimulStart, interestRates, dateStartSimul, opt->T);
 
 	PnlMat *scenario = pnl_mat_create(371*6 + 1, mod->size_);
 	PnlMat *scenarioToFeed = pnl_mat_create(7, mod->size_);
@@ -1146,7 +1148,7 @@ void TrackingErrorMultimonde2021Quanto(
 	//std::cout << "Tracking error > 5" << std::endl;
 
 	mod->postInitAssetCustomDates(scenario,
-		pastMat, t, currentVect,
+		pastMat, dateStartSimul, pricesAtSimulStartVect,
 		dates, nbUpdates, mc->rng_);
 
 	PnlVect* temp = pnl_vect_create(mod->size_);
