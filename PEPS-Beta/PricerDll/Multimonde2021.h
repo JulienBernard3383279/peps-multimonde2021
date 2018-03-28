@@ -1,6 +1,10 @@
 #pragma once
 #include "Option.h"
 
+/*
+* CE MULTIMONDE N'EST PAS LE BON. LE CORRECT CALCULATOIREMENT EST MULTIMONDE2021QUANTO
+*/
+
 class Multimonde2021 :
 	public Option
 {

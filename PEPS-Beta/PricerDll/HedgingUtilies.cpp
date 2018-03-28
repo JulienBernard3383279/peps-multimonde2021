@@ -14,8 +14,9 @@ static double ComputeValue(PnlVect* quantities, PnlVect* values) {
 	return sum;
 }
 
+// Inutilisé depuis la transition aux Zéro-coupons
 static void UpdateCurrencyQuantities(double timeGap,
-	double* localQuantity,// double localInterestRate,
+	double* localQuantity,
 	int startIndex, PnlVect* quantities, PnlVect* interestRates) {
 	//Seules les quantités 6-10 sont augmentées ( les monnaies )
 	*localQuantity *= exp(1 + GET(interestRates,0) * timeGap); 
@@ -24,8 +25,9 @@ static void UpdateCurrencyQuantities(double timeGap,
 	}
 }
 
+// Inutilisé depuis la transition aux Zéro-coupons
 static void UpdateCurrencyQuantities(double timeGap,
-	double* localQuantity,// double localInterestRate,
+	double* localQuantity,
 	int startIndex, PnlVect* quantities, double interestRates[]) {
 	//Seules les quantités 6-10 sont augmentées ( les monnaies )
 	*localQuantity *= exp(interestRates[0]*timeGap);
@@ -57,11 +59,9 @@ static void InterpolateValues(PnlVect* receiver, PnlMat* path, double t, double 
 	double floatEntryIndex = (t / T * entries);
 	double closeness = (floatEntryIndex) - (int) (floatEntryIndex);
 	if (closeness > -0.0001 && closeness < 0.0001) {
-		std::cout << "YUP " << floatEntryIndex << " ; " << closeness << std::endl;
 		pnl_mat_get_row(receiver, path, (int)(floatEntryIndex + 0.0001));
 	}
 	else {
-		std::cout << "NOPE " << floatEntryIndex << " ; " << closeness << std::endl;
 		PnlVect* temp1 = pnl_vect_create(receiver->size);
 		pnl_mat_get_row(temp1, path, (int)(floatEntryIndex));
 		PnlVect* temp2 = pnl_vect_create(receiver->size);

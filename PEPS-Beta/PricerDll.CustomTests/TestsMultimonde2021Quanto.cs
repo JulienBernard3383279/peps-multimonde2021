@@ -644,7 +644,8 @@ namespace PricerDll.CustomTests
             double[] past;
             int nbRows;
             double t;
-            double tracking_error;
+            double trackingError;
+            double relativePricingVolatility;
             int nbUpdates;
             #endregion
             #region Test
@@ -691,7 +692,8 @@ namespace PricerDll.CustomTests
                 interestRates,
                 correlations,
                 nbUpdates,
-                &tracking_error,
+                &trackingError,
+                &relativePricingVolatility,
                 out IntPtr portfolioReturnsPtr,
                 out IntPtr productReturnsPtr);
 
@@ -701,7 +703,8 @@ namespace PricerDll.CustomTests
             double[] productReturns = new double[nbUpdates];
             System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, nbUpdates); //<- deltas contient maintenant les deltas
 
-            Console.WriteLine("Tracking error : " + tracking_error);
+            Console.WriteLine("Mensual tracking error : " + trackingError);
+            Console.WriteLine("Mensual impact of the relative pricing volatility : " + relativePricingVolatility);
 
 
             #endregion

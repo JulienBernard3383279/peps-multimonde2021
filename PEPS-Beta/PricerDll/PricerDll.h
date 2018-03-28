@@ -268,7 +268,8 @@ extern "C" PRICERDLL_API void TrackingErrorMultimonde2021Quanto(
 	double interestRates[],
 	double correlations[],
 	int nbUpdates,
-	double* tracking_error,
+	double* trackingError,
+	double* relativePricingVolatility,
 	double** portfolioReturns,
 	double** productReturns);
 #pragma endregion

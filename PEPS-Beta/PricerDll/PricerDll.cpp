@@ -675,8 +675,6 @@ void TrackingErrorMultimonde(
 
 	double timestep = 1. / 365.25;
 
-	pnl_mat_print(FX_prices);
-
 	while (t < T) {
 		t += 1;
 		pnl_mat_get_row(current_prices, asset_prices, t);
@@ -1113,7 +1111,8 @@ void TrackingErrorMultimonde2021Quanto(
 	double interestRates[],
 	double correlations[],
 	int nbUpdates,
-	double* tracking_error,
+	double* trackingError,
+	double* relativePricingVolatility,
 	double** portfolioReturns,
 	double ** productReturns) {
 
@@ -1130,7 +1129,6 @@ void TrackingErrorMultimonde2021Quanto(
 	double toMensual = (1.0 / 12.0)*(nbUpdates / (6 * 371.0 / 365.25));
 
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, providedScenario, interestRates, opt->T, dates); // Ici on passe dates car le format de past est celui de scénario
-	//PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(spots, interestRates, t, opt->T);
 	PnlVect* pricesAtSimulStartVect = Multimonde2021Quanto_BuildFromCurrentPrices(pricesAtSimulStart, interestRates, dateStartSimul, opt->T);
 
 	PnlMat *scenario = pnl_mat_create(371*6 + 1, mod->size_);
@@ -1144,7 +1142,6 @@ void TrackingErrorMultimonde2021Quanto(
 
 	PnlVect* temp = pnl_vect_create(mod->size_);
 	for (int i = 0; i < 7; i++) {
-		//pnl_mat_get_row(temp, scenario, i*nbUpdatesPerYear);
 		InterpolateValues(temp, scenario, i*371.0 / 365.25, 6 * 371.0 / 365.25, nbUpdates);
 		pnl_mat_set_row(scenarioToFeed, temp, i);
 	}
@@ -1177,24 +1174,25 @@ void TrackingErrorMultimonde2021Quanto(
 	pnl_mat_get_row(currentVect, scenario, advancement);
 
 	PnlVect* priceEstimationVolatilities = pnl_vect_create_from_zero(realNbUpdates);
-	mc->price(scenarioToFeed, GET(dates,advancement), currentVect, &price, &ic); // Ici
+	mc->price(scenarioToFeed, GET(dates,advancement), currentVect, &price, &ic);
 	LET(priceEstimationVolatilities, 0) = (ic / 4) / price;
 
 	PnlVect* deltas = pnl_vect_create_from_zero(11);
-	mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas); // et là, le currentVect est faux
+	mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas); 
 	UpdatePortfolio(quantities, currentVect, deltas);
 	value = price;
 	spare = value - ComputeValue(quantities, currentVect);
 
 	bool verbose = false;
+	bool verboseForResults = false;
 	bool stepByStep = false;
 
 	double step = (371.0 * 6.0 / 365.25) / nbUpdates;
 
-	std::cout << "Advancement : ";
+	if (verbose) std::cout << "Advancement : ";
 
 	for (int advancement = indexBegin+1; advancement<indexEnd+1; advancement++) {
-		std::cout << advancement << "; ";
+		if (verbose) std::cout << advancement << "; ";
 
 		if (verbose) std::cout << "Step : " << step << std::endl;
 		pnl_mat_get_row(currentVect, scenario, advancement);
@@ -1206,10 +1204,7 @@ void TrackingErrorMultimonde2021Quanto(
 		if (verbose) std::cout << "Spare : " << spare << std::endl;
 
 		/*Plus d'étape actualisation pour les monnaies étrangères depuis que nous manipulons des zéro-coupons étrangers directement.
-		Ils s'apprécient dans le modèle. En revanche les euros doivent être actualisés !
-		UpdateCurrencyQuantities(step, &spare, 6, quantities, interestRates);
-		if (verbose) std::cout << "After actualisation : " << std::endl; if (verbose) pnl_vect_print(quantities);
-		if (verbose) std::cout << "Spare : " << spare << std::endl;*/
+		Ils s'apprécient dans le modèle. En revanche les euros doivent être actualisés !*/
 		UpdateLocalCurrencyQuantity(step, &spare, interestRates);
 		if (verbose) std::cout << "Spare post update : " << spare << std::endl;
 
@@ -1257,7 +1252,7 @@ void TrackingErrorMultimonde2021Quanto(
 			if (verbose) std::cout << "Deltas : " << std::endl; if (verbose) pnl_vect_print(deltas);
 
 			// Pour calculer la tracking error, on ne simule pas une stratégie de couverture - on regarde juste à chaque date
-			// la performance de la couverture jusqu'à la suivante. On considère donc à chaque fois "magiquement" qu'on a à
+			// la performance de la couverture jusqu'à la suivante. On considère donc à chaque fois
 			// nouveau le prix comme quantité d'€ disponible. Artificiel mais plus propre calculatoirement.
 			// Repasser à une courbe ne devrait alors pas être trop difficile (prix initial + multiplication par rendements )
 
@@ -1272,14 +1267,15 @@ void TrackingErrorMultimonde2021Quanto(
 			if (verbose) std::cout << "ADVANCE" << std::endl;
 		}
 	}
-	std::cout << std::endl;
 	// calcul de la tracking error
 	double sum = 0;
 	double squaresSum = 0;
 	double sumVols = 0;
-	std::cout << "Difference vectors" << std::endl;
-	pnl_vect_print(returnsDiff);
-	std::cout << std::endl;
+	if (verboseForResults) {
+		std::cout << "Difference vectors" << std::endl;
+		pnl_vect_print(returnsDiff);
+		std::cout << std::endl;
+	}
 	double get;
 	for (int i = 0; i < realNbUpdates; i++) {
 		get = GET(returnsDiff, i);
@@ -1292,11 +1288,13 @@ void TrackingErrorMultimonde2021Quanto(
 	sumVols /= realNbUpdates;
 	sumVols *= toMensual;
 
-	std::cout << "Squared sum ; sum ; tracking error ; average relative price estimation error" << std::endl;
-	std::cout << squaresSum << std::endl;
-	std::cout << sum << std::endl;
-	std::cout << sqrt(squaresSum - sum*sum) << std::endl;
-	std::cout << sumVols << std::endl;
+	if (verboseForResults) {
+		std::cout << "Squared sum ; sum ; tracking error ; average relative price estimation error" << std::endl;
+		std::cout << squaresSum << std::endl;
+		std::cout << sum << std::endl;
+		std::cout << sqrt(squaresSum - sum * sum) << std::endl;
+		std::cout << sumVols << std::endl;
+	}
 
 	*productReturns = static_cast<double*>(malloc(realNbUpdates * sizeof(double)));
 	memcpy(*productReturns, &(productReturnsIntermediate[0]), realNbUpdates * sizeof(double));
@@ -1304,7 +1302,8 @@ void TrackingErrorMultimonde2021Quanto(
 	*portfolioReturns = static_cast<double*>(malloc(realNbUpdates * sizeof(double)));
 	memcpy(*portfolioReturns, &(portfolioReturnsIntermediate[0]), realNbUpdates * sizeof(double));
 
-	*tracking_error = sqrt(squaresSum - sum*sum);
+	*trackingError = sqrt(squaresSum - sum*sum);
+	*relativePricingVolatility = sumVols;
 }
 #pragma endregion
 #pragma endregion
@@ -1488,7 +1487,6 @@ void DeltasSingleMonde(
 	// Calcul de la cor de S-X et -X
 	PnlMat* correlationsMat = GenCorrAMinusBBFromCorrAB(correlations, volatilities[0], volatilities[1]);
 	ReverseCorrMatrix(correlationsMat);//car on nous passe celle de S$ avec €/$ et qu'on veut celle de S€ avec $/€
-
 									   // On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];

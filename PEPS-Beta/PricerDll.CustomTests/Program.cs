@@ -22,12 +22,12 @@ namespace PricerDll.CustomTests
 
             //TestHistoricalData.TestHisto();
 
-            //TestsMultimonde2021Quanto.PerformPriceTests();
-            //TestsMultimonde2021Quanto.PerformDeltaTest();
-            //TestsMultimonde2021Quanto.PerformTrackingErrorTest();
+            TestsMultimonde2021Quanto.PerformPriceTests();
+            TestsMultimonde2021Quanto.PerformDeltaTest();
+            TestsMultimonde2021Quanto.PerformTrackingErrorTest();
 
             //TestsSingleMonde.PerformPriceTests();
-            TestsSingleMonde.PerformDeltaTests();
+            //TestsSingleMonde.PerformDeltaTests();
 
             Console.WriteLine("Appuyez sur une touche pour terminer le programme.");
             Console.ReadKey();
