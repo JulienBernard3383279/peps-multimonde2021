@@ -1127,6 +1127,7 @@ void TrackingErrorMultimonde2021Quanto(
 	for (int i = 0; i < nbUpdates + 1; i++) {
 		LET(dates, i) = (i*(6.0 * 371.0 / 365.25))/nbUpdates;
 	}
+	double toMensual = (1.0 / 12.0)*(nbUpdates / (6 * 371.0 / 365.25));
 
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, providedScenario, interestRates, opt->T, dates); // Ici on passe dates car le format de past est celui de scénario
 	//PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(spots, interestRates, t, opt->T);
@@ -1219,7 +1220,7 @@ void TrackingErrorMultimonde2021Quanto(
 		value = ComputeValue(quantities, currentVect) + spare;
 		
 		if (verbose) std::cout << "New value : " << value << std::endl;
-		portfolioReturnsIntermediate[advancement-indexBegin] = portfolioReturn = value / previousValue;
+		portfolioReturnsIntermediate[advancement-indexBegin] = portfolioReturn = log(value / previousValue) * toMensual;
 		
 		if (verbose) std::cout << "Portfolio return : " << portfolioReturn << std::endl;
 		
@@ -1234,7 +1235,7 @@ void TrackingErrorMultimonde2021Quanto(
 		if (verbose) std::cout << "Price volatility : " << ic / 4 << std::endl;
 
 		if (verbose) std::cout << "New price : " << price << std::endl;
-		productReturnsIntermediate[advancement - indexBegin] = productReturn = price / previousPrice;
+		productReturnsIntermediate[advancement - indexBegin] = productReturn = log(price / previousPrice) * toMensual;
 
 		if (verbose) std::cout << "Product return : " << productReturn << std::endl;
 		if (stepByStep) std::cin.ignore();
@@ -1289,6 +1290,7 @@ void TrackingErrorMultimonde2021Quanto(
 	sum /= (realNbUpdates*realNbUpdates);
 	squaresSum /= realNbUpdates;
 	sumVols /= realNbUpdates;
+	sumVols *= toMensual;
 
 	std::cout << "Squared sum ; sum ; tracking error ; average relative price estimation error" << std::endl;
 	std::cout << squaresSum << std::endl;
