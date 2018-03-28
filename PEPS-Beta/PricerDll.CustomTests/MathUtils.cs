@@ -17,8 +17,8 @@ namespace PricerDll.CustomTests
             {
                 for (int i = 0; i < returns.GetLength(0); i++)
                 {
-                    returns[i, j] = (data[j, i + 1] - data[j, i]) / data[j, i];
-                    //returns[i, j] = Math.Log(data[j, i + 1] / data[j, i]);
+                    //returns[i, j] = (data[j, i + 1] - data[j, i]) / data[j, i];
+                    returns[i, j] = Math.Log(data[j, i + 1] / data[j, i]);
                 }
             }
             return returns;
