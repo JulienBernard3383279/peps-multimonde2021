@@ -9,22 +9,6 @@ namespace PricerDll.CustomTests
     public static unsafe class TestsSingleMonde
     {
 
-        /*private static double RealPriceSingleMonde(
-            double maturity,
-            double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
-            double[] volatilities,//les vol dans un ordre suivant: actif puis taux de change de 1euro en dollars
-            double[] interestRates,//les taux d'interets domestiques et etrangers dans cet ordre!
-            double[] correlations,
-            double date)
-        {
-            double S0 = currents[0];
-            double d1 = ((Math.Log(currents[0] / 1.15 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
-            double d2 = ((Math.Log(currents[0] / 0.85 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
-
-            return (API.call_pnl_cdfnor(d1) * (1.15 * S0 + currents[0]) + (0.85) * S0 - currents[0] +
-                (currents[0] - (0.85) * S0) * API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
-        } Renvoie 215. Lol.*/
-
         private static double RealPriceSingleMonde(
             double maturity,
             double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
@@ -37,9 +21,6 @@ namespace PricerDll.CustomTests
                 + 100/currents[0] * TestsQuanto.RealPriceCallQuanto(maturity, 0.85 * currents[0], currents, volatilities, interestRates, correlations, date)
                 - 100/currents[0] * TestsQuanto.RealPriceCallQuanto(maturity, 1.15 * currents[0], currents, volatilities, interestRates, correlations, date);
         }
-
-
-        /* ensemble de tests vis à vis du singlemonde*/
 
         private static void PriceTestSingleMonde(
             int sampleNumber,
@@ -66,8 +47,6 @@ namespace PricerDll.CustomTests
                 &ic_);
             watch.Stop();
             var executionTime = watch.ElapsedMilliseconds;
-
-            //price et ics contiennent prix et intervalle de couverture selon le pricer
 
             double realPrice = RealPriceSingleMonde(
                 371.0/365.25,
@@ -250,7 +229,6 @@ namespace PricerDll.CustomTests
                double[] correlations,
                double currFXRate)
         {
-            //call quanto = une seule monnaie pour l'actif (un actif quoi), elle est etrangère
             API.DeltasSingleMonde(
                 maturity,
                 nbSamples,
@@ -264,7 +242,6 @@ namespace PricerDll.CustomTests
                 out IntPtr deltasFXRates);
 
             double date = 0.0;
-            //price et ics contiennent prix et intervalle de couverture selon le pricer
 
             double[] realDelta = RealDeltaSingleMonde(maturity,
                 spots,
@@ -288,7 +265,6 @@ namespace PricerDll.CustomTests
 
             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
-                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
                 Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
                 Console.WriteLine("Deltas formule fermée:");
                 Console.WriteLine(realDelta[0]);
@@ -310,25 +286,6 @@ namespace PricerDll.CustomTests
 
         public static void PerformDeltaTests()
         {
-            /*double maturity = 3.0;
-            double strike = 100.0;
-            int nbSamples = 10000;
-            double currFXRate = 1.2;
-            double[] interestRates = new double[2] { 0.05, 0.03 }; ;
-            double[] spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
-            double[] volatilities = new double[2] { 0.01, 0.02 };
-            double[] correlations = new double[4] { 1.0, 0.05, 0.05, 1.0 };
-
-            double realPrice = RealPriceSingleMonde(maturity, spots, volatilities, interestRates, correlations, 0);
-            Console.WriteLine("Prix fermé " + realPrice);
-            DeltaTestSingleMonde(maturity,
-                strike,
-                nbSamples,
-                spots,
-                volatilities,
-                interestRates,
-                correlations,
-                currFXRate);*/
         }
     }
     

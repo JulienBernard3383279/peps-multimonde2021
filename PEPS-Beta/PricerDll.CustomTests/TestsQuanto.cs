@@ -91,7 +91,6 @@ namespace PricerDll.CustomTests
                 correlations,
                 date);
 
-            // Assert.IsTrue((realPrice < price + 1.5 * ic / 2) || (realPrice > price - 1.5 * ic / 2));
             Console.WriteLine("");
             Console.WriteLine("");
             Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
@@ -255,7 +254,7 @@ namespace PricerDll.CustomTests
     
             double[] deltas = new double[2] { Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity - date)) * API.call_pnl_cdfnor(d1) * (1 / FXRates[0]), Math.Exp(interestRates[0] * (maturity - date)) * currents[0] * Math.Exp(-(interestRates[0] - interestRates[1] - correlations[1] * volatilities[0] * volatilities[1]) * (maturity - date) * API.call_pnl_cdfnor(d1)) - strike * API.call_pnl_cdfnor(d2) };//1/FXRates c'est le prix d'un euro en dollars  
             // delta à acheter en zero coupon EURO en 0:  currents[0] * Math.Exp( interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]) * maturity) * API.call_pnl_cdfnor(d1) - strike * API.call_pnl_cdfnor(d2) };
-            //delta à acheter en zero coupon DOLLARS (etranger quoi)  en 0 corrigé : currents[0]*Math.Exp(interestRates[0]+ correlations[1] * volatilities[0] * volatilities[1])*(maturity)*API.call_pnl_cdfnor(d1) + (currents[0]*Math.Exp(-(interestRates[0]-interestRates[1] correlations[1] * volatilities[0] * volatilities[1])*maturity)- strike*Math.Exp(-interestRates[0]*maturity )*( 1/Math.sqrt(2*Math.pi))*Math.exp(-0.5*(interestRates[1]+correlations[1]*volatilities[1]*volatilities[0])*(volatilities[1]*maturity)/(Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]+0.5*volatilities[1]*volatilities[1])) 
+            // delta à acheter en zero coupon DOLLARS (etranger quoi)  en 0 corrigé : currents[0]*Math.Exp(interestRates[0]+ correlations[1] * volatilities[0] * volatilities[1])*(maturity)*API.call_pnl_cdfnor(d1) + (currents[0]*Math.Exp(-(interestRates[0]-interestRates[1] correlations[1] * volatilities[0] * volatilities[1])*maturity)- strike*Math.Exp(-interestRates[0]*maturity )*( 1/Math.sqrt(2*Math.pi))*Math.exp(-0.5*(interestRates[1]+correlations[1]*volatilities[1]*volatilities[0])*(volatilities[1]*maturity)/(Math.Log(currents[0] / strike) + (interestRates[1] + correlations[1] * volatilities[0] * volatilities[1]+0.5*volatilities[1]*volatilities[1])) 
             return deltas;
         }
 
@@ -283,7 +282,6 @@ namespace PricerDll.CustomTests
                 out IntPtr deltasFXRates);
 
             double date = 0.0;
-            //price et ics contiennent prix et intervalle de couverture selon le pricer
 
             double[] realDelta = RealDeltaQuanto0(maturity,
                 strike,
@@ -307,7 +305,6 @@ namespace PricerDll.CustomTests
             tmpD /= spots[1];
             realDelta[1] = tmpD;
 
-            //Assert.IsTrue(Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) < 0.05);
             if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
             {
                 // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !

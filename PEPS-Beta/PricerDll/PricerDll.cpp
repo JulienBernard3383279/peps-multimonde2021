@@ -1170,7 +1170,6 @@ void TrackingErrorMultimonde2021Quanto(
 	double* productReturnsIntermediate = new double[realNbUpdates];
 	
 	PnlVect* currentVect = pnl_vect_create(opt->size);
-	std::cout << GET(dates, advancement) << std::endl;
 	pnl_mat_get_row(currentVect, scenario, advancement);
 
 	PnlVect* priceEstimationVolatilities = pnl_vect_create_from_zero(realNbUpdates);

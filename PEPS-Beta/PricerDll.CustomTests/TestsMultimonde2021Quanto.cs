@@ -316,7 +316,6 @@ namespace PricerDll.CustomTests
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             Console.WriteLine();
 
-            //nbSamples = 10000;
             volatilities = new double[11] {
                 0.04, 0.04, 0.04, 0.04, 0.04, 0.04,
                 0, 0, 0, 0, 0
@@ -635,7 +634,7 @@ namespace PricerDll.CustomTests
         public static unsafe void PerformTrackingErrorTest()
         {
             #region Init
-            Console.WriteLine("Tests deltas du multimonde 2021 quanto");
+            Console.WriteLine("Tests de la tracking error du Multimonde 2021 Quanto");
             int nbSamples;
             double[] currentPrices;
             double[] volatilities;
@@ -652,15 +651,14 @@ namespace PricerDll.CustomTests
             nbSamples = 5_000;
             interestRates = new double[6] {
                 0.02,0.02,0.02,0.02,0.02,0.02
-                //0, 0, 0, 0, 0, 0
             };
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
-                1.0,//*Math.Exp(-interestRates[1]*(6*371.0/365.25)),
-                1.0,// *Math.Exp(-interestRates[2]*(6*371.0/365.25)),
-                1.0,// *Math.Exp(-interestRates[3]*(6*371.0/365.25)),
-                1.0,// *Math.Exp(-interestRates[4]*(6*371.0/365.25)),
-                1.0 //*Math.Exp(-interestRates[5]*(6*371.0/365.25))
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0
             };
             volatilities = new double[11] {
                 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
@@ -698,10 +696,10 @@ namespace PricerDll.CustomTests
                 out IntPtr productReturnsPtr);
 
             double[] portfolioReturns = new double[nbUpdates];
-            System.Runtime.InteropServices.Marshal.Copy(portfolioReturnsPtr, portfolioReturns, 0, nbUpdates); //<- deltas contient maintenant les deltas
+            System.Runtime.InteropServices.Marshal.Copy(portfolioReturnsPtr, portfolioReturns, 0, nbUpdates);
 
             double[] productReturns = new double[nbUpdates];
-            System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, nbUpdates); //<- deltas contient maintenant les deltas
+            System.Runtime.InteropServices.Marshal.Copy(productReturnsPtr, productReturns, 0, nbUpdates); 
 
             Console.WriteLine("Mensual tracking error : " + trackingError);
             Console.WriteLine("Mensual impact of the relative pricing volatility : " + relativePricingVolatility);
