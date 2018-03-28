@@ -1,10 +1,7 @@
 ﻿@model PEPS_Beta.Models.MultiMondeParam
 
-<h3>
-    Date actuelle
-</h3>
 <div id="multimondeParam">
-    @using (Ajax.BeginForm("SetDate", "Home", new AjaxOptions { HttpMethod = "POST" }))
+    @using (Ajax.BeginForm("SetDate", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "multimondeParam", LoadingElementId = "chargementDate" }))
     {
         @Html.HiddenFor(m => Model.Id)
         <table class="table">
@@ -13,16 +10,22 @@
                     <th>
                         <div>
                             @Html.TextBoxFor(m => Model.CurrDate, new { @Value = Model.CurrDate.ToShortDateString() })
+                            <span style="color:red">@ViewBag.MessageErreur</span>
+                            <img id="chargementDate" src="~/Content/ajax-loader.gif" style="display: none" alt="Chargement en cours..." />
                         </div>
                     </th>
                     <th>
                         <div>
                             @*<label>&nbsp;</label>*@
-                            <button type="submit" class="btn btn-primary" value="Date actuelle">Modifier Date</button>
+                            <button type="submit" class="btn btn-primary" value="Modifier date">Modifier Date</button>
                         </div>
                     </th>
-                    
-
+                    <th>
+                        Prix du MultiMonde : @Model.Price
+                    </th>
+                    <th>
+                        Pnl associée :  @Model.Pnl
+                    </th>
                 </tr>
             </thead>
         </table>
