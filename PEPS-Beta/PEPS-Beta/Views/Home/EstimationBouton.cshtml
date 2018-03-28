@@ -1,17 +1,23 @@
 ﻿@model PEPS_Beta.ViewModels.EstimationViewModel
 
-    @using (Ajax.BeginForm("EstimerParam", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "indicesParam" }))
-    {
-            <div>
-                @Html.LabelFor(estim => Model.DebutEst)
-                @Html.TextBoxFor(estim => Model.DebutEst, new { @type = "date" })
-            </div> 
-            <div>
-                @Html.LabelFor(ourInd => Model.FinEst)
-                @Html.TextBoxFor(ourInd => Model.FinEst, new { @type = "date" })
-            </div>
-            <div>
-                @*<label>&nbsp;</label>*@
-                <input type="submit" value="Estimer paramètres" class="submit" />
-            </div>
-    }
+
+
+
+
+@using (Ajax.BeginForm("EstimerParam", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "indicesParam", LoadingElementId = "chargementEstim" }))
+{
+    <div>
+        @Html.LabelFor(estim => Model.DebutEst)
+        @Html.TextBoxFor(estim => Model.DebutEst, new { @type = "date" })
+    </div>
+    <div>
+        @Html.LabelFor(ourInd => Model.FinEst)
+        @Html.TextBoxFor(ourInd => Model.FinEst, new { @type = "date" })
+    </div>
+
+    <img id="chargementEstim" src="~/Content/ajax-loader.gif" style="display: none" alt="Chargement en cours..." />
+    <div>
+        @*<label>&nbsp;</label>*@
+        <input type="submit" value="Estimer paramètres" class="submit" />
+    </div>
+}

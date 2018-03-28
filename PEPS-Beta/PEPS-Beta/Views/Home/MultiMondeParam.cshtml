@@ -4,7 +4,7 @@
     <h2>
         Date actuelle
     </h2>
-    @using (Ajax.BeginForm("SetDate", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "multimondeParam" }))
+    @using (Ajax.BeginForm("SetDate", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "multimondeParam", LoadingElementId = "chargementDate" }))
     {
         @Html.HiddenFor(m => Model.Id)
     <div>

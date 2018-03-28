@@ -33,7 +33,7 @@ namespace PricerDll.CustomTests
                 {
                     temp += returns[i, j];
                 }
-                mean[j] = temp / returns.GetLength(1);
+                mean[j] = temp / returns.GetLength(0);
             }
             return mean;
         }
