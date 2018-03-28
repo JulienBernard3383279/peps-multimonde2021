@@ -1242,6 +1242,7 @@ void TrackingErrorMultimonde2021Quanto(
 		// mise à jour de la composition du portefeuille
 		if (stepByStep && advancement>5) std::cin.ignore();
 		mc->nbSamples_ /= 10;
+		deltas = pnl_vect_create_from_zero(mod->size_);
 		mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas);
 		mc->nbSamples_ *= 10;
 

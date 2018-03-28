@@ -166,7 +166,7 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 		int from = 0;
 		if (opt_->custom) {
 
-			while (GET(opt_->customDates, from) <= t) {
+			while (GET(opt_->customDates, from) <= (t+0.001)) {
 				from++;
 			}
 		}
@@ -174,14 +174,29 @@ void MonteCarlo::deltas(PnlMat *past, double t, PnlVect* current, PnlVect* delta
 			from = (int)(t / (opt_->T / opt_->nbTimeSteps)) + 1;
 		}
 
+		bool shouldBeZero = false;
+
+		double h = 0.005;
 		for (int j = 0; j < mod_->size_; j++) {
-			mod_->shiftPath(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, 0.01);
+			mod_->shiftPath(path, pathMinus, pathPlus, j, from, opt_->nbTimeSteps, h);
 			//pnl_mat_print(pathPlus);
 			payoffPlus = opt_->payoff(pathPlus);//std::cout << "payoffPlus :" << payoffPlus << std::endl;
 			//pnl_mat_print(pathMinus);
 			payoffMinus = opt_->payoff(pathMinus);//std::cout << "payoffMinus :" << payoffMinus << std::endl;
 
-			LET(deltas, j) += (payoffPlus - payoffMinus) / (GET(current, j) * 2 * 0.01);
+			LET(deltas, j) += (payoffPlus - payoffMinus) / (GET(current, j) * 2 * h);
+
+			if (verbose) {
+				if ((((payoffPlus - payoffMinus) / (GET(current, j) * 2 * h)) > 0
+					&& ((payoffPlus - payoffMinus) / (GET(current, j) * 2 * h)) < 0.1)
+					|| (((payoffPlus - payoffMinus) / (GET(current, j) * 2 * h)) < 0
+						&& ((payoffPlus - payoffMinus) / (GET(current, j) * 2 * h)) > -0.1)) {
+					std::cout << std::endl << "PATH MINUS" << std::endl;
+					pnl_mat_print(pathMinus);
+					std::cout << std::endl << "PATH PLUS" << std::endl;
+					pnl_mat_print(pathPlus);
+				}
+			}
 		}
 	}
 
