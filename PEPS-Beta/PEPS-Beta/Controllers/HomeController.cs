@@ -57,7 +57,7 @@ namespace PEPS_Beta.Controllers
         public unsafe ActionResult Index()
         {
 
-                        // ParseData
+            // ParseData
 
 
             //ds.Update();
@@ -216,12 +216,14 @@ namespace PEPS_Beta.Controllers
                 }
 
                 double[] volatilities = new double[optionSize];
-                double[,] covMat = PricerDll.CustomTests.MathUtils.ComputeCovMatrix(PricerDll.CustomTests.MathUtils.ComputeReturns(data_));
+                double[,] returns = PricerDll.CustomTests.MathUtils.ComputeReturns(data_);
+                double[,] covMat = PricerDll.CustomTests.MathUtils.ComputeCovMatrix(returns);
                 volatilities = PricerDll.CustomTests.MathUtils.ComputeVolatility(covMat);
 
                 foreach (Indice i in indices)
                 {
                     dal.modifierIndice(i.Id, i.InterestRateThisArea, volatilities[indices.IndexOf(i)]);
+                    dal.modifierIndiceVolTDC(i.Id, volatilities[indices.IndexOf(i) + 5]);
 
                     //i.Vol = volatilities[indices.IndexOf(i)];
                 }
@@ -229,7 +231,7 @@ namespace PEPS_Beta.Controllers
                 foreach (Indice i in indices)
                 {
                     int indexI = indices.IndexOf(i);
-                    dal.setCorrIndice(i.Id, 
+                    dal.setCorrIndice(i.Id,
                         corrMat[indexI, 0],
                         corrMat[indexI, 1],
                         corrMat[indexI, 2],
@@ -242,6 +244,24 @@ namespace PEPS_Beta.Controllers
                         corrMat[indexI, 9],
                         corrMat[indexI, 10]
                         );
+
+                    if (i.Money != "eur")
+                    {
+                        indexI += 5;
+                        dal.setCorrTDC(i.Id,
+                         corrMat[indexI, 0],
+                         corrMat[indexI, 1],
+                         corrMat[indexI, 2],
+                         corrMat[indexI, 3],
+                         corrMat[indexI, 4],
+                         corrMat[indexI, 5],
+                         corrMat[indexI, 6],
+                         corrMat[indexI, 7],
+                         corrMat[indexI, 8],
+                         corrMat[indexI, 9],
+                         corrMat[indexI, 10]
+                         );
+                    }
 
 
 
@@ -262,7 +282,7 @@ namespace PEPS_Beta.Controllers
 
                 }
                 // ne pas toucher au return
-                return PartialView(dal.GetIndices());
+                return PartialView("VoirIndicesParam", dal.GetIndices());
             }
         }
         public ActionResult UpdatePortefeuille()
@@ -340,7 +360,7 @@ namespace PEPS_Beta.Controllers
                 vm.IdealPort = new PortefeuilleIdeal();
 
                 MultiMondeParam param = dal.GetParams();
-                double t = (param.CurrDate-param.Origin).TotalDays / 365.25;
+                double t = (param.CurrDate - param.Origin).TotalDays / 365.25;
                 double currTDC;
                 double currP;
                 DateTime currD = param.CurrDate;
@@ -350,22 +370,34 @@ namespace PEPS_Beta.Controllers
                 double[] volatilities = new double[11];
                 double[] interestRates = new double[6];
                 double[] correlations = new double[11 * 11];
+
+                double[] tmpcorr;
                 foreach (Indice ind in indList)
                 {
                     if (ind.Money != "eur")
                     {
                         currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
-                        //currTDC = 0.5;
                         currentPrices[i + 5] = currTDC;
-                        volatilities[i + 5] = 0.02;
+                        volatilities[i + 5] = ind.MoneyVol;
                         correlations[(i + 5) * (i + 5)] = 1.0;
+
+                        tmpcorr = ind.getCorrTDC();
+                        for (int j = 0; j < 11; ++j)
+                        {
+                            correlations[(i + 5) * 11 + j] = tmpcorr[j];
+                        }
                     }
                     currP = dal.getSingleData(currD, ind.Nom.ToUpper());
-                    //currP = 100;
                     currentPrices[i] = currP;
                     volatilities[i] = ind.Vol;
                     interestRates[i] = ind.InterestRateThisArea;
-                    correlations[i*i] = 1.0;
+
+                    tmpcorr = ind.getCorrI();
+                    for (int j = 0; j < 11; ++j)
+                    {
+                        correlations[i * 11 + j] = tmpcorr[j];
+                    }
+
                     i++;
                 }
 
@@ -373,7 +405,7 @@ namespace PEPS_Beta.Controllers
 
                 foreach (DateTime constat in param.Constatations)
                 {
-                    if (DateTime.Compare(constat,currD)<=0)
+                    if (DateTime.Compare(constat, currD) <= 0)
                     {
                         nbRows += 1;
                     }
@@ -389,11 +421,9 @@ namespace PEPS_Beta.Controllers
                     if (ind.Money != "eur")
                     {
                         currTDC = dal.getSingleChange(param.Origin, "EUR" + ind.Money.ToUpper());
-                        //currTDC = 100;
                         past[11 * row + i + 5] = currTDC;
                     }
                     currP = dal.getSingleData(param.Origin, ind.Nom.ToUpper());
-                    //currP = 100;
                     past[11 * row + i] = currP;
                     i++;
                 }
@@ -408,11 +438,9 @@ namespace PEPS_Beta.Controllers
                             if (ind.Money != "eur")
                             {
                                 currTDC = dal.getSingleChange(constat, "EUR" + ind.Money.ToUpper());
-                                //currTDC = 100;
                                 past[11 * row + i + 5] = currTDC;
                             }
                             currP = dal.getSingleData(constat, ind.Nom.ToUpper());
-                            //currP = 100;
                             past[11 * row + i] = currP;
                             i++;
                         }
@@ -439,7 +467,7 @@ namespace PEPS_Beta.Controllers
                 "gbp",
                 "aud"};
 
-                for (int k = 0; k<11; ++k)
+                for (int k = 0; k < 11; ++k)
                 {
                     vm.IdealPort.SetDelta(names[k], deltas[k]);
                 }
@@ -491,13 +519,20 @@ namespace PEPS_Beta.Controllers
             }
         }
 
-        public void SetDate(MultiMondeParam m)
+        public ActionResult SetDate(MultiMondeParam m)
         {
+
             using (DAL dal = new DAL())
             {
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.MessageErreur = ModelState["CurrDate"].Errors[0].ErrorMessage;
+                    return PartialView("MultiMondeParam", dal.GetParams());
+                }
                 dal.ChangeDate(m.CurrDate);
+                return PartialView("MultiMondeParam", dal.GetParams());
             }
         }
-        
+
     }
 }
