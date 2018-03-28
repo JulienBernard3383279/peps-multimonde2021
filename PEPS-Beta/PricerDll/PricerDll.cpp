@@ -1105,10 +1105,12 @@ void TrackingErrorMultimonde2021Quanto(
 	double volatilities[],
 	double interestRates[],
 	double correlations[],
-	int nbUpdates,
+	int nbUpdatesPerYear, //nbUpdates par an [par date de constatation]
 	double* tracking_error,
 	double** portfolioReturns,
 	double ** productReturns) {
+
+	int nbUpdates = nbUpdatesPerYear * 6;
 
 	//pour l'instant, t est ignoré
 	//std::cout << "Tracking error > 1" << std::endl;
@@ -1131,6 +1133,8 @@ void TrackingErrorMultimonde2021Quanto(
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices, interestRates, t, opt->T);
 
 	PnlMat *scenario = pnl_mat_create(371*6 + 1, mod->size_);
+	PnlMat *scenarioToFeed = pnl_mat_create(7, mod->size_);
+
 	//std::cout << "Tracking error > 4" << std::endl;
 
 	mod->initAsset(nbUpdates);
@@ -1140,6 +1144,14 @@ void TrackingErrorMultimonde2021Quanto(
 	mod->postInitAssetCustomDates(scenario,
 		pastMat, t, currentVect,
 		dates, nbUpdates, mc->rng_);
+
+	PnlVect* temp = pnl_vect_create(mod->size_);
+	for (int i = 0; i < 7; i++) {
+		pnl_mat_get_row(temp, scenario, i*nbUpdatesPerYear);
+		pnl_mat_set_row(scenarioToFeed, temp, i);
+	}
+	pnl_vect_free(&temp);
+
 	//std::cout << "Tracking error > 6" << std::endl;
 
 	double portfolioReturn;
@@ -1174,6 +1186,7 @@ void TrackingErrorMultimonde2021Quanto(
 	double step = (371 * 6 / 365.25) / nbUpdates;
 	//pnl_mat_print(scenario);
 	for (int advancement = 1; advancement<nbUpdates; advancement++) {
+		verbose = ( advancement % (nbUpdates / 6) == 0 );
 		// mise à jour des informations
 		std::cout << "Advancement : " << advancement << std::endl;
 
@@ -1210,7 +1223,7 @@ void TrackingErrorMultimonde2021Quanto(
 
 		if (verbose) std::cout << "Previous price : " << previousPrice << std::endl;
 		if (stepByStep && advancement>5) std::cin.ignore();
-		mc->price(scenario, GET(dates, advancement), currentVect, &price, &ic);
+		mc->price(scenarioToFeed, GET(dates, advancement), currentVect, &price, &ic);
 
 		LET(priceEstimationVolatilities,advancement-1) = (ic / 4)/price;
 		if (verbose) std::cout << "Price volatility : " << ic / 4 << std::endl;
@@ -1229,7 +1242,7 @@ void TrackingErrorMultimonde2021Quanto(
 		// mise à jour de la composition du portefeuille
 		if (stepByStep && advancement>5) std::cin.ignore();
 		mc->nbSamples_ /= 10;
-		mc->deltas(scenario, GET(dates, advancement), currentVect, deltas);
+		mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas);
 		mc->nbSamples_ *= 10;
 
 		if (verbose) std::cout << "Deltas : " << std::endl; if (verbose) pnl_vect_print(deltas);
