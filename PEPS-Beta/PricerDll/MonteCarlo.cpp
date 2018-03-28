@@ -83,7 +83,6 @@ void MonteCarlo::deltas(PnlVect* deltas) {
 		LET(deltas, j) *= exp(-mod_->r_ * opt_->T);
 	}
 
-
 	return;
 }
 

@@ -14,6 +14,7 @@ public:
 	Option *opt_; /*! pointeur sur l'option */
 	PnlRng *rng_; /*! pointeur sur le générateur */
 	int nbSamples_; /*! nombre de tirages Monte Carlo */
+	bool verbose = false;
 
 	MonteCarlo();
 

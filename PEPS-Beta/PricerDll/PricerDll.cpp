@@ -1126,7 +1126,7 @@ void TrackingErrorMultimonde2021Quanto(
 	//dates
 	PnlVect* dates = pnl_vect_create(nbUpdates + 1);
 	for (int i = 0; i < nbUpdates + 1; i++) {
-		LET(dates, i) = (6 * 371.0 / 365.25)*i/nbUpdates;
+		LET(dates, i) = (i*(6.0 * 371.0 / 365.25))/nbUpdates;
 	}
 
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past, interestRates, opt->T, dates); // Ici on passe dates car le format de past est celui de scénario
@@ -1183,7 +1183,7 @@ void TrackingErrorMultimonde2021Quanto(
 	bool verbose = false;
 	bool stepByStep = false;
 
-	double step = (371 * 6 / 365.25) / nbUpdates;
+	double step = (371.0 * 6.0 / 365.25) / nbUpdates;
 	//pnl_mat_print(scenario);
 	for (int advancement = 1; advancement<nbUpdates; advancement++) {
 		verbose = ( advancement % (nbUpdates / 6) == 0 );
