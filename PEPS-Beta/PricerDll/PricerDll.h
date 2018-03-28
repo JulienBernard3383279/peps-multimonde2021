@@ -257,17 +257,21 @@ extern "C" PRICERDLL_API void DeltasMultimonde2021Quanto(
 
 extern "C" PRICERDLL_API void TrackingErrorMultimonde2021Quanto(
 	int sampleNumber,
-	double past[],
+	double beginning,
+	double end,
+	double dateStartSimul,
+	double providedScenario[],
 	int nbRows,
-	double t,
-	double currentPrices[],
+	double spots[],
+	double pricesAtSimulStart[],
 	double volatilities[],
 	double interestRates[],
 	double correlations[],
-	int nbUpdatesPerYear,
-	double* tracking_error,
+	int nbUpdates,
+	double* trackingError,
+	double* relativePricingVolatility,
 	double** portfolioReturns,
-	double ** productReturns);
+	double** productReturns);
 #pragma endregion
 
 #pragma region SingleMonde

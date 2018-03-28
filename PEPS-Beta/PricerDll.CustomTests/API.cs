@@ -297,15 +297,19 @@ namespace PricerDll.CustomTests
         [DllImport(@"..\..\..\..\x64\Debug\PricerDll.dll")]
         public static extern unsafe void TrackingErrorMultimonde2021Quanto(
             int sampleNumber,
-            double[] past,
+            double beginning,
+            double end,
+            double dateStartSimul,
+            double[] providedScenario,
             int nbRows,
-            double t,
-            double[] currentPrices,
+            double[] spots,
+            double[] pricesAtSimulStart,
             double[] volatilities,
             double[] interestRates,
             double[] correlations,
-            int nbUpdatesPerYear,
-            double* tracking_error,
+            int nbUpdates,
+            double* trackingError,
+            double* relativePricingVolatility,
             out IntPtr portfolioReturns,
             out IntPtr productReturns);
         #endregion
@@ -333,8 +337,8 @@ namespace PricerDll.CustomTests
             double[] correlations,
             double date,
             double[] currents,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates);
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates);
         #endregion
     }
 }

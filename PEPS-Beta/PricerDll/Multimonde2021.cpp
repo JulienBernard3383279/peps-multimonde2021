@@ -3,6 +3,9 @@
 #include <iostream>
 #include <cstring>
 
+/*
+* CE MULTIMONDE N'EST PAS LE BON. LE CORRECT CALCULATOIREMENT EST MULTIMONDE2021QUANTO
+*/
 Multimonde2021::Multimonde2021(PnlVect* customDates) {
 	payoffVectMemSpaceInit_ = pnl_vect_create_from_zero(6);
 	payoffVectMemSpaceCurrent_ = pnl_vect_create_from_zero(6);

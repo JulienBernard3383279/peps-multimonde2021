@@ -16,15 +16,12 @@ SingleMonde::~SingleMonde() {
 }
 
 double SingleMonde::payoff(const PnlMat* path) { 
-	//std::cout << "Payoff"; std::cin.ignore();
-	//std::cout << MGET(path, 1, 0); std::cin.ignore();
-	//std::cout << MGET(path, 0, 0); std::cin.ignore();
 
 	double perf = (MGET(path, 1, 0) / MGET(path, 1, 1))
 		/ ( MGET(path, 0, 0) / (MGET(path, 0, 1)*exp(interestRates[1] * this->T)));
-	//std::cout << "uh"; std::cin.ignore();
 
 	return 100 * (perf < 0.85 ? 0.85 : perf > 1.15 ? 1.15 : perf);
+
 	//Code d'alexandra, commenté pour la postérité
 	//path taille 1,1, représentant la liste suivante :
 	/*
@@ -45,11 +42,9 @@ double SingleMonde::payoff(const PnlMat* path) {
 	return 100 * globalPerf;*/
 }
 
-double SingleMonde::verbosePayoff() { //path taille 1,1, représentant la liste suivante :
-														   /*
-														   * 01/10/15
-														   */
-
+double SingleMonde::verbosePayoff() {
+	//Inutilisé
+	/*
 	double globalPerf = 1.0;
 	double max;
 
@@ -61,5 +56,6 @@ double SingleMonde::verbosePayoff() { //path taille 1,1, représentant la liste s
 	else {
 		globalPerf = (max < 1 ? -0.15 : 0.15);
 	}
-	return 100 * globalPerf;
+	return 100 * globalPerf;*/
+	return 0;
 }

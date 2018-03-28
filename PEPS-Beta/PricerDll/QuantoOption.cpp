@@ -17,8 +17,6 @@ QuantoOption::~QuantoOption()
 
 double QuantoOption::payoff(const PnlMat * path)
 {
-	//std::cout << (MGET(path, path->m - 1, 1)) << std::endl;
-	//double vFinale = MGET(path, path->m - 1, 0) * MGET(path, path->m - 1, 1);
 	double vFinale = MGET(path, path->m - 1, 0) / MGET(path, path->m - 1, 1);
 	return max(0, vFinale - strike_);
 }
