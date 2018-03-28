@@ -402,14 +402,14 @@ namespace PEPS_Beta.Controllers
                 {
                     if (ind.Money != "eur")
                     {
-                        //currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
-                        currTDC = 0.5;
+                        currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
+                        //currTDC = 0.5;
                         currentPrices[i + 5] = currTDC;
                         volatilities[i + 5] = 0.02;
                         correlations[(i + 5) * (i + 5)] = 1.0;
                     }
-                    //currP = dal.getSingleData(currD, ind.Nom.ToUpper());
-                    currP = 100;
+                    currP = dal.getSingleData(currD, ind.Nom.ToUpper());
+                    //currP = 100;
                     currentPrices[i] = currP;
                     volatilities[i] = ind.Vol;
                     interestRates[i] = ind.InterestRateThisArea;
@@ -421,7 +421,7 @@ namespace PEPS_Beta.Controllers
 
                 foreach (DateTime constat in param.Constatations)
                 {
-                    if (constat <= currD)
+                    if (DateTime.Compare(constat,currD)<=0)
                     {
                         nbRows += 1;
                     }
@@ -436,37 +436,33 @@ namespace PEPS_Beta.Controllers
                 {
                     if (ind.Money != "eur")
                     {
-                        //currTDC = dal.getSingleChange(param.Origin, "EUR" + ind.Money.ToUpper());
-                        currTDC = 100;
+                        currTDC = dal.getSingleChange(param.Origin, "EUR" + ind.Money.ToUpper());
+                        //currTDC = 100;
                         past[11 * row + i + 5] = currTDC;
                     }
-                    //currP = dal.getSingleData(param.Origin, ind.Nom.ToUpper());
-                    currP = 100;
+                    currP = dal.getSingleData(param.Origin, ind.Nom.ToUpper());
+                    //currP = 100;
                     past[11 * row + i] = currP;
                     i++;
                 }
                 foreach (DateTime constat in param.Constatations)
                 {
                     row += 1;
-                    if (constat <= currD)
+                    if (DateTime.Compare(constat, currD) <= 0)
                     {
                         i = 0;
                         foreach (Indice ind in indList)
                         {
                             if (ind.Money != "eur")
                             {
-                                //currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
-                                currTDC = 100;
+                                currTDC = dal.getSingleChange(constat, "EUR" + ind.Money.ToUpper());
+                                //currTDC = 100;
                                 past[11 * row + i + 5] = currTDC;
                             }
-                            //currP = dal.getSingleData(currD, ind.Nom.ToUpper());
-                            currP = 100;
+                            currP = dal.getSingleData(constat, ind.Nom.ToUpper());
+                            //currP = 100;
                             past[11 * row + i] = currP;
                             i++;
-                        }
-                        if (row == 1)
-                        {
-                            past[11 * row] = 110;
                         }
                     }
                 }
@@ -479,7 +475,7 @@ namespace PEPS_Beta.Controllers
                 System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 11); //<- deltas contient maintenant les deltas
 
                 String[] names = new String[11] {
-                "estox",
+                "estoxx",
                 "sp500",
                 "n225",
                 "hang",
@@ -510,18 +506,15 @@ namespace PEPS_Beta.Controllers
                     }
                     else
                     {
-                        //currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
-                        currTDC = 0.5;
+                        currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
+                        //currTDC = 0.5;
                     }
-                    //currP = dal.getSingleData(currD, ind.Nom.ToUpper()) / currTDC;
-                    currP = 100/currTDC;
+                    currP = dal.getSingleData(currD, ind.Nom.ToUpper()) / currTDC;
+                    //currP = 100/currTDC;
                     currZC = Math.Exp(-ind.InterestRateThisArea * Tmoinst) / currTDC;
 
                     optimumValue += vm.IdealPort.GetDelta(ind.Nom) * currP;
                     optimumValue += vm.IdealPort.GetDelta(ind.Money) * currZC;
-
-                    dal.SetDelta(ind.Nom, vm.IdealPort.GetDelta(ind.Nom));
-                    dal.SetDelta(ind.Money, vm.IdealPort.GetDelta(ind.Money));
                 }
                 double price;
                 double ic;

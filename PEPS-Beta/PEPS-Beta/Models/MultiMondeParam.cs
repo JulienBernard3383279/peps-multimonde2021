@@ -28,10 +28,6 @@ namespace PEPS_Beta.Models
 
         #region properties
 
-
-        public DateTime[] Constatations { get => constatations; }
-
-
         public int NbSamples { get => nbSamples; set => nbSamples = value; }
 
         public int NbIndices { get => nbIndices; set => nbIndices = value; }
@@ -50,10 +46,10 @@ namespace PEPS_Beta.Models
         public DateTime CurrDate { get => currDate; set => currDate = value; }
         public DateTime EndDate { get => endDate; set => endDate = value; }
         public DateTime Origin { get => origin; set => origin = value; }
+        public DateTime[] Constatations { get => constatations; set => constatations = value; }
 
         public MultiMondeParam()
         {
-            this.constatations = new DateTime[6];
             this.indices = new List<Indice>();
         }
     }
