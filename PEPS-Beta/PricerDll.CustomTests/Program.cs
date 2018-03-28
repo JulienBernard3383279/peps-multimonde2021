@@ -12,24 +12,22 @@ namespace PricerDll.CustomTests
         static void Main(string[] args)
         {
             //TestsCall.PerformPriceTests();
-           //TestsCall.PerformPriceTestsAnyTime();
-            TestsCall.PerformDeltaTests0();
+            //TestsCall.PerformPriceTestsAnyTime();
+            //TestsCall.PerformDeltaTests0();
             //TestsCall.PerformDeltaTestsAnyTime();
 
             TestsQuanto.PerformPriceTests();
-            //TestsQuanto.PerformDeltaTests0();
+            TestsQuanto.PerformDeltaTests0();
             //TestsQuanto.PerformDeltaTestsAnyTime();
 
             //TestHistoricalData.TestHisto();
 
-            //TestsMultimonde2021Quanto.PerformPriceTests();
-            //TestsMultimonde2021Quanto.PerformDeltaTest();
-
+            TestsMultimonde2021Quanto.PerformPriceTests();
+            TestsMultimonde2021Quanto.PerformDeltaTest();
+            TestsMultimonde2021Quanto.PerformTrackingErrorTest();
+            
             //TestsSingleMonde.PerformPriceSingleMondeTests();
 
-            //TestsMultimonde2021Quanto.PerformPriceTests(); //pas finie l'automatisation
-            //TestsMultimonde2021Quanto.PerformDeltaTest();
-            //TestsSingleMonde.PerformPriceSingleMondeTests();
 
             Console.WriteLine("Appuyez sur une touche pour terminer le programme.");
             Console.ReadKey();

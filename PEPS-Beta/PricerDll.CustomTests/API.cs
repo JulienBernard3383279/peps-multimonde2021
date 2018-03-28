@@ -304,7 +304,7 @@ namespace PricerDll.CustomTests
             double[] volatilities,
             double[] interestRates,
             double[] correlations,
-            int nbUpdates,
+            int nbUpdatesPerYear,
             double* tracking_error,
             out IntPtr portfolioReturns,
             out IntPtr productReturns);
