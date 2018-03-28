@@ -229,19 +229,35 @@ namespace PEPS_Beta.Controllers
                 foreach (Indice i in indices)
                 {
                     int indexI = indices.IndexOf(i);
-                    i.CorrelationMat = new Dictionary<Indice, double>();
-                    i.CorrelationMatTC = new Dictionary<String, double>();
-                    foreach (Indice j in indices)
-                    {
-                        double t = corrMat[indexI, indices.IndexOf(j)];
-                        i.CorrelationMat.Add(j, t);
-                    }
+                    dal.setCorrIndice(i.Id, 
+                        corrMat[indexI, 0],
+                        corrMat[indexI, 1],
+                        corrMat[indexI, 2],
+                        corrMat[indexI, 3],
+                        corrMat[indexI, 4],
+                        corrMat[indexI, 5],
+                        corrMat[indexI, 6],
+                        corrMat[indexI, 7],
+                        corrMat[indexI, 8],
+                        corrMat[indexI, 9],
+                        corrMat[indexI, 10]
+                        );
 
-                    i.CorrelationMatTC.Add("EURUSD", corrMat[indexI, indices.Count + 0]);
-                    i.CorrelationMatTC.Add("EURJPY", corrMat[indexI, indices.Count + 1]);
-                    i.CorrelationMatTC.Add("EURHKD", corrMat[indexI, indices.Count + 2]);
-                    i.CorrelationMatTC.Add("EURGBP", corrMat[indexI, indices.Count + 3]);
-                    i.CorrelationMatTC.Add("EURAUX", corrMat[indexI, indices.Count + 4]);
+
+
+                    //int indexI = indices.IndexOf(i);
+
+                    //foreach (Indice j in indices)
+                    //{
+                    //    double t = corrMat[indexI, indices.IndexOf(j)];
+                    //    i.CorrelationMat.Add(j, t);
+                    //}
+
+                    //i.CorrelationMatTC.Add("EURUSD", corrMat[indexI, indices.Count + 0]);
+                    //i.CorrelationMatTC.Add("EURJPY", corrMat[indexI, indices.Count + 1]);
+                    //i.CorrelationMatTC.Add("EURHKD", corrMat[indexI, indices.Count + 2]);
+                    //i.CorrelationMatTC.Add("EURGBP", corrMat[indexI, indices.Count + 3]);
+                    //i.CorrelationMatTC.Add("EURAUX", corrMat[indexI, indices.Count + 4]);
 
 
                 }

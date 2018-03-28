@@ -25,7 +25,7 @@ namespace PricerDll.CustomTests
             double ic;
             #endregion
             #region Certains
-            nbSamples = 1_000_000;
+            nbSamples = 100_000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0
@@ -146,7 +146,7 @@ namespace PricerDll.CustomTests
             Console.WriteLine();
             #endregion
             #region Quasi-déterminés
-            nbSamples = 1_000_000;
+            nbSamples = 100_000;
             volatilities = new double[11] {
                 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0
@@ -271,7 +271,7 @@ namespace PricerDll.CustomTests
 
             #endregion
             #region Incertains
-            nbSamples = 1_000_000;
+            nbSamples = 100_000;
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
                 1.0, 1.0, 1.0, 1.0, 1.0 };
@@ -368,6 +368,131 @@ namespace PricerDll.CustomTests
             Console.WriteLine("Prix : " + price);
             Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
             #endregion
+            #region Incertains semi-déterminés
+            nbSamples = 100_000;
+            currentPrices = new double[11] {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
+                1.0, 1.0, 1.0, 1.0, 1.0 };
+            volatilities = new double[11] {
+                0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+                0, 0, 0, 0, 0
+            };
+            interestRates = new double[6] {
+                0, 0, 0, 0, 0, 0
+            };
+            correlations = new double[11 * 11];
+            for (int i = 0; i < 11; i++)
+            {
+                for (int j = 0; j < 11; j++)
+                {
+                    correlations[11 * i + j] = i == j ? 1 : 0;
+                }
+            }
+            nbRows = 3;
+            t = (371 / 365.25) * 2.999;
+            past = new double[3 * 11]
+            {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                110.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                100.0, 110.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+            currentPrices = new double[11] {
+                10000, 10000, 105.0, 102.0, 98.0, 90.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
+            API.PriceMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                &price,
+                &ic);
+
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
+
+            Console.WriteLine("t=2.999 nbRows=3");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
+            Console.WriteLine("Prix : " + price);
+            Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            Console.WriteLine();
+
+            nbRows = 4;
+            t = (371 / 365.25) * 3.000;
+            past = new double[4 * 11]
+            {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                110.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                100.0, 110.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                10000, 10000, 105.0, 102.0, 98.0, 90.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+            currentPrices = new double[11] {
+                10000, 10000, 105.0, 102.0, 98.0, 90.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
+            API.PriceMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                &price,
+                &ic);
+
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
+
+            Console.WriteLine("t=3.000 nbRows=4");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
+            Console.WriteLine("Prix : " + price);
+            Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            Console.WriteLine();
+
+            nbRows = 4;
+            t = (371 / 365.25) * 3.001;
+            past = new double[4 * 11]
+            {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                110.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                100.0, 110.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                10000, 10000, 105.0, 102.0, 98.0, 90.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+            currentPrices = new double[11] {
+                10000, 10000, 105.0, 102.0, 98.0, 90.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+
+            watch = System.Diagnostics.Stopwatch.StartNew();
+            API.PriceMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                &price,
+                &ic);
+
+            watch.Stop();
+            executionTime = watch.ElapsedMilliseconds;
+
+            Console.WriteLine("t=3.001 nbRows=4");
+            Console.WriteLine("Calcul en " + executionTime + " millisecondes.");
+            Console.WriteLine("Prix : " + price);
+            Console.WriteLine("Largeur de l'intervalle de confiance : " + ic);
+            Console.WriteLine();
+
+            #endregion
         }
 
         public static unsafe void PerformDeltaTest()
@@ -449,6 +574,62 @@ namespace PricerDll.CustomTests
             for (int i = 0; i < 11; i++) Console.WriteLine(String.Format("{0:######0.######}", deltas[i]) + " ");
             Console.WriteLine();
             #endregion
+            #region Incertains semi-déterminés
+            nbSamples = 100_000;
+            currentPrices = new double[11] {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
+                1.0, 1.0, 1.0, 1.0, 1.0 };
+            volatilities = new double[11] {
+                0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
+                0, 0, 0, 0, 0
+            };
+            interestRates = new double[6] {
+                0, 0, 0, 0, 0, 0
+            };
+            correlations = new double[11 * 11];
+            for (int i = 0; i < 11; i++)
+            {
+                for (int j = 0; j < 11; j++)
+                {
+                    correlations[11 * i + j] = i == j ? 1 : 0;
+                }
+            }
+            nbRows = 4;
+            t = (371 / 365.25) * 3;
+            past = new double[4 * 11]
+            {
+                100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                110.0, 100.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                100.0, 110.0, 100.0, 100.0, 100.0, 100.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                10000, 10000, 105.0, 102.0, 98.0, 90.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+            currentPrices = new double[11] {
+                10000, 10000, 105.0, 102.0, 98.0, 90.0, 1.0, 1.0, 1.0, 1.0, 1.0
+            };
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            API.DeltasMultimonde2021Quanto(
+                nbSamples,
+                past,
+                nbRows,
+                t,
+                currentPrices,
+                volatilities,
+                interestRates,
+                correlations,
+                out deltasPtr);
+
+            watch.Stop();
+            var executionTime = watch.ElapsedMilliseconds;
+
+            deltas = new double[11];
+            System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 11); //<- deltas contient maintenant les deltas
+
+            Console.WriteLine("Calcul des deltas sur monde gelé basique.");
+            Console.WriteLine("Devrait renvoyer 0 pour l'actif sélectionné à cette date de constatation (le n°3 <-> index 2).");
+            for (int i = 0; i < 11; i++) Console.WriteLine(String.Format("{0:######0.######}", deltas[i]) + " ");
+            Console.WriteLine();
+            #endregion
         }
 
         public static unsafe void PerformTrackingErrorTest()
@@ -467,17 +648,22 @@ namespace PricerDll.CustomTests
             int nbUpdates;
             #endregion
             #region Test
-            nbSamples = 100000;
+            nbSamples = 5_000;
+            interestRates = new double[6] {
+                0.02,0.02,0.02,0.02,0.02,0.02
+                //0, 0, 0, 0, 0, 0
+            };
             currentPrices = new double[11] {
                 100.0, 100.0, 100.0, 100.0, 100.0, 100.0,
-                1.0, 1.0, 1.0, 1.0, 1.0
+                1.0,//*Math.Exp(-interestRates[1]*(6*371.0/365.25)),
+                1.0,// *Math.Exp(-interestRates[2]*(6*371.0/365.25)),
+                1.0,// *Math.Exp(-interestRates[3]*(6*371.0/365.25)),
+                1.0,// *Math.Exp(-interestRates[4]*(6*371.0/365.25)),
+                1.0 //*Math.Exp(-interestRates[5]*(6*371.0/365.25))
             };
             volatilities = new double[11] {
                 0.02, 0.02, 0.02, 0.02, 0.02, 0.02,
-                0, 0, 0, 0, 0
-            };
-            interestRates = new double[6] {
-                0, 0, 0, 0, 0, 0
+                0.02, 0.02, 0.02, 0.02, 0.02
             };
             correlations = new double[11 * 11];
             for (int i = 0; i < 11; i++)
@@ -490,7 +676,7 @@ namespace PricerDll.CustomTests
             past = currentPrices;
             nbRows = 1;
             t = 0;
-            nbUpdates = 30;
+            nbUpdates = 52*6-3;
 
             API.TrackingErrorMultimonde2021Quanto(
                 nbSamples,

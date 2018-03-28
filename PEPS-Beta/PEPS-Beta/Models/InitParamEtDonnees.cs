@@ -166,22 +166,22 @@ namespace PEPS_Beta.Models
             PortefeuilleCouverture newPort = new PortefeuilleCouverture();
             context.GetPort.Add(newPort);
 
-            Indice estox = new Indice("estoxx", "eur");
+            Indice estox = new Indice("estoxx", "eur",0.001);
             context.Indices.Add(estox);
             newParam.Indices.Add(estox);
-            Indice sp500 = new Indice("sp500", "usd");
+            Indice sp500 = new Indice("sp500", "usd",0.00135);
             context.Indices.Add(sp500);
             newParam.Indices.Add(sp500);
-            Indice n225 = new Indice("n225", "jpy");
+            Indice n225 = new Indice("n225", "jpy",0.001);
             context.Indices.Add(n225);
             newParam.Indices.Add(n225);
-            Indice hang = new Indice("hang", "hkd");
+            Indice hang = new Indice("hang", "hkd",0.01);
             context.Indices.Add(hang);
             newParam.Indices.Add(hang);
-            Indice ftse = new Indice("ftse", "gbp");
+            Indice ftse = new Indice("ftse", "gbp",0.005);
             context.Indices.Add(ftse);
             newParam.Indices.Add(ftse);
-            Indice asx = new Indice("asx", "aud");
+            Indice asx = new Indice("asx", "aud",0.015);
             context.Indices.Add(asx);
             newParam.Indices.Add(asx);
 

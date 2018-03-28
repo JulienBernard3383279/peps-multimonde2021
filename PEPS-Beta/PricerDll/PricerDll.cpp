@@ -1102,6 +1102,8 @@ void DeltasMultimonde2021Quanto(
 #pragma region Tracking error
 void TrackingErrorMultimonde2021Quanto(
 	int sampleNumber,
+	//double beginning,
+	//double end,
 	double past[],
 	int nbRows,
 	double t,
@@ -1109,7 +1111,7 @@ void TrackingErrorMultimonde2021Quanto(
 	double volatilities[],
 	double interestRates[],
 	double correlations[],
-	int nbUpdates,
+	int nbUpdates, //nbUpdates par an [par date de constatation]
 	double* tracking_error,
 	double** portfolioReturns,
 	double ** productReturns) {
@@ -1128,13 +1130,15 @@ void TrackingErrorMultimonde2021Quanto(
 	//dates
 	PnlVect* dates = pnl_vect_create(nbUpdates + 1);
 	for (int i = 0; i < nbUpdates + 1; i++) {
-		LET(dates, i) = i / 365.25;
+		LET(dates, i) = (i*(6.0 * 371.0 / 365.25))/nbUpdates;
 	}
 
 	PnlMat* pastMat = Multimonde2021Quanto_BuildFromPast(nbRows, past, interestRates, opt->T, dates); // Ici on passe dates car le format de past est celui de scénario
 	PnlVect* currentVect = Multimonde2021Quanto_BuildFromCurrentPrices(currentPrices, interestRates, t, opt->T);
 
 	PnlMat *scenario = pnl_mat_create(371*6 + 1, mod->size_);
+	PnlMat *scenarioToFeed = pnl_mat_create(7, mod->size_);
+
 	//std::cout << "Tracking error > 4" << std::endl;
 
 	mod->initAsset(nbUpdates);
@@ -1144,6 +1148,15 @@ void TrackingErrorMultimonde2021Quanto(
 	mod->postInitAssetCustomDates(scenario,
 		pastMat, t, currentVect,
 		dates, nbUpdates, mc->rng_);
+
+	PnlVect* temp = pnl_vect_create(mod->size_);
+	for (int i = 0; i < 7; i++) {
+		//pnl_mat_get_row(temp, scenario, i*nbUpdatesPerYear);
+		InterpolateValues(temp, scenario, i*371.0 / 365.25, 6 * 371.0 / 365.25, nbUpdates);
+		pnl_mat_set_row(scenarioToFeed, temp, i);
+	}
+	pnl_vect_free(&temp);
+
 	//std::cout << "Tracking error > 6" << std::endl;
 
 	double portfolioReturn;
@@ -1161,56 +1174,85 @@ void TrackingErrorMultimonde2021Quanto(
 	PnlVect* returnsDiff = pnl_vect_create(nbUpdates);
 	double* portfolioReturnsIntermediate = new double[nbUpdates];
 	double* productReturnsIntermediate = new double[nbUpdates];
+	
+	PnlVect* priceEstimationVolatilities = pnl_vect_create_from_zero(nbUpdates);
+	mc->price(scenario, GET(dates,advancement), currentVect, &price, &ic);
+	LET(priceEstimationVolatilities, 0) = (ic / 4) / price;
 
-
-	mc->price(scenario, GET(dates,advancement), currentVect, &price, &ic); // le problème est ici
 	PnlVect* deltas = pnl_vect_create_from_zero(11);
-	mc->deltasMultimonde2021Quanto(scenario, GET(dates, advancement), currentVect, deltas);
-	spare = price;
-	UpdatePortfolio(quantities, currentVect, deltas, spare);
-	value = ComputeValue(quantities, currentVect) + spare;
+	mc->deltas(scenario, GET(dates, advancement), currentVect, deltas);
+	UpdatePortfolio(quantities, currentVect, deltas);
+	value = price;
+	spare = value - ComputeValue(quantities, currentVect);
+
 	bool verbose = false;
 	bool stepByStep = false;
-	double step = (371 * 6 / 365.25) / nbUpdates;
+
+	double step = (371.0 * 6.0 / 365.25) / nbUpdates;
 	//pnl_mat_print(scenario);
+	std::cout << "Advancement : ";
+
 	for (int advancement = 1; advancement<nbUpdates; advancement++) {
 		// mise à jour des informations
-		std::cout << "Advancement : " << advancement << std::endl;
+		std::cout << advancement << "; ";
+
 		if (verbose) std::cout << "Step : " << step << std::endl;
 		if (stepByStep && advancement>5) std::cin.ignore();
 		pnl_mat_get_row(currentVect, scenario, advancement);
+
+		// Calcul du rendement du portefeuille
 		if (verbose) std::cout << "Current prices : " << std::endl; if (verbose) pnl_vect_print(currentVect);
-		// calcul du rendement du portefeuille
 		if (verbose) std::cout << "Current quantities : " << std::endl; if (verbose) pnl_vect_print(quantities);
 		if (verbose) std::cout << "Spare : " << spare << std::endl;
 		if (stepByStep && advancement>5) std::cin.ignore();
+
+		/*Plus d'étape actualisation pour les monnaies étrangères depuis que nous manipulons des zéro-coupons étrangers directement.
+		Ils s'apprécient dans le modèle. En revanche les euros doivent être actualisés !
 		UpdateCurrencyQuantities(step, &spare, 6, quantities, interestRates);
 		if (verbose) std::cout << "After actualisation : " << std::endl; if (verbose) pnl_vect_print(quantities);
-		if (verbose) std::cout << "Spare : " << spare << std::endl;
+		if (verbose) std::cout << "Spare : " << spare << std::endl;*/
+		UpdateLocalCurrencyQuantity(step, &spare, interestRates);
+		if (verbose) std::cout << "Spare post update : " << spare << std::endl;
+
 		previousValue = value;
+
 		if (verbose) std::cout << "Previous value : " << previousValue << std::endl;
 		if (stepByStep && advancement>5) std::cin.ignore();
 		value = ComputeValue(quantities, currentVect) + spare;
+		
 		if (verbose) std::cout << "New value : " << value << std::endl;
 		portfolioReturnsIntermediate[advancement] = portfolioReturn = value / previousValue;
+		
 		if (verbose) std::cout << "Portfolio return : " << portfolioReturn << std::endl;
+		
 		// calcul du rendement du multimonde
 		previousPrice = price;
+
 		if (verbose) std::cout << "Previous price : " << previousPrice << std::endl;
 		if (stepByStep && advancement>5) std::cin.ignore();
-		mc->price(scenario, GET(dates, advancement), currentVect, &price, &ic);
+		mc->price(scenarioToFeed, GET(dates, advancement), currentVect, &price, &ic);
+
+		LET(priceEstimationVolatilities,advancement-1) = (ic / 4)/price;
+		if (verbose) std::cout << "Price volatility : " << ic / 4 << std::endl;
+
 		if (verbose) std::cout << "New price : " << price << std::endl;
 		productReturnsIntermediate[advancement] = productReturn = price / previousPrice;
+
 		if (verbose) std::cout << "Product return : " << productReturn << std::endl;
+
 		// calcul de la différence
 		if (stepByStep && advancement>5) std::cin.ignore();
 		LET(returnsDiff, advancement - 1) = portfolioReturn - productReturn;
+
 		if (verbose) std::cout << "Return difference : " << GET(returnsDiff, advancement - 1) << std::endl;
+
 		// mise à jour de la composition du portefeuille
 		if (stepByStep && advancement>5) std::cin.ignore();
 		mc->nbSamples_ /= 10;
-		mc->deltasMultimonde2021Quanto(scenario, GET(dates, advancement), currentVect, deltas);
+		deltas = pnl_vect_create_from_zero(mod->size_);
+		mc->deltas(scenarioToFeed, GET(dates, advancement), currentVect, deltas);
 		mc->nbSamples_ *= 10;
+
 		if (verbose) std::cout << "Deltas : " << std::endl; if (verbose) pnl_vect_print(deltas);
 
 		// Pour calculer la tracking error, on ne simule pas une stratégie de couverture - on regarde juste à chaque date
@@ -1219,28 +1261,39 @@ void TrackingErrorMultimonde2021Quanto(
 		// Repasser à une courbe ne devrait alors pas être trop difficile (prix initial + multiplication par rendements )
 
 		if (stepByStep && advancement>5) std::cin.ignore();
-		PnlVect* quantities = pnl_vect_create_from_zero(11);
-		spare = price;
-		UpdatePortfolio(quantities, currentVect, deltas, spare);
+		value = price;
+		UpdatePortfolio(quantities, currentVect, deltas);
+		spare = price - ComputeValue(quantities, currentVect);
 
 		if (verbose) std::cout << "New quantities : " << std::endl; if (verbose) pnl_vect_print(quantities);
 		if (verbose) std::cout << "Spare : " << spare << std::endl;
 		if (stepByStep) std::cin.ignore();
 
-		//if (verbose) std::cout << "; " << value << " ; " << ComputeValue(quantities, currentVect) + spare << std::endl;
-		//std::cin.ignore();
+		if (verbose) std::cout << "ADVANCE" << std::endl;
 	}
+	std::cout << std::endl;
 	// calcul de la tracking error
 	double sum = 0;
 	double squaresSum = 0;
+	double sumVols = 0;
+	std::cout << "Difference vectors" << std::endl;
 	pnl_vect_print(returnsDiff);
+	double get;
 	for (int i = 0; i < nbUpdates; i++) {
-		sum += GET(returnsDiff, i);
-		squaresSum += GET(returnsDiff, i)*GET(returnsDiff, i);
+		get = GET(returnsDiff, i);
+		sum += get;
+		squaresSum += get * get;
+		sumVols += GET(priceEstimationVolatilities, i);
 	}
+	sum /= (nbUpdates*nbUpdates);
+	squaresSum /= nbUpdates;
+	sumVols /= nbUpdates;
+
+	std::cout << "Squared sum ; sum ; tracking error ; average relative price estimation error" << std::endl;
 	std::cout << squaresSum << std::endl;
 	std::cout << sum << std::endl;
 	std::cout << sqrt(squaresSum - sum*sum) << std::endl;
+	std::cout << sumVols << std::endl;
 
 	*productReturns = static_cast<double*>(malloc(nbUpdates * sizeof(double)));
 	memcpy(*productReturns, &(productReturnsIntermediate[0]), nbUpdates * sizeof(double));

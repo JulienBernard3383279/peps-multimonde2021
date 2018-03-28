@@ -1,7 +1,4 @@
 ﻿
-@{
-    Layout = null;
-}
 
 <!DOCTYPE html>
 
@@ -15,9 +12,11 @@
     <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
 </head>
 <body>
-    @Html.Action("VoirIndicesParam","Home")
+    @Html.Action("VoirIndicesParam", "Home")
     @Html.Partial("EstimationBouton")
-    @Html.Action("SeeMMParam","Home")
+    @Html.Action("SeeMMParam", "Home")
     @Html.Partial("Portefeuilles")
+
+
 </body>
 </html>
