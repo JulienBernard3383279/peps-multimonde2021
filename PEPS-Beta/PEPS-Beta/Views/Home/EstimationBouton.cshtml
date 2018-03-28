@@ -11,7 +11,7 @@
         <div class="clearfix"></div>
     </div>
     <div class="x_content">
-        @using (Ajax.BeginForm("EstimerParam", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "indicesParam" }))
+        @using (Ajax.BeginForm("EstimerParam", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "indicesParam", LoadingElementId = "chargementEstim" }))
         {
             <table class="table">
                 <thead>
