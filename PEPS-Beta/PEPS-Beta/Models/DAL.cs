@@ -209,12 +209,12 @@ namespace PEPS_Beta.Models
             DateTime tmpDate = dateDebut;
             calibrateDate(ref tmpDate);
             // init first row
-            res[0, 0] = getSingleData(tmpDate, "ASX");
             res[0, 1] = getSingleData(tmpDate, "ESTOXX");
-            res[0, 2] = getSingleData(tmpDate, "FTSE");
-            res[0, 3] = getSingleData(tmpDate, "HANG");
-            res[0, 4] = getSingleData(tmpDate, "N225");
             res[0, 5] = getSingleData(tmpDate, "SP500");
+            res[0, 4] = getSingleData(tmpDate, "N225");
+            res[0, 3] = getSingleData(tmpDate, "HANG");
+            res[0, 2] = getSingleData(tmpDate, "FTSE");
+            res[0, 0] = getSingleData(tmpDate, "ASX");
             tmpDate = tmpDate.AddDays(1);
             calibrateDate(ref tmpDate);
 
@@ -224,7 +224,7 @@ namespace PEPS_Beta.Models
                 conn.Open();
                 while (tmpDate < dateFin.AddDays(1))
                 {
-                    SqlCommand command = new SqlCommand("SELECT  ASX,ESTOXX,FTSE,HANG,N225,SP500 FROM  IndexesAtDates WHERE Date = @DateValue", conn);
+                    SqlCommand command = new SqlCommand("SELECT ESTOXX,SP500,N225,HANG,FTSE,ASX FROM  IndexesAtDates WHERE Date = @DateValue", conn);
                     command.Parameters.Add(new SqlParameter("DateValue", tmpDate));
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -267,10 +267,10 @@ namespace PEPS_Beta.Models
             calibrateDate(ref tmpDate);
             // init first row
             res[0, 0] = getSingleChange(tmpDate, "EURUSD");
-            res[0, 1] = getSingleChange(tmpDate, "EURAUD");
-            res[0, 2] = getSingleChange(tmpDate, "EURGBP");
             res[0, 3] = getSingleChange(tmpDate, "EURJPY");
             res[0, 4] = getSingleChange(tmpDate, "EURHKD");
+            res[0, 2] = getSingleChange(tmpDate, "EURGBP");
+            res[0, 1] = getSingleChange(tmpDate, "EURAUD");
             tmpDate = tmpDate.AddDays(1);
             calibrateDate(ref tmpDate);
 
@@ -280,7 +280,7 @@ namespace PEPS_Beta.Models
                 conn.Open();
                 while (tmpDate < dateFin.AddDays(1))
                 {
-                    SqlCommand command = new SqlCommand("SELECT EURUSD,EURAUD,EURGBP,EURJPY,EURHKD FROM TauxDeChanges WHERE Date = @DateValue", conn);
+                    SqlCommand command = new SqlCommand("SELECT EURUSD,EURJPY,EURHKD,EURGBP,EURAUD FROM TauxDeChanges WHERE Date = @DateValue", conn);
                     command.Parameters.Add(new SqlParameter("DateValue", tmpDate));
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
