@@ -116,6 +116,7 @@
     <Content Include="Content\bootstrap-reboot.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
@@ -286,6 +287,7 @@
     <Compile Include="AVAPI\CMO\Int_CMO.cs">
       <Visible>false</Visible>
     </Compile>
+    <Compile Include="Controllers\HistoChartController.cs" />
     <Compile Include="Controllers\HomeController.cs">
     </Compile>
     <Compile Include="AVAPI\CURRENCY_EXCHANGE_RATE\Const_CURRENCY_EXCHANGE_RATE.cs">
@@ -773,6 +775,7 @@
     <Compile Include="Utility.cs" />
     <Compile Include="ViewModels\CouvertureIdealeViewModel.cs" />
     <Compile Include="ViewModels\EstimationViewModel.cs" />
+    <Compile Include="ViewModels\HistoricalChartViewModel.cs" />
     <Compile Include="ViewModels\IndexViewModel.cs" />
     <Compile Include="AVAPI\WILLR\Const_WILLR.cs">
       <Visible>false</Visible>
@@ -821,6 +824,8 @@
     <Content Include="Views\Home\CouvertureIdeale.cshtml" />
     <Content Include="Views\Home\CouvertureIde.cshtml" />
     <Content Include="Views\Home\MultiMondeParam.cshtml" />
+    <Content Include="Views\Home\GrapheHistorique.cshtml" />
+    <Content Include="Views\Home\ShowChart.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -161,12 +161,12 @@ namespace PEPS_Beta.Models
 
             }
             newParam.NbIndices = 6;
-            newParam.NbSamples = 1000;
+            newParam.NbSamples = 100000;
 
             PortefeuilleCouverture newPort = new PortefeuilleCouverture();
             context.GetPort.Add(newPort);
 
-            Indice estox = new Indice("estox", "eur");
+            Indice estox = new Indice("estoxx", "eur");
             context.Indices.Add(estox);
             newParam.Indices.Add(estox);
             Indice sp500 = new Indice("sp500", "usd");

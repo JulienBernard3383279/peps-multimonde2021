@@ -49,7 +49,7 @@ namespace PEPS_Beta.Controllers
             double[] volatilities,
             double[] interestRates,
             double[] correlations, //6*6=36, traduction naturelle (non fortran) [ligne*6+colonne] <-> [ligne][colonne]
-            double** deltas);
+            out IntPtr deltas);
 
 
 
@@ -173,87 +173,82 @@ namespace PEPS_Beta.Controllers
             }
         }
 
+
         public unsafe ActionResult EstimerParam(EstimationViewModel estim)
         {
-            using(DAL dal = new DAL())
+            using (DAL dal = new DAL())
             {
                 // Il faut estimer les vol des indices et les correlations
                 // entre les dates estim.DebutEstim et estim.FinEstim
-                //dal.Init();
 
                 List<Indice> indices = dal.GetIndices();
-                List<TauxDeChange> tauxDC = dal.GetTDC();
 
-                Models.DataStorage ds = new Models.DataStorage();
-                //ds.FillDataHtml(500, 500);
-                //ds.FillDataHtml();
-                //ds.DataToArray();
-                double[,] dataAssets = new double[1,1];//= ds.IndexValues;
-                double[,] dataFX = new double[1,1];//= ds.ChangeValues;
+                double[,] dataAssets = dal.getIndexValues(estim.DebutEst, estim.FinEst);
 
+                double[,] dataFX = dal.getChangeValues(estim.DebutEst, estim.FinEst);
 
-                /*for (int k = 0; k < dataAssets.GetLength(1); k++)
-                {
-                    for (int i=0; i < dataAssets.GetLength(0); i++)
-                    {
-                        if(dataAssets[i,k]
-                    }
-                }*/
+                //// Indices en euros
+                //for (int k = 0; k < dataAssets.GetLength(0); k++)
+                //{
+                //    dataAssets[k, 1] /= dataFX[k, 0];
+                //    dataAssets[k, 2] /= dataFX[k, 1];
+                //    dataAssets[k, 3] /= dataFX[k, 2];
+                //    dataAssets[k, 4] /= dataFX[k, 3];
+                //    dataAssets[k, 5] /= dataFX[k, 4];
+                //}
 
-                int optionSize = dataAssets.GetLength(0) + dataFX.GetLength(0);
-                double[,] data_ = new double[optionSize, dataAssets.GetLength(1)];
-                /*int k = 0;
-                foreach (Indice j in indices)
-                {
-                    double[] dataJ = new double[j.Histo.Count];
-                    j.Histo.Values.CopyTo(dataJ, k);
-                    k++;
-                    for (int x = 0; x < dataJ.Length; x++)
-                    {
-                        data_[k, x] = dataJ[x];
-                    }
-                }*/
-                for (int i=0; i < data_.GetLength(0); i++)
+                int optionSize = dataAssets.GetLength(1) + dataFX.GetLength(1);
+                double[,] data_ = new double[dataAssets.GetLength(0), optionSize];
+
+                for (int row = 0; row < data_.GetLength(0); row++)
                 {
                     for (int x = 0; x < data_.GetLength(1); x++)
                     {
-                        if(i < dataAssets.GetLength(0))
+                        if (x < dataAssets.GetLength(1))
                         {
-                            data_[i, x] = dataAssets[i, x];
+                            data_[row, x] = dataAssets[row, x];
                         }
                         else
                         {
-                            data_[i, x] = dataFX[i, x];
+                            data_[row, x] = dataFX[row, x - dataAssets.GetLength(1)];
                         }
                     }
                 }
+
                 double[] volatilities = new double[optionSize];
                 double[,] covMat = PricerDll.CustomTests.MathUtils.ComputeCovMatrix(PricerDll.CustomTests.MathUtils.ComputeReturns(data_));
                 volatilities = PricerDll.CustomTests.MathUtils.ComputeVolatility(covMat);
+
                 foreach (Indice i in indices)
                 {
                     dal.modifierIndice(i.Id, i.InterestRateThisArea, volatilities[indices.IndexOf(i)]);
-                    //dal.modifierIndice(i.Id, i.InterestRateThisArea, 15.0);
-                    
+
                     //i.Vol = volatilities[indices.IndexOf(i)];
                 }
                 double[,] corrMat = PricerDll.CustomTests.MathUtils.ComputeCorrMatrix(covMat);
                 foreach (Indice i in indices)
                 {
+                    int indexI = indices.IndexOf(i);
+                    i.CorrelationMat = new Dictionary<Indice, double>();
+                    i.CorrelationMatTC = new Dictionary<String, double>();
                     foreach (Indice j in indices)
                     {
-                        i.CorrelationMat.Add(j,corrMat[indices.IndexOf(i), indices.IndexOf(j)]);
+                        double t = corrMat[indexI, indices.IndexOf(j)];
+                        i.CorrelationMat.Add(j, t);
                     }
-                    foreach(TauxDeChange j in tauxDC)
-                    {
-                        i.CorrelationMatTC.Add(j, corrMat[indices.IndexOf(i), indices.Count + tauxDC.IndexOf(j)]);
-                    }
+
+                    i.CorrelationMatTC.Add("EURUSD", corrMat[indexI, indices.Count + 0]);
+                    i.CorrelationMatTC.Add("EURJPY", corrMat[indexI, indices.Count + 1]);
+                    i.CorrelationMatTC.Add("EURHKD", corrMat[indexI, indices.Count + 2]);
+                    i.CorrelationMatTC.Add("EURGBP", corrMat[indexI, indices.Count + 3]);
+                    i.CorrelationMatTC.Add("EURAUX", corrMat[indexI, indices.Count + 4]);
+
+
                 }
                 // ne pas toucher au return
                 return PartialView(dal.GetIndices());
             }
         }
-
         public ActionResult UpdatePortefeuille()
         {
             using (DAL dal = new DAL())
@@ -267,7 +262,7 @@ namespace PEPS_Beta.Controllers
                 double currTDC;
                 double currP;
                 double currZC;
-                double Tmoinst = (param.EndDate - currD).TotalDays / 365.0;
+                double Tmoinst = (param.EndDate - currD).TotalDays / 365.25;
                 List<Indice> indList = dal.GetIndices();
                 double tauxEuro = 0.0;
                 foreach (Indice ind in indList)
@@ -321,18 +316,172 @@ namespace PEPS_Beta.Controllers
             }
         }
 
-        public ActionResult CalculerDeltas()
+        public unsafe ActionResult CalculerDeltas()
         {
             using (DAL dal = new DAL())
             {
                 CouvertureIdealeViewModel vm = new CouvertureIdealeViewModel();
                 vm.IdealPort = new PortefeuilleIdeal();
-                vm.IdealPort.DeltaAsx = 1.0;
-                vm.CurrDate = new DateTime(2015, 10, 01);
+
+                MultiMondeParam param = dal.GetParams();
+                double t = (param.CurrDate-param.Origin).TotalDays / 365.25;
+                double currTDC;
+                double currP;
+                DateTime currD = param.CurrDate;
+                List<Indice> indList = dal.GetIndices();
+                int i = 0;
+                double[] currentPrices = new double[11];
+                double[] volatilities = new double[11];
+                double[] interestRates = new double[6];
+                double[] correlations = new double[11 * 11];
+                foreach (Indice ind in indList)
+                {
+                    if (ind.Money != "eur")
+                    {
+                        currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
+                        //currTDC = 0.5;
+                        currentPrices[i + 5] = currTDC;
+                        volatilities[i + 5] = 0.02;
+                        correlations[(i + 5) * (i + 5)] = 1.0;
+                    }
+                    currP = dal.getSingleData(currD, ind.Nom.ToUpper());
+                    //currP = 100;
+                    currentPrices[i] = currP;
+                    volatilities[i] = ind.Vol;
+                    interestRates[i] = ind.InterestRateThisArea;
+                    correlations[i*i] = 1.0;
+                    i++;
+                }
+
+                int nbRows = 1;
+
+                foreach (DateTime constat in param.Constatations)
+                {
+                    if (DateTime.Compare(constat,currD)<=0)
+                    {
+                        nbRows += 1;
+                    }
+                }
+                double[] past = new double[11 * nbRows];
+
+
+
+                int row = 0;
+                i = 0;
+                foreach (Indice ind in indList)
+                {
+                    if (ind.Money != "eur")
+                    {
+                        currTDC = dal.getSingleChange(param.Origin, "EUR" + ind.Money.ToUpper());
+                        //currTDC = 100;
+                        past[11 * row + i + 5] = currTDC;
+                    }
+                    currP = dal.getSingleData(param.Origin, ind.Nom.ToUpper());
+                    //currP = 100;
+                    past[11 * row + i] = currP;
+                    i++;
+                }
+                foreach (DateTime constat in param.Constatations)
+                {
+                    row += 1;
+                    if (DateTime.Compare(constat, currD) <= 0)
+                    {
+                        i = 0;
+                        foreach (Indice ind in indList)
+                        {
+                            if (ind.Money != "eur")
+                            {
+                                currTDC = dal.getSingleChange(constat, "EUR" + ind.Money.ToUpper());
+                                //currTDC = 100;
+                                past[11 * row + i + 5] = currTDC;
+                            }
+                            currP = dal.getSingleData(constat, ind.Nom.ToUpper());
+                            //currP = 100;
+                            past[11 * row + i] = currP;
+                            i++;
+                        }
+                    }
+                }
+
+                IntPtr deltasPtr;
+
+                DeltasMultimonde2021Quanto(param.NbSamples, past, nbRows, t, currentPrices, volatilities, interestRates, correlations, out deltasPtr);
+
+                double[] deltas = new double[11];
+                System.Runtime.InteropServices.Marshal.Copy(deltasPtr, deltas, 0, 11); //<- deltas contient maintenant les deltas
+
+                String[] names = new String[11] {
+                "estoxx",
+                "sp500",
+                "n225",
+                "hang",
+                "ftse",
+                "asx",
+                "usd",
+                "jpy",
+                "hkd",
+                "gbp",
+                "aud"};
+
+                for (int k = 0; k<11; ++k)
+                {
+                    vm.IdealPort.SetDelta(names[k], deltas[k]);
+                }
+
+                double tauxEuro = 0;
+                double currZC;
+                double optimumValue = 0;
+                double Tmoinst = (param.EndDate - currD).TotalDays / 365.25;
+
+                foreach (Indice ind in indList)
+                {
+                    if (ind.Money == "eur")
+                    {
+                        tauxEuro = ind.InterestRateThisArea;
+                        currTDC = 1.0;
+                    }
+                    else
+                    {
+                        currTDC = dal.getSingleChange(currD, "EUR" + ind.Money.ToUpper());
+                        //currTDC = 0.5;
+                    }
+                    currP = dal.getSingleData(currD, ind.Nom.ToUpper()) / currTDC;
+                    //currP = 100/currTDC;
+                    currZC = Math.Exp(-ind.InterestRateThisArea * Tmoinst) / currTDC;
+
+                    optimumValue += vm.IdealPort.GetDelta(ind.Nom) * currP;
+                    optimumValue += vm.IdealPort.GetDelta(ind.Money) * currZC;
+                }
+                double price;
+                double ic;
+                PriceMultimonde2021Quanto(param.NbSamples, past, nbRows, t, currentPrices, volatilities, interestRates, correlations, &price, &ic);
+                double restant = price - optimumValue;
+                restant *= Math.Exp(tauxEuro * Tmoinst);
+                restant += vm.IdealPort.GetDelta("eur");
+                vm.IdealPort.SetDelta("eur", restant);
                 dal.saveOpti(vm.IdealPort);
+
                 return PartialView("CouvertureIdeale", vm);
+
                 //return Content("Deltas en cours d'implémentation");
             }
         }
+
+        public ActionResult SeeMMParam()
+        {
+            using (DAL dal = new DAL())
+            {
+                return PartialView("MultiMondeParam", dal.GetParams());
+            }
+        }
+
+        public void SetDate(MultiMondeParam m)
+        {
+            using (DAL dal = new DAL())
+            {
+                dal.ChangeDate(m.CurrDate);
+            }
+        }
+        
     }
 }

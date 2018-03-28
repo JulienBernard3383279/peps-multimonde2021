@@ -5,22 +5,26 @@
 <script src="@Url.Content("~/Scripts/jquery.validate.js")" type="text/javascript"></script>
 <script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.js")" type="text/javascript"></script>
 
-<table id="indicesParam">
+<div id="indicesParam">
 
-    <tr>
+    <table>
 
-        <th>Nom</th>
-        <th>Monnaie</th>
-        <th>Taux sans rique du marché</th>
-        <th>Volatilité</th>
-        <th></th>
+        <tr>
 
-    </tr>
+            <th>Nom</th>
+            <th>Monnaie</th>
+            <th>Taux sans rique du marché</th>
+            <th>Volatilité</th>
+            <th></th>
 
-    @foreach (var ind in Model)
+        </tr>
 
-    {
-        @Html.Partial("IndiceLigne", ind)
-    }
+        @foreach (var ind in Model)
 
-</table>
+        {
+            @Html.Partial("IndiceLigne", ind)
+        }
+
+    </table>
+
+</div>

@@ -15,6 +15,10 @@ namespace PEPS_Beta.Models
         public double EURJPY { get; private set; }
         public double EURHKD { get; private set; }
 
+        public TauxDeChange()
+        {
+
+        }
         public TauxDeChange(DateTime date, double EURUSD, double EURAUD, double EURGBP, double EURJPY, double EURHKD)
         {
             this.date = date;

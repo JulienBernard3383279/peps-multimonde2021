@@ -10,9 +10,10 @@ namespace PEPS_Beta.Models
         public int Id { get; set; }
         public String Nom { get; set; }
         public double Vol { get; set; }
+        public double MoneyVol { get; set; }
         public Dictionary<DateTime, double> Histo { get; set; }
         public Dictionary<Indice, double> CorrelationMat { get; set; }
-        public Dictionary<TauxDeChange, double> CorrelationMatTC { get; set; }
+        public Dictionary<String, double> CorrelationMatTC { get; set; }
         public String Money { get; set; }
         public double InterestRateThisArea { get; set; }
 
@@ -25,10 +26,11 @@ namespace PEPS_Beta.Models
             this.Nom = name;
             this.Money = mon;
             this.Vol = 0.02;
+            this.MoneyVol = 0.02;
             this.InterestRateThisArea = 0.01;
             this.Histo = new Dictionary<DateTime, double>();
             this.CorrelationMat = new Dictionary<Indice, double>();
-            this.CorrelationMatTC = new Dictionary<TauxDeChange, double>();
+            this.CorrelationMatTC = new Dictionary<String, double>();
         }
     }
 }

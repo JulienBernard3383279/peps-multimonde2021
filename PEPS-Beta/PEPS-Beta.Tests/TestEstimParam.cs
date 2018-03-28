@@ -14,7 +14,7 @@ namespace PEPS_Beta.Tests
     public class TestEstimParam
     {
         [TestMethod]
-        public void TestEstimCorrelation()
+        public void TestEstimVol()
         {
             IDatabaseInitializer<BddContext> init = new DropCreateDatabaseAlways<BddContext>();
             Database.SetInitializer(init);
