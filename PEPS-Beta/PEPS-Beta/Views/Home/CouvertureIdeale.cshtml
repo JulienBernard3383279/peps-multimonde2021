@@ -9,22 +9,24 @@
     <thead>
         <tr>
             <th>
-                @using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
-                {
-                <div>
-                    @*<label>&nbsp;</label>*@
-                    <button type="submit" class="btn btn-primary" value="Mettre à jour">Mettre à jour</button>
-                </div>
-                }
+                @using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort", LoadingElementId = "chargementUpdate" }))
+    {
+            <div>
+                @*<label>&nbsp;</label>*@
+                <button type="submit" class="btn btn-primary" value="Mettre à jour">Mettre à jour</button>
+            </div>
+            <img id="chargementUpdate" src="~/Content/ajax-loader2.gif" style="display: none" alt="Chargement en cours..." />
+}
             </th>
             <th>
-                @using (Ajax.BeginForm("InitPortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
-                {
-                <div>
-                    @*<label>&nbsp;</label>*@
-                    <button type="submit" class="btn btn-primary" value="Init">Initialiser</button>
-                </div>
-                }
+                @using (Ajax.BeginForm("InitPortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort", LoadingElementId = "chargementInit" }))
+    {
+            <div>
+                @*<label>&nbsp;</label>*@
+                <button type="submit" class="btn btn-primary" value="Init">Initialiser</button>
+            </div>
+            <img id="chargementInit" src="~/Content/ajax-loader2.gif" style="display: none" alt="Chargement en cours..." />
+}
             </th>
         </tr>
     </thead>
