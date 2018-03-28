@@ -10,6 +10,9 @@
     <div>
         @Html.TextBoxFor(m => Model.CurrDate, new { @Value = Model.CurrDate.ToShortDateString() })
         <span style="color:red">@ViewBag.MessageErreur</span>
+        <img id="chargementDate" src="~/Content/ajax-loader.gif" style="display: none" alt="Chargement en cours..." />
+        <span> Prix du Multimonde : @Model.Price</span>
+        <span> Pnl associée : @Model.Pnl</span>
     </div>
         <div>
             @*<label>&nbsp;</label>*@

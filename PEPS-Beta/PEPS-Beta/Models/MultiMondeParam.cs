@@ -28,6 +28,9 @@ namespace PEPS_Beta.Models
 
         #region properties
 
+        public double Price { get; set; }
+        public double Pnl { get; set; }
+
         public int NbSamples { get => nbSamples; set => nbSamples = value; }
 
         public int NbIndices { get => nbIndices; set => nbIndices = value; }

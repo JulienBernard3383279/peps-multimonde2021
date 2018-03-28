@@ -406,5 +406,16 @@ namespace PEPS_Beta.Models
             else
                 return currentValue;
         }
+
+        internal void setPrice(double price)
+        {
+            bdd.Parametres.FirstOrDefault().Price = price;
+            bdd.SaveChanges();
+        }
+        internal void setPnl(double pnl)
+        {
+            bdd.Parametres.FirstOrDefault().Pnl = pnl;
+            bdd.SaveChanges();
+        }
     }
 }

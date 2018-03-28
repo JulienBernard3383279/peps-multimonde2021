@@ -7,16 +7,18 @@
 
 
 
-@using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
+@using (Ajax.BeginForm("UpdatePortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "chargementUpdate" }))
 {
+    <img id="chargementUpdate" src="~/Content/ajax-loader2.gif" style="display: none" alt="Chargement en cours..." />
     <div>
         @*<label>&nbsp;</label>*@
         <input type="submit" value="Mettre à jour" class="submit" />
     </div>
 }
 
-@using (Ajax.BeginForm("InitPortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "currPort" }))
+@using (Ajax.BeginForm("InitPortefeuille", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, UpdateTargetId = "chargementInit" }))
 {
+    <img id="chargementInit" src="~/Content/ajax-loader2.gif" style="display: none" alt="Chargement en cours..." />
     <div>
         @*<label>&nbsp;</label>*@
         <input type="submit" value="Init" class="submit" />
