@@ -90,7 +90,7 @@ namespace PricerDll.CustomTests
         /*
         * Lance le test pour certaines combinaisons de valeurs.
         */
-        public static void PerformPriceSingleMondeTests()
+        public static void PerformPriceTests()
         {
             int nbSamples = 1_000_000;
 
@@ -224,10 +224,8 @@ namespace PricerDll.CustomTests
                 interestRates,
                 correlations);
         }
-
-
-
-        private static double RealDeltaSingleMonde(
+        
+        private static double[] RealDeltaSingleMonde(
            double maturity,
            double[] currents,//on le veut (l'actif) dans la monnaie etrangère,sa monnaie de base quoi ici.Tableau de taille 1.
            double[] volatilities,//les vol dans un ordre suivant: actif puis taux de change de 1euro en dollars
@@ -235,26 +233,102 @@ namespace PricerDll.CustomTests
            double[] correlations,
            double date)
         {
-            double S0 = currents[0];
-            double d1 = ((Math.Log(currents[0] / 1.15 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
-            double d2 = ((Math.Log(currents[0] / 0.85 * S0) + (interestRates[0] + 0.5 * volatilities[0] * volatilities[0])) * (maturity - date)) / (volatilities[0] * Math.Sqrt(maturity - date));
-
-
-            return (API.call_pnl_cdfnor(d1) + -1 + API.call_pnl_cdfnor(d2)) * Math.Exp(-(interestRates[0]) * (maturity - date));
-
+            double[] deltas = new double[2];
+            deltas[0] = 100 / currents[0] * (TestsQuanto.RealDeltaQuanto0(maturity, 0.85 * currents[0], new double[1] { currents[0] }, volatilities, interestRates, correlations, new double[1] { currents[1] }, date)[0]
+                -  TestsQuanto.RealDeltaQuanto0(maturity, 1.15 * currents[0], new double[1] { currents[0] }, volatilities, interestRates, correlations, new double[1] { currents[1] }, date)[0]);
+            deltas[1] = 100 / currents[0] * (TestsQuanto.RealDeltaQuanto0(maturity, 0.85 * currents[0], new double[1] { currents[0] }, volatilities, interestRates, correlations, new double[1] { currents[1] }, date)[1]
+                            - TestsQuanto.RealDeltaQuanto0(maturity, 1.15 * currents[0], new double[1] { currents[0] }, volatilities, interestRates, correlations, new double[1] { currents[1] }, date)[1]);
+            return deltas;
         }
 
         private static void DeltaTestSingleMonde(double maturity,
+               double strike,
                int nbSamples,
                double[] spots,
                double[] volatilities,
                double[] interestRates,
                double[] correlations,
-               int timestepNumber,
-               double[] FXRates,
-               double[] trends)
+               double currFXRate)
         {
+            //call quanto = une seule monnaie pour l'actif (un actif quoi), elle est etrangère
+            API.DeltasSingleMonde(
+                maturity,
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations,
+                0,
+                spots,
+                out IntPtr deltasAssets,
+                out IntPtr deltasFXRates);
 
+            double date = 0.0;
+            //price et ics contiennent prix et intervalle de couverture selon le pricer
+
+            double[] realDelta = RealDeltaSingleMonde(maturity,
+                spots,
+                volatilities,
+                interestRates,
+                correlations,
+                date);
+
+            double[] deltas = new double[2];
+            double[] tmp = new double[1];
+
+            System.Runtime.InteropServices.Marshal.Copy(deltasAssets, tmp, 0, 1);
+            deltas[0] = tmp[0];
+            System.Runtime.InteropServices.Marshal.Copy(deltasFXRates, tmp, 0, 1);
+            deltas[1] = tmp[0];
+
+            double realPrice = RealPriceSingleMonde(maturity, spots, volatilities, interestRates, correlations, 0);
+            double tmpD = realPrice - realDelta[0] * spots[0] * currFXRate - realDelta[1] * Math.Exp(-interestRates[0] * maturity);
+            tmpD /= spots[1];
+            realDelta[1] = tmpD;
+
+            if (Math.Abs((realDelta[0] - deltas[0]) / deltas[0]) > 0.05)
+            {
+                // Le prix trouvé par le pricer est plus de 5% à côté du vrai prix !
+                Console.WriteLine("problème de deltas pour l'option quanto en t=0!");
+                Console.WriteLine("Deltas formule fermée:");
+                Console.WriteLine(realDelta[0]);
+                Console.WriteLine(realDelta[1]);
+                Console.WriteLine("Deltas simulés");
+                Console.WriteLine(deltas[0]);
+                Console.WriteLine(deltas[1]);
+            }
+            else
+            {
+                Console.WriteLine("Deltas formule fermée:");
+                Console.WriteLine(realDelta[0]);
+                Console.WriteLine(realDelta[1]);
+                Console.WriteLine("Deltas simulés");
+                Console.WriteLine(deltas[0]);
+                Console.WriteLine(deltas[1]);
+            }
+        }
+
+        public static void PerformDeltaTests()
+        {
+            /*double maturity = 3.0;
+            double strike = 100.0;
+            int nbSamples = 10000;
+            double currFXRate = 1.2;
+            double[] interestRates = new double[2] { 0.05, 0.03 }; ;
+            double[] spots = new double[2] { 100.0, currFXRate * Math.Exp(-interestRates[1] * maturity) };
+            double[] volatilities = new double[2] { 0.01, 0.02 };
+            double[] correlations = new double[4] { 1.0, 0.05, 0.05, 1.0 };
+
+            double realPrice = RealPriceSingleMonde(maturity, spots, volatilities, interestRates, correlations, 0);
+            Console.WriteLine("Prix fermé " + realPrice);
+            DeltaTestSingleMonde(maturity,
+                strike,
+                nbSamples,
+                spots,
+                volatilities,
+                interestRates,
+                correlations,
+                currFXRate);*/
         }
     }
     

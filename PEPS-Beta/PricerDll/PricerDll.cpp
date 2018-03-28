@@ -1475,30 +1475,34 @@ void DeltasSingleMonde(
 	double** deltasAssets,
 	double** deltasFXRates)
 {
-
 	MonteCarlo *mc;
 	Option *opt;
 	BlackScholesModel *mod;
 
 	opt = new SingleMonde(interestRate);
-	//Vieux copié-collé du quanto. Voir ci-dessus pour commentaires.
+
+	// Calcul de la vol de S-X
 	PnlVect* volatilitiesVect = pnl_vect_create_from_ptr(2, volatilities);
 	LET(volatilitiesVect, 0) = VolAminusB(correlations[1], volatilities[0], volatilities[1]);
+
+	// Calcul de la cor de S-X et -X
 	PnlMat* correlationsMat = GenCorrAMinusBBFromCorrAB(correlations, volatilities[0], volatilities[1]);
-	ReverseCorrMatrix(correlationsMat);
+	ReverseCorrMatrix(correlationsMat);//car on nous passe celle de S$ avec €/$ et qu'on veut celle de S€ avec $/€
 
-	// On actualise le prix en euros
-	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
-	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(-interestRate[1] * (371.0 / 365.25));
-	PnlMat* past = pnl_mat_create_from_zero(1, 2);
-	pnl_mat_set_row(past, spotsVect, 0);
-	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
-	LET(currVect, 0) *= GET(currVect, 1) / exp(-interestRate[1] * ((371.0 / 365.25) - date));
-
-	// On fixe les mu avec les taux sans risque
+									   // On fixe les mu avec les taux sans risque
 	PnlVect* trendsVect = pnl_vect_create_from_zero(2);
 	LET(trendsVect, 0) = interestRate[0];
 	LET(trendsVect, 1) = interestRate[0];
+
+	// On actualise le prix en euros
+	PnlVect* spotsVect = pnl_vect_create_from_ptr(2, spots);
+	LET(spotsVect, 0) *= GET(spotsVect, 1) / exp(interestRate[1] * (371.0 / 365.25));
+
+	PnlMat* past = pnl_mat_create_from_zero(1, 2);
+	pnl_mat_set_row(past, spotsVect, 0);
+
+	PnlVect* currVect = pnl_vect_create_from_ptr(2, currents);
+	LET(currVect, 0) *= GET(currVect, 1) / exp(interestRate[1] * ((371.0 / 365.25) - date));
 
 	mod = new BlackScholesModel(2, interestRate[0], correlationsMat, volatilitiesVect, spotsVect, trendsVect);
 
@@ -1506,10 +1510,6 @@ void DeltasSingleMonde(
 	pnl_rng_sseed(rng, time(NULL));
 
 	mc = new MonteCarlo(mod, opt, rng, sampleNumber);
-
-	double price;
-	double ic;
-	mc->price(past, date, currVect, &price, &ic);
 
 	PnlVect* deltasQuanto = pnl_vect_create_from_zero(2);
 	mc->deltas(past, date, currVect, deltasQuanto);
@@ -1519,9 +1519,6 @@ void DeltasSingleMonde(
 
 	myDeltasAssets[0] = GET(deltasQuanto, 0);
 	myDeltasFXRates[0] = GET(deltasQuanto, 1);
-
-	std::cout << "Prix simule : " << price << std::endl;
-	std::cout << "ic : " << ic << std::endl;
 
 	*deltasAssets = static_cast<double*>(malloc(1 * sizeof(double)));
 	memcpy(*deltasAssets, &(myDeltasAssets[0]), 1 * sizeof(double));

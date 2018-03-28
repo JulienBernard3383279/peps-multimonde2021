@@ -336,8 +336,8 @@ namespace PricerDll.CustomTests
             double[] correlations,
             double date,
             double[] currents,
-            IntPtr deltasAssets,
-            IntPtr deltasFXRates);
+            out IntPtr deltasAssets,
+            out IntPtr deltasFXRates);
         #endregion
     }
 }
